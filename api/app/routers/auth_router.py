@@ -36,12 +36,6 @@ async def login(payload: UserRegLogSchema):
             detail="Email o contraseña incorrectos ",
         )
     # user = object_id_to_str(user)
-    accessToken = create_access_token(subject=str(user.get("email")))
-    return UserLogRespSchema(
-        id=user.get("_id") or user.get("id") or user.get("Id"),
-        name=user.get("name"),
-        email=user.get("email"),
-        rol=user.get("rol", 0),
-        profile_pic=user.get("profile_pic"),
-        access_token=accessToken,
-    )
+    accessToken = create_access_token(subject=str(user.email))
+    user.access_token = accessToken
+    return user.model_dump()

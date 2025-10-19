@@ -23,18 +23,19 @@ def get_pass_hash(password: str) -> str:
 def verify_pass(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
 
+
 # egistrar usuario en BDD
 async def register_user(name: str, email: str, password: str) -> UserLogRespSchema:
     # Revisamos si ya existe un usuario en BDD con ese email
     isExists = await UserModel.find_by_email(email=email, username=name)
     if isExists:  # Si existe marcamos el error
-        msg=""
-        if str_trim_lower(isExists.get("email"))==str_trim_lower(email):
+        msg = ""
+        if str_trim_lower(isExists.get("email")) == str_trim_lower(email):
             log.warning(f"El ususario {email} ya existe {isExists.get("email")}")
-            msg="Email"
-        elif str_trim_lower(isExists.get("name"))==str_trim_lower(name):
+            msg = "Email"
+        elif str_trim_lower(isExists.get("name")) == str_trim_lower(name):
             log.warning(f"El ususario {name} ya existe {isExists.get("name")}")
-            msg="username"
+            msg = "username"
         raise ValueError(f"Ya existe un usuario registrado con ese {msg}")
     hashedPass = get_pass_hash(password)
     nowTS = int(datetime.now(timezone.utc).timestamp() * 1000)
@@ -65,18 +66,29 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
         email=createdUser.get("email"),
         rol=createdUser.get("rol", 0),
         profile_pic=createdUser.get("profile_pic"),
+        created_date=createdUser.get("created_date"),
+        show_statistics=createdUser.get("show_statistics"),
         access_token=accessToken,
     )
 
 
 # Verificamos que las credenciales sean correctas
-async def auth_user(email: str, password: str) -> Optional[dict]:
+async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
     # Se revisa si el usuario existe y que su contrasena corresponda al hash, de no pasar alguna de las comprobaciones retorna none, si la pasa retorna la info del usuario
-    user = await UserModel.find_by_email(email)
+    user = object_id_to_str(await UserModel.find_by_email(email))
     if not user:
         return None
     hashed = user.get("password")
     if not hashed or not verify_pass(password, hashed):
         return None
 
-    return object_id_to_str(user)
+    return UserLogRespSchema(
+        id=user.get("_id") or user.get("id") or user.get("Id"),
+        name=user.get("name"),
+        email=user.get("email"),
+        rol=user.get("rol", 0),
+        profile_pic=user.get("profile_pic"),
+        created_date=user.get("created_date"),
+        show_statistics=user.get("show_statistics"),
+        access_token="",  # Sera actualizado antes de retornar la informacion
+    )

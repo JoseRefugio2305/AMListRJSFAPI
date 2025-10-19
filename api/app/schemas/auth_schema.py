@@ -1,4 +1,11 @@
-from pydantic import BaseModel, EmailStr, Field, BeforeValidator, field_validator
+from pydantic import (
+    BaseModel,
+    EmailStr,
+    Field,
+    BeforeValidator,
+    field_validator,
+    ConfigDict,
+)
 from typing import Optional, Annotated
 from app.core.utils import str_trim_lower
 import re
@@ -32,8 +39,8 @@ class UserRegSchema(BaseModel):
     password: str = Field(..., min_length=8)
     rol: int = 0
     profile_pic: Optional[str] = None
-    created_date: str
-    show_statistics: int = 0
+    created_date: Optional[str] = None
+    show_statistics: Optional[int] = 0
 
 
 # Schema para la respuesta despues del registro o logeo
@@ -44,6 +51,7 @@ class UserLogRespSchema(BaseModel):
     rol: int = 0
     profile_pic: Optional[str] = None
     access_token: str
+    created_date: Optional[str] = None
+    show_statistics: Optional[int] = 0
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
