@@ -47,5 +47,5 @@ class BaseODMModel:
     # Consultas con pipeline
     @classmethod
     async def aggregate(cls, pipeline: list):
-        cursor = cls._collection().aggregate(pipeline)
+        cursor = await cls._collection().aggregate(pipeline)
         return await cursor.to_list(length=None)
