@@ -1,10 +1,9 @@
-from datetime import datetime, timezone
 from typing import Optional
 from passlib.context import CryptContext
 
 from app.models.user_model import UserModel
 from app.schemas.auth_schema import UserRegSchema, UserLogRespSchema
-from app.core.utils import object_id_to_str, str_trim_lower
+from app.core.utils import object_id_to_str, str_trim_lower, time_now_formatted
 from app.core.security import create_access_token
 from app.core.logger import get_logger
 
@@ -38,7 +37,7 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
             msg = "username"
         raise ValueError(f"Ya existe un usuario registrado con ese {msg}")
     hashedPass = get_pass_hash(password)
-    nowTS = int(datetime.now(timezone.utc).timestamp() * 1000)
+    nowTS = time_now_formatted(True)
     # Creamos el schema del usuario
     dataNU = UserRegSchema(
         name=name,
@@ -46,7 +45,7 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
         password=hashedPass,
         rol=0,
         profile_pic=None,
-        created_date=str(nowTS),
+        created_date=nowTS,
         show_statistics=0,
     )
 

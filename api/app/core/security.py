@@ -14,7 +14,9 @@ from app.core.utils import object_id_to_str
 # leg = get_logger(__name__)
 
 # Creamos el schema del OAuth2, dandole como parametro la ruta en la que se otorgan los tokens al usuario despues de iniciar sesion
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+# Con el parametro auto_error damos la posibilidad a una autenticacion opcional, esto nos funcionara para rutas en las que no es necesario estar autenticado
+# OAuth2PasswordBearer por defecto exige un bearer token, de no poder obtenerlo lanza una excepcion de falta de autenticacion
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
 
 
 # Informacion del token, forma de identificarlo y expiracion
