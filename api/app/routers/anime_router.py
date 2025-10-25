@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, status, Depends
+from fastapi import APIRouter, Depends
 from typing import List
 
-from app.core.security import get_current_user, require_admin, optional_current_user
+from app.core.security import get_current_user, optional_current_user
 from app.services.anime_service import AnimeService
 from app.schemas.filters_schema import FilterSchema, EmisionFilterEnum
 from app.schemas.anime_schema import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
@@ -15,7 +15,7 @@ routerAnime = APIRouter(prefix="/anime", tags=["anime"])
 
 
 # Listado general de animes, paginado
-@routerAnime.get("/", response_model=List[AnimeSchema])
+@routerAnime.post("/", response_model=List[AnimeSchema])
 async def anime_page(
     filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
 ):
@@ -23,7 +23,8 @@ async def anime_page(
     return [a.model_dump() for a in animes]
 
 
-@routerAnime.get("/emision/", response_model=List[AnimeSchema])
+# Animes en emision
+@routerAnime.post("/emision/", response_model=List[AnimeSchema])
 async def animes_emision(
     filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
 ):

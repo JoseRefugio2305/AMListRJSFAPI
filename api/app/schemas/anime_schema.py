@@ -3,9 +3,13 @@ from typing import Optional, List
 from enum import IntEnum
 
 
+PATTERN_ID = r"^([a-fA-F0-9]{24})$"
+
+
 class EstadoEmEnum(IntEnum):
     finalizado = 0
-    emision = 1
+    emision = 1  # Publicando en Manga
+    pausado = 2  # En hiatus en manga
 
 
 class TipoAnimeEnum(IntEnum):
@@ -18,7 +22,7 @@ class TipoAnimeEnum(IntEnum):
 
 
 class StatusViewEnum(IntEnum):
-    viendo = 1
+    viendo = 1  # Leyendo en manga
     pendiente = 2
     considerando = 3
     abandonado = 4
@@ -27,7 +31,7 @@ class StatusViewEnum(IntEnum):
 
 # Animes favoritos
 class AniFavsSchema(BaseModel):
-    id: str
+    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
     user: str
     anime: str
     active: bool
@@ -37,18 +41,18 @@ class AniFavsSchema(BaseModel):
 
 # Payload para agregar anime a favoritos
 class AniFavPayloadSchema(BaseModel):
-    animeId: str
+    animeId: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
     active: bool
     statusView: StatusViewEnum
 
 
-# Respuesta al agregar el anime a favoritos o removerlo
+# Respuesta al agregar el anime a favoritos o removerlo, tambien sera utilizado por manga
 class AniFavRespSchema(BaseModel):
     active: bool
     statusView: StatusViewEnum
 
 
-# Relacion de generos en animes
+# Relacion de generos en animes y mangas
 class GenreARelSchema(BaseModel):
     nombre: str
     id_MAL: int
@@ -56,13 +60,13 @@ class GenreARelSchema(BaseModel):
 
 # Generos
 class GenreSchema(GenreARelSchema):
-    id: str
+    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
     nombre_mal: str
     linkMAL: HttpUrl
     fechaAdicion: str
 
 
-# Imagenes de los nimes
+# Imagenes de los animes
 class AnimeImagesSchema(BaseModel):
     img_sm: HttpUrl
     img_l: HttpUrl
@@ -76,14 +80,14 @@ class StudiosARelSchema(BaseModel):
 
 # Estudios de Animacion
 class StudiosSchema(StudiosARelSchema):
-    id: str
+    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
     linkMAL: HttpUrl
     fechaAdicion: str
 
 
 # Tipos de animes (animes, OVA, ONA, etc.)
 class AnimeTypesSchema(BaseModel):
-    id: str
+    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
     code: int = Field(..., ge=1, le=6)
     nombre: str
     fechaAdicion: str
@@ -95,7 +99,7 @@ class AnimeRelationsSchema(BaseModel):
     titulo: str
 
 
-# Titulos Alternaivos
+# Titulos Alternaivos usado en manga tambien
 class AltTitlesSchema(BaseModel):
     tit_alt: str
     tipo: str
@@ -111,7 +115,7 @@ class AnimeCreateSchema(BaseModel):
 
 # Anime
 class AnimeSchema(AnimeCreateSchema):
-    id: str
+    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
     animeImages: List[AnimeImagesSchema]
     calificacion: float = Field(ge=0, le=10)
     descripcion: str

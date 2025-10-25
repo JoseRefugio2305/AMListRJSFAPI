@@ -1,8 +1,13 @@
 from app.base.base_odm import BaseODMModel
+from bson.objectid import ObjectId
 
 
 class AnimeModel(BaseODMModel):
     collection_name = "animes"
+
+    @classmethod
+    async def find_by_id(cls, animeId: ObjectId):
+        return await cls.find_one({"_id": animeId})
 
     # Busqueda por key_anime
     @classmethod

@@ -28,7 +28,7 @@ def dict_to_anime_schema(anime: dict, is_User: bool = False) -> AnimeSchema:
         calificacion=anime.get("calificacion"),
         descripcion=anime.get("descripcion"),
         emision=anime.get("emision"),
-        episodios=anime.get("episodios"),
+        episodios=anime.get("episodios") if anime.get("episodios") else 0,
         fechaAdicion=anime.get("fechaAdicion"),
         fechaEmision=anime.get("fechaEmision"),
         generos=anime.get("generos"),
@@ -99,6 +99,13 @@ class AnimeService:
     async def change_status_favs(
         data: AniFavPayloadSchema, user: UserLogRespSchema
     ) -> AniFavRespSchema:
+        # Antes de actualizar o insertar la relacion se verifica que sea un anime existente
+        anime = await AnimeModel.find_by_id(ObjectId(data.animeId))
+        if not anime:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Anime no encontrado",
+            )
         try:
             nowTS = time_now_formatted(True)
             updated = await UTAFavsModel.update_one(
@@ -111,7 +118,7 @@ class AnimeService:
                     "fechaAdicion": nowTS,
                 },
                 upsert=True,
-            )
+            )  # Actualizamos el registro o insertamos en caso de que no exista la relacion
 
             return AniFavRespSchema(active=data.active, statusView=data.statusView)
         except HTTPException:
