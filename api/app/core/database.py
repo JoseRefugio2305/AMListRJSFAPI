@@ -32,7 +32,7 @@ async def close_mongo():
     global client
     if client:
         try:
-            client.close()
+            await client.close()
             logger.info("Conexión a MongoDB cerrada correctamente")
         except Exception as e:
             logger.warning(
