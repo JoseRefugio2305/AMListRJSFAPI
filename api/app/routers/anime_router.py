@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends
-from typing import List
 
 from app.core.security import get_current_user, optional_current_user
 from app.services.anime_service import AnimeService
 from app.schemas.filters_schema import FilterSchema, EmisionFilterEnum
 from app.schemas.anime_schema import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
+from app.schemas.search_schemas import AnimeSearchSchema
 from app.schemas.auth_schema import UserLogRespSchema
 from app.core.logger import get_logger
 
@@ -15,23 +15,24 @@ routerAnime = APIRouter(prefix="/anime", tags=["anime"])
 
 
 # Listado general de animes, paginado
-@routerAnime.post("/", response_model=List[AnimeSchema])
+@routerAnime.post("/", response_model=AnimeSearchSchema)
 async def anime_page(
     filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
 ):
     animes = await AnimeService.get_all(filters, user)
-    return [a.model_dump() for a in animes]
+
+    return animes.model_dump()
 
 
 # Animes en emision
-@routerAnime.post("/emision/", response_model=List[AnimeSchema])
+@routerAnime.post("/emision/", response_model=AnimeSearchSchema)
 async def animes_emision(
     filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
 ):
     filters.emision = EmisionFilterEnum.emision
     animes_emision = await AnimeService.get_all(filters, user)
 
-    return [ae.model_dump() for ae in animes_emision]
+    return animes_emision.model_dump()
 
 
 # @routerAnime.get()

@@ -6,10 +6,16 @@ from bson.objectid import ObjectId
 from app.models.anime_model import AnimeModel
 from app.models.utafavs_model import UTAFavsModel
 from app.schemas.anime_schema import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
+from app.schemas.search_schemas import AnimeSearchSchema
 from app.schemas.filters_schema import FilterSchema
 from app.schemas.auth_schema import UserLogRespSchema
 from app.core.utils import object_id_to_str, objects_id_list_to_str, time_now_formatted
-from app.core.db_helpers import lookup_user_favorites, filtro_emision, filtrado_tipo
+from app.core.db_helpers import (
+    lookup_user_favorites,
+    filtro_emision,
+    filtrado_tipos,
+    filtrado_busqueda_avanzada_anime,
+)
 
 from app.core.logger import get_logger
 
@@ -48,13 +54,14 @@ class AnimeService:
     @staticmethod
     async def get_all(
         filters: FilterSchema, user: Optional[UserLogRespSchema] = None
-    ) -> List[AnimeSchema]:
+    ) -> AnimeSearchSchema:
         pipeline = [
             {
                 "$match": {"linkMAL": {"$not": {"$eq": None}}},
             },
-            *filtrado_tipo(filters.tipoAnime, True),
+            *filtrado_tipos(filters.tiposAnime, True),
             *filtro_emision(filters.emision, "emision"),
+            *filtrado_busqueda_avanzada_anime(filters),
             *lookup_user_favorites(
                 user.id if user else None,
                 "anime",
@@ -62,12 +69,28 @@ class AnimeService:
                 filters.onlyFavs,
                 filters.statusView,
             ),
-            {"$skip": filters.skip},
-            {"$limit": filters.limit},
         ]
-        results = objects_id_list_to_str(await AnimeModel.aggregate(pipeline))
+        logger.debug(pipeline)
+        # Obtenemos el conteo de los animes que concuerdan con la busqueda
+        totalAnimes = await AnimeModel.aggregate([*pipeline, {"$count": "totalAnimes"}])
 
-        return [dict_to_anime_schema(r, True if user else False) for r in results]
+        totalAnimes = totalAnimes[0]["totalAnimes"] if len(totalAnimes) > 0 else 0
+        # Aplicamos la limitacion a la busqueda
+        pipeline.append({"$skip": filters.skip})
+        pipeline.append({"$limit": filters.limit})
+        results = (
+            objects_id_list_to_str(await AnimeModel.aggregate(pipeline))
+            if totalAnimes
+            > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
+            else []
+        )
+
+        return AnimeSearchSchema(
+            listaAnimes=[
+                dict_to_anime_schema(r, True if user else False) for r in results
+            ],
+            totalAnimes=totalAnimes,
+        )
 
     # Detalles del anime
     @staticmethod

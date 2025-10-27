@@ -7,10 +7,16 @@ from app.models.manga_model import MangaModel
 from app.models.utmanfavs_model import UTManFavsModel
 from app.schemas.manga_schema import MangaSchema, MangaFavPayloadSchema
 from app.schemas.anime_schema import AniFavRespSchema
+from app.schemas.search_schemas import MangaSearchSchema
 from app.schemas.filters_schema import FilterSchema
 from app.schemas.auth_schema import UserLogRespSchema
 from app.core.utils import object_id_to_str, objects_id_list_to_str, time_now_formatted
-from app.core.db_helpers import lookup_user_favorites, filtro_emision, filtrado_tipo
+from app.core.db_helpers import (
+    lookup_user_favorites,
+    filtro_emision,
+    filtrado_tipos,
+    filtrado_busqueda_avanzada_manga,
+)
 
 from app.core.logger import get_logger
 
@@ -31,7 +37,7 @@ def dict_to_manga_schema(manga: dict, is_User: bool = False) -> MangaSchema:
         publicando=manga.get("publicando"),
         capitulos=manga.get("capitulos") if manga.get("capitulos") else 0,
         volumenes=manga.get("volumenes") if manga.get("volumenes") else 0,
-        fechaAdicion=manga.get("fechaAdicion"),
+        fechaAdicion=str(manga.get("fechaAdicion")),
         fechaComienzoPub=str(manga.get("fechaComienzoPub")),
         fechaFinPub=str(manga.get("fechaFinPub")),
         generos=manga.get("generos"),
@@ -52,13 +58,14 @@ class MangaService:
     @staticmethod
     async def get_all(
         filters: FilterSchema, user: Optional[UserLogRespSchema] = None
-    ) -> List[MangaSchema]:
+    ) -> MangaSearchSchema:
         pipeline = [
             {
                 "$match": {"linkMAL": {"$not": {"$eq": None}}},
             },
-            *filtrado_tipo(filters.tipoManga, False),
+            *filtrado_tipos(filters.tiposManga, False),
             *filtro_emision(filters.emision, "publicando"),
+            *filtrado_busqueda_avanzada_manga(filters),
             *lookup_user_favorites(
                 user.id if user else None,
                 "manga",
@@ -66,12 +73,29 @@ class MangaService:
                 filters.onlyFavs,
                 filters.statusView,
             ),
-            {"$skip": filters.skip},
-            {"$limit": filters.limit},
         ]
-        results = objects_id_list_to_str(await MangaModel.aggregate(pipeline))
+        logger.debug(pipeline)
 
-        return [dict_to_manga_schema(r, True if user else False) for r in results]
+        # Obtenemos el conteo de los animes que concuerdan con la busqueda
+        totalMangas = await MangaModel.aggregate([*pipeline, {"$count": "totalMangas"}])
+
+        totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
+        # Aplicamos la limitacion a la busqueda
+        pipeline.append({"$skip": filters.skip})
+        pipeline.append({"$limit": filters.limit})
+        results = (
+            objects_id_list_to_str(await MangaModel.aggregate(pipeline))
+            if totalMangas
+            > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
+            else []
+        )
+
+        return MangaSearchSchema(
+            listaMangas=[
+                dict_to_manga_schema(r, True if user else False) for r in results
+            ],
+            totalMangas=totalMangas,
+        )
 
     # Detalles del anime
     @staticmethod
