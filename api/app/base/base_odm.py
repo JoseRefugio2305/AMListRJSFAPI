@@ -9,7 +9,7 @@ class BaseODMModel:
     # Obtnener la coleccion
     @classmethod
     def _collection(cls):
-        from app.core.database import db
+        from app.core.database.connection import db
 
         if not cls.collection_name:
             raise ValueError(

@@ -5,19 +5,18 @@ from bson.objectid import ObjectId
 
 from app.models.anime_model import AnimeModel
 from app.models.utafavs_model import UTAFavsModel
-from app.schemas.anime_schema import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
-from app.schemas.search_schemas import AnimeSearchSchema
-from app.schemas.filters_schema import FilterSchema
-from app.schemas.auth_schema import UserLogRespSchema
+from app.schemas.anime import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
+from app.schemas.search import AnimeSearchSchema, FilterSchema
+from app.schemas.auth import UserLogRespSchema
 from app.core.utils import object_id_to_str, objects_id_list_to_str, time_now_formatted
-from app.core.db_helpers import (
+from app.core.database import (
     lookup_user_favorites,
     filtro_emision,
     filtrado_tipos,
     filtrado_busqueda_avanzada_anime,
 )
 
-from app.core.logger import get_logger
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

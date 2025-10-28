@@ -4,7 +4,7 @@ from contextlib import asynccontextmanager
 
 from app.core.database import connect_mongo, close_mongo
 from app.routers import auth_router, anime_router, manga_router, search_router
-from app.core.logger import get_logger
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

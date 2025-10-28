@@ -1,6 +1,6 @@
 from pymongo import AsyncMongoClient
 from app.core.config import settings  # Configuraciones de la aplicacion
-from app.core.logger import get_logger
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 

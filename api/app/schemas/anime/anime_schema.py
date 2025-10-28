@@ -1,55 +1,9 @@
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict
 from typing import Optional, List
-from enum import IntEnum
+from .anime_enums import EstadoEmEnum, TipoAnimeEnum
 
 
 PATTERN_ID = r"^([a-fA-F0-9]{24})$"
-
-
-class EstadoEmEnum(IntEnum):
-    finalizado = 0
-    emision = 1  # Publicando en Manga
-    pausado = 2  # En hiatus en manga
-
-
-class TipoAnimeEnum(IntEnum):
-    anime = 1
-    ova = 2
-    pelicula = 3
-    especial = 4
-    desconocido = 5
-    donghua = 6
-
-
-class StatusViewEnum(IntEnum):
-    viendo = 1  # Leyendo en manga
-    pendiente = 2
-    considerando = 3
-    abandonado = 4
-    ninguno = 5
-
-
-# Animes favoritos
-class AniFavsSchema(BaseModel):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
-    user: str
-    anime: str
-    active: bool
-    statusView: StatusViewEnum
-    fechaAdicion: str
-
-
-# Payload para agregar anime a favoritos
-class AniFavPayloadSchema(BaseModel):
-    animeId: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
-    active: bool
-    statusView: StatusViewEnum
-
-
-# Respuesta al agregar el anime a favoritos o removerlo, tambien sera utilizado por manga
-class AniFavRespSchema(BaseModel):
-    active: bool
-    statusView: StatusViewEnum
 
 
 # Relacion de generos en animes y mangas

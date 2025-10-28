@@ -1,14 +1,15 @@
 from fastapi import APIRouter, Depends
 
 from app.core.security import optional_current_user
-from app.core.logger import get_logger
-from app.schemas.filters_schema import FilterSchema, TipoContenidoEnum
-from app.schemas.auth_schema import UserLogRespSchema
-from app.schemas.search_schemas import (
+from app.core.logging import get_logger
+from app.schemas.search import (
+    FilterSchema,
+    TipoContenidoEnum,
     SearchAllSchema,
     AnimeSearchSchema,
     MangaSearchSchema,
 )
+from app.schemas.auth import UserLogRespSchema
 from app.services.manga_service import MangaService
 from app.services.anime_service import AnimeService
 

@@ -1,8 +1,8 @@
-from pydantic import BaseModel, Field, HttpUrl, ConfigDict
+from pydantic import BaseModel
 from typing import List
 
-from app.schemas.anime_schema import AnimeSchema
-from app.schemas.manga_schema import MangaSchema
+from app.schemas.anime import AnimeSchema
+from app.schemas.manga import MangaSchema
 
 
 # Respuesta de lista de animes

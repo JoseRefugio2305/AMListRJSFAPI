@@ -2,10 +2,10 @@ from typing import Optional
 from passlib.context import CryptContext
 
 from app.models.user_model import UserModel
-from app.schemas.auth_schema import UserRegSchema, UserLogRespSchema
+from app.schemas.auth import UserRegSchema, UserLogRespSchema
 from app.core.utils import object_id_to_str, str_trim_lower, time_now_formatted
 from app.core.security import create_access_token
-from app.core.logger import get_logger
+from app.core.logging import get_logger
 
 log = get_logger(__name__)
 

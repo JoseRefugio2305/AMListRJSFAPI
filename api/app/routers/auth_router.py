@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 
-from app.schemas.auth_schema import UserRegLogSchema, UserLogRespSchema
+from app.schemas.auth import UserRegLogSchema, UserLogRespSchema
 from app.services.auth_service import register_user, auth_user
 from app.core.security import create_access_token
-from app.core.logger import get_logger
+from app.core.logging import get_logger
 
 # Creamos el router con el prefijo y la tag de la documentacion
 routerAuth = APIRouter(prefix="/auth", tags=["auth"])

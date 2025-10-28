@@ -1,7 +1,5 @@
 from bson import ObjectId
 from typing import Any
-from datetime import datetime, timezone
-
 
 # Recibe un diccionario y convierte el _id de mongo de ObjectId a string
 def object_id_to_str(doc: dict) -> dict:
@@ -38,13 +36,3 @@ def objects_id_list_to_str(data: Any) -> Any:
 # Funcion usada para quitar esacios de extremos y convertir a minusculas para validacion
 def str_trim_lower(value: str) -> str:
     return value.strip().lower()
-
-
-# Funcion para obtener la fecha actual formateada
-def time_now_formatted(is_Full: bool = True) -> str:
-    now = datetime.now(timezone.utc)
-
-    formatted = (
-        now.strftime("%Y-%m-%d %H:%M:%S") if is_Full else now.strftime("%Y-%m-%d")
-    )
-    return formatted

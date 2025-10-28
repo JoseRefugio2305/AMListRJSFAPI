@@ -2,11 +2,10 @@ from fastapi import APIRouter, Depends
 
 from app.core.security import get_current_user, optional_current_user
 from app.services.anime_service import AnimeService
-from app.schemas.filters_schema import FilterSchema, EmisionFilterEnum
-from app.schemas.anime_schema import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
-from app.schemas.search_schemas import AnimeSearchSchema
-from app.schemas.auth_schema import UserLogRespSchema
-from app.core.logger import get_logger
+from app.schemas.search import FilterSchema, EmisionFilterEnum, AnimeSearchSchema
+from app.schemas.anime import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
+from app.schemas.auth import UserLogRespSchema
+from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
@@ -33,19 +32,6 @@ async def animes_emision(
     animes_emision = await AnimeService.get_all(filters, user)
 
     return animes_emision.model_dump()
-
-
-# @routerAnime.get()
-
-
-# @routerAnime.get("/me")
-# async def me(user: UserLogRespSchema = Depends(get_current_user)):
-#     return user
-
-
-# @routerAnime.get("/admin-only")
-# async def admin_stats(user: UserLogRespSchema = Depends(require_admin)):
-#     return {"message": "solo admin", "user": user}
 
 
 # Detalles de anime

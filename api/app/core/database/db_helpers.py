@@ -1,13 +1,12 @@
 from typing import Optional, List, Dict, Any
 from bson.objectid import ObjectId
 
-from app.schemas.filters_schema import (
+from app.schemas.search import (
     EmisionFilterEnum,
-    StatusViewEnum,
-    TipoAnimeEnum,
-    TipoMangaEnum,
     FilterSchema,
 )
+from app.schemas.anime import TipoAnimeEnum, StatusViewEnum
+from app.schemas.manga import TipoMangaEnum
 
 
 # Funcion para construir la consulta de favoritos en caso de que la peticion fuese hecha por un usuario autenticado

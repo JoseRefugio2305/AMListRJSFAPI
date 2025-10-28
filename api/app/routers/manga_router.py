@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends
 
 from app.core.security import get_current_user, optional_current_user
-from app.core.logger import get_logger
-from app.schemas.filters_schema import FilterSchema, EmisionFilterEnum
-from app.schemas.auth_schema import UserLogRespSchema
-from app.schemas.manga_schema import MangaSchema, MangaFavPayloadSchema
-from app.schemas.search_schemas import MangaSearchSchema
-from app.schemas.anime_schema import AniFavRespSchema
+from app.core.logging import get_logger
+from app.schemas.search import FilterSchema, EmisionFilterEnum, MangaSearchSchema
+from app.schemas.auth import UserLogRespSchema
+from app.schemas.manga import MangaSchema, MangaFavPayloadSchema
+from app.schemas.anime import AniFavRespSchema
 from app.services.manga_service import MangaService
 
 logger = get_logger(__name__)

@@ -1,39 +1,12 @@
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AliasChoices
 from typing import Optional, List
-from enum import IntEnum
-from app.schemas.anime_schema import (
+from .manga_enums import TipoMangaEnum
+from app.schemas.anime import (
     EstadoEmEnum,
-    StatusViewEnum,
     GenreARelSchema,
     AltTitlesSchema,
     PATTERN_ID,
 )
-
-
-class TipoMangaEnum(IntEnum):
-    manga = 1
-    nl = 2  # novela ligera
-    manhwa = 3
-    manhua = 4
-    one_shot = 5
-    desconocido = 6
-
-
-# Animes favoritos
-class MangaFavsSchema(BaseModel):
-    id: str = Field(..., pattern=PATTERN_ID)
-    user: str
-    manga: str
-    active: bool
-    statusView: StatusViewEnum
-    fechaAdicion: str
-
-
-# Payload para agregar manga a favoritos
-class MangaFavPayloadSchema(BaseModel):
-    mangaId: str = Field(..., pattern=PATTERN_ID)
-    active: bool
-    statusView: StatusViewEnum
 
 
 # Imagenes de los mangas
@@ -109,7 +82,7 @@ class MangaSchema(MangaCreateSchema):
 
 
 # Actualizacion del manga por el administrador
-class AnimeUpdateSchema(MangaCreateSchema):
+class MangaUpdateSchema(MangaCreateSchema):
     mangaImages: List[MangaImagesSchema]
     calificacion: float = Field(ge=0, le=10)
     descripcion: str
