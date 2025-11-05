@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict
 from typing import Optional, List
-from .anime_enums import EstadoEmEnum, TipoAnimeEnum
+from .anime_enums import EstadoEmEnum, TipoAnimeEnum,StatusViewEnum
 
 
 PATTERN_ID = r"^([a-fA-F0-9]{24})$"
@@ -84,7 +84,8 @@ class AnimeSchema(AnimeCreateSchema):
     relaciones: Optional[List[AnimeRelationsSchema]] = None
     studios: List[StudiosARelSchema]
     titulos_alt: Optional[List[AltTitlesSchema]] = None
-    isFav: Optional[bool] = False
+    isFav: Optional[bool] = None
+    statusView:Optional[StatusViewEnum]=None
 
     model_config = ConfigDict(from_attributes=True)
 

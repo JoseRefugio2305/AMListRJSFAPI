@@ -49,10 +49,22 @@ def lookup_user_favorites(
                     {"$match": {"active": True}},
                     *sViewF,
                 ],
-                "as": "is_fav",
+                "as": "favData",
             }
         },
-        {"$addFields": {"is_fav": {"$gt": [{"$size": "$is_fav"}, 0]}}},
+        {"$addFields": {"is_fav": {"$gt": [{"$size": "$favData"}, 0]}}},
+        {
+            "$addFields": {
+                "statusView": {
+                    "$cond": {
+                        "if": "$is_fav",
+                        "then": {"$first": "$favData.statusView"},
+                        "else": StatusViewEnum.ninguno,
+                    }
+                }
+            }
+        },
+        {"$unset": "favData"},
         *oFavsF,
     ]
     return pipeline

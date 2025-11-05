@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AliasChoices
 from typing import Optional, List
 from .manga_enums import TipoMangaEnum
 from app.schemas.anime import (
+    StatusViewEnum,
     EstadoEmEnum,
     GenreARelSchema,
     AltTitlesSchema,
@@ -76,7 +77,8 @@ class MangaSchema(MangaCreateSchema):
     autores: List[AutoresMRelSchema]
     adaptaciones: List[AdaptacionSchema]
     titulos_alt: Optional[List[AltTitlesSchema]] = None
-    isFav: Optional[bool] = False
+    isFav: Optional[bool] = None
+    statusView: Optional[StatusViewEnum] = None
 
     model_config = ConfigDict(from_attributes=True)
 

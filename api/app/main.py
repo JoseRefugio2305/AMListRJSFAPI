@@ -3,7 +3,13 @@ from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 
 from app.core.database import connect_mongo, close_mongo
-from app.routers import auth_router, anime_router, manga_router, search_router
+from app.routers import (
+    auth_router,
+    anime_router,
+    manga_router,
+    search_router,
+    user_router,
+)
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -45,6 +51,7 @@ app.include_router(auth_router.routerAuth)
 app.include_router(anime_router.routerAnime)
 app.include_router(manga_router.routerManga)
 app.include_router(search_router.routerSearch)
+app.include_router(user_router.routerUser)
 
 
 # Manejador de excepciones HTTP

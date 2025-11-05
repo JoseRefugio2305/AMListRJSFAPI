@@ -49,6 +49,7 @@ def dict_to_manga_schema(manga: dict, is_User: bool = False) -> MangaSchema:
         adaptaciones=manga.get("adaptaciones"),
         titulos_alt=manga.get("titulos_alt"),
         isFav=manga.get("is_fav") if is_User else False,
+        statusView=manga.get("statusView") if is_User else None,
     )
 
 

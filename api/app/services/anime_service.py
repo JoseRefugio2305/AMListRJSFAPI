@@ -44,6 +44,7 @@ def dict_to_anime_schema(anime: dict, is_User: bool = False) -> AnimeSchema:
         studios=anime.get("studios"),
         titulos_alt=anime.get("titulos_alt"),
         isFav=anime.get("is_fav") if is_User else False,
+        statusView=anime.get("statusView") if is_User else None,
     )
 
 
@@ -54,6 +55,7 @@ class AnimeService:
     async def get_all(
         filters: FilterSchema, user: Optional[UserLogRespSchema] = None
     ) -> AnimeSearchSchema:
+        logger.debug(filters)
         pipeline = [
             {
                 "$match": {"linkMAL": {"$not": {"$eq": None}}},

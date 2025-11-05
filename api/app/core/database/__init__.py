@@ -1,10 +1,16 @@
 from .connection import connect_mongo, close_mongo
-from .db_helpers import (
+from .helpers.db_helpers import (
     lookup_user_favorites,
     filtrado_busqueda_avanzada_anime,
     filtrado_busqueda_avanzada_manga,
     filtrado_tipos,
     filtro_emision,
+)
+from .helpers.stats_db_helpers import (
+    statsTipo,
+    statsGenero,
+    topEditoriales,
+    topEstudios,
 )
 
 __all__ = [
@@ -15,4 +21,8 @@ __all__ = [
     "filtrado_busqueda_avanzada_manga",
     "filtrado_tipos",
     "filtro_emision",
+    "statsTipo",
+    "statsGenero",
+    "topEditoriales",
+    "topEstudios",
 ]
