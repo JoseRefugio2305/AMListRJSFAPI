@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
-from typing import List, Optional
+from typing import Optional
 from bson.objectid import ObjectId
+import math
 
 
 from app.models.manga_model import MangaModel
@@ -81,7 +82,7 @@ class MangaService:
 
         totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": filters.skip})
+        pipeline.append({"$skip": (filters.page - 1) * filters.limit})
         pipeline.append({"$limit": filters.limit})
         results = (
             objects_id_list_to_str(await MangaModel.aggregate(pipeline))
@@ -94,6 +95,8 @@ class MangaService:
             listaMangas=[
                 dict_to_manga_schema(r, True if user else False) for r in results
             ],
+            page=filters.page,
+            totalPages=math.ceil(totalMangas / filters.limit),
             totalMangas=totalMangas,
         )
 

@@ -1,7 +1,7 @@
 from fastapi import HTTPException, status
-from typing import List, Optional
+from typing import Optional
 from bson.objectid import ObjectId
-
+import math
 
 from app.models.anime_model import AnimeModel
 from app.models.utafavs_model import UTAFavsModel
@@ -34,8 +34,8 @@ def dict_to_anime_schema(anime: dict, is_User: bool = False) -> AnimeSchema:
         descripcion=anime.get("descripcion"),
         emision=anime.get("emision"),
         episodios=anime.get("episodios") if anime.get("episodios") else 0,
-        fechaAdicion=anime.get("fechaAdicion"),
-        fechaEmision=anime.get("fechaEmision"),
+        fechaAdicion=str(anime.get("fechaAdicion")),
+        fechaEmision=str(anime.get("fechaEmision")),
         generos=anime.get("generos"),
         id_MAL=anime.get("id_MAL"),
         linkMAL=anime.get("linkMAL"),
@@ -77,7 +77,7 @@ class AnimeService:
 
         totalAnimes = totalAnimes[0]["totalAnimes"] if len(totalAnimes) > 0 else 0
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": filters.skip})
+        pipeline.append({"$skip": (filters.page - 1) * filters.limit})
         pipeline.append({"$limit": filters.limit})
         results = (
             objects_id_list_to_str(await AnimeModel.aggregate(pipeline))
@@ -90,6 +90,8 @@ class AnimeService:
             listaAnimes=[
                 dict_to_anime_schema(r, True if user else False) for r in results
             ],
+            page=filters.page,
+            totalPages=math.ceil(totalAnimes / filters.limit),
             totalAnimes=totalAnimes,
         )
 

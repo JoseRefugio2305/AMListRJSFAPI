@@ -15,7 +15,7 @@ from app.core.utils import str_trim_lower
 # Schema de los filtros de paginado y busqueda
 class FilterSchema(BaseModel):
     limit: int = Field(20, ge=1, le=20)
-    skip: int = Field(0, ge=0)
+    page: int = Field(1, ge=1)
     emision: EmisionFilterEnum = (
         EmisionFilterEnum.todos
     )  # Sera publicando para los mangas
