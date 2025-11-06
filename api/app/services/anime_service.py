@@ -90,8 +90,8 @@ class AnimeService:
             listaAnimes=[
                 dict_to_anime_schema(r, True if user else False) for r in results
             ],
-            page=filters.page,
-            totalPages=math.ceil(totalAnimes / filters.limit),
+            pageA=filters.page,
+            totalPagesA=math.ceil(totalAnimes / filters.limit),
             totalAnimes=totalAnimes,
         )
 

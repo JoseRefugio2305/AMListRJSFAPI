@@ -45,6 +45,10 @@ async def do_search(
     return SearchAllSchema(
         listaAnimes=resultsAnimes.listaAnimes,
         totalAnimes=resultsAnimes.totalAnimes,
+        pageA=resultsAnimes.pageA,
+        totalPagesA=resultsAnimes.totalPagesA,
         listaMangas=resultsMangas.listaMangas,
         totalMangas=resultsMangas.totalMangas,
+        pageM=resultsMangas.pageM,
+        totalPagesM=resultsMangas.totalPagesM,
     )

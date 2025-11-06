@@ -95,8 +95,8 @@ class MangaService:
             listaMangas=[
                 dict_to_manga_schema(r, True if user else False) for r in results
             ],
-            page=filters.page,
-            totalPages=math.ceil(totalMangas / filters.limit),
+            pageM=filters.page,
+            totalPagesM=math.ceil(totalMangas / filters.limit),
             totalMangas=totalMangas,
         )
 
