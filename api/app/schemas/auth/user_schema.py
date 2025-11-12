@@ -6,10 +6,10 @@ from pydantic import (
     field_validator,
     StringConstraints,
 )
-from typing import Annotated, Optional
+from typing import Annotated, List
 import re
 
-from .auth_schema import PASSWORD_REGEX, USERNAME_REGEX
+from .auth_schema import PASSWORD_REGEX, USERNAME_REGEX, UserLogRespSchema
 from app.core.utils import str_trim_lower
 
 
@@ -50,6 +50,18 @@ class PayloadPassSchema(BaseModel):
             )
         return v
 
-
+#Schema de respuesta al cambio de contraseña de un usuario
 class ResponseNewPassSchema(BaseModel):
     message: str = "La contraseña fue actualizada con exito"
+
+#Schema para payload de cambiar estado activo del usuario
+class PayloadActiveStateSchema(BaseModel):
+    userId:str
+    is_active: bool
+
+# Lista de usuarios filtrada para eldashboard
+class UserListSchema(BaseModel):
+    userList: List[UserLogRespSchema] = []
+    total: int = 0
+    page: int = 1
+    totalPages: int = 1

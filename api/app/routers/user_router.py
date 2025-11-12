@@ -26,8 +26,9 @@ logger = get_logger(__name__)
 # Creamos el router con el prefijo y la tag de la documentacion
 routerUser = APIRouter(prefix="/user", tags=["user"])
 
+
 # Verificamos el formato del username
-def val_username(username:str)->str:
+def val_username(username: str) -> str:
     username = str_trim_lower(username)
     if not re.fullmatch(USERNAME_REGEX, username):
         raise HTTPException(
@@ -35,6 +36,7 @@ def val_username(username:str)->str:
             detail="Formato de username invalido, debe terner letras, digitos y guienes bajos y medios.",
         )
     return username
+
 
 # Obtener informacion de perfil propio
 @routerUser.get("/me/", response_model=UserLogRespSchema)
@@ -54,8 +56,8 @@ async def profile(
     ),
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    username=val_username(username)
-    
+    username = val_username(username)
+
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
         if user.name != username:
@@ -79,7 +81,7 @@ async def estadisticas(
     tipoStats: TypeStatisticEnum = TypeStatisticEnum.a_m_favs,
     user: UserLogRespSchema = Depends(optional_current_user),
 ) -> FavsCountSchema:
-    username=val_username(username)
+    username = val_username(username)
 
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
@@ -90,7 +92,7 @@ async def estadisticas(
         conteoFavoritos = await StatsService.get_count_favs(user)
         return conteoFavoritos.model_dump()
     else:  # Si queremos alguna otra estadistica
-        stats = await StatsService.get_stats(user, tipoStats)
+        stats = await StatsService.get_stats(True, user, tipoStats)
         return stats.model_dump()
 
 
@@ -107,7 +109,7 @@ async def get_anime_list(
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
 
-    username=val_username(username)
+    username = val_username(username)
 
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
@@ -132,7 +134,7 @@ async def get_manga_list(
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
     # Verificamos el formato del username
-    username=val_username(username)
+    username = val_username(username)
 
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:

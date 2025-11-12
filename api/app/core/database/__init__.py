@@ -5,6 +5,7 @@ from .helpers.db_helpers import (
     filtrado_busqueda_avanzada_manga,
     filtrado_tipos,
     filtro_emision,
+    filtrado_info_incompleta,
 )
 from .helpers.stats_db_helpers import (
     statsTipo,
@@ -25,4 +26,5 @@ __all__ = [
     "statsGenero",
     "topEditoriales",
     "topEstudios",
+    "filtrado_info_incompleta",
 ]

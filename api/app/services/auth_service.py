@@ -2,7 +2,8 @@ from typing import Optional
 from passlib.context import CryptContext
 
 from app.models.user_model import UserModel
-from app.schemas.auth import UserRegSchema, UserLogRespSchema
+from app.schemas.auth import UserRegSchema, UserLogRespSchema, RolEnum
+from app.schemas.search import ActiveUserEnum
 from app.core.utils import object_id_to_str, str_trim_lower, time_now_formatted
 from app.core.security import create_access_token
 from app.core.logging import get_logger
@@ -43,7 +44,8 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
         name=name,
         email=email,
         password=hashedPass,
-        rol=0,
+        rol=RolEnum.base_user,
+        is_active=True,
         profile_pic=None,
         created_date=nowTS,
         show_statistics=0,
@@ -63,7 +65,8 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
         id=createdUser.get("_id") or createdUser.get("id") or createdUser.get("Id"),
         name=createdUser.get("name"),
         email=createdUser.get("email"),
-        rol=createdUser.get("rol", 0),
+        rol=createdUser.get("rol", RolEnum.base_user),
+        is_active=createdUser.get("is_active", True),
         profile_pic=createdUser.get("profile_pic"),
         created_date=createdUser.get("created_date"),
         show_statistics=createdUser.get("show_statistics"),
@@ -74,7 +77,9 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
 # Verificamos que las credenciales sean correctas
 async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
     # Se revisa si el usuario existe y que su contrasena corresponda al hash, de no pasar alguna de las comprobaciones retorna none, si la pasa retorna la info del usuario
-    user = object_id_to_str(await UserModel.find_by_email(email))
+    user = object_id_to_str(
+        await UserModel.find_by_email(email=email, tipoactive=ActiveUserEnum.activo)
+    )
     if not user:
         return None
     hashed = user.get("password")
@@ -85,7 +90,8 @@ async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
         id=user.get("_id") or user.get("id") or user.get("Id"),
         name=user.get("name"),
         email=user.get("email"),
-        rol=user.get("rol", 0),
+        rol=user.get("rol", RolEnum.base_user),
+        is_active=user.get("is_active", True),
         profile_pic=user.get("profile_pic"),
         created_date=user.get("created_date"),
         show_statistics=user.get("show_statistics"),

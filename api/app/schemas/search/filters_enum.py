@@ -8,9 +8,19 @@ class EmisionFilterEnum(IntEnum):
     pusado = 2  # En hiatus manga
     todos = 3
 
+#Tipo de contenido Anime/Manga para la busqueda en MAL
+class TipoContMALEnum(IntEnum):
+    anime = 1
+    manga = 2
 
-# Tipo de contenido Anime/Manga/Todos
+# Tipo de contenido Anime/Manga/Todos, para la busqueda en el sistema 
 class TipoContenidoEnum(IntEnum):
     anime = 1
     manga = 2
     todos = 3
+
+
+class ActiveUserEnum(IntEnum):
+    inactivo = 0
+    activo = 1
+    todos = 2

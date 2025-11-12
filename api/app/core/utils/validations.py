@@ -1,5 +1,7 @@
 from bson import ObjectId
-from typing import Any
+from typing import Any,Annotated
+from pydantic import AfterValidator
+from pydantic import HttpUrl
 
 # Recibe un diccionario y convierte el _id de mongo de ObjectId a string
 def object_id_to_str(doc: dict) -> dict:
@@ -36,3 +38,16 @@ def objects_id_list_to_str(data: Any) -> Any:
 # Funcion usada para quitar esacios de extremos y convertir a minusculas para validacion
 def str_trim_lower(value: str) -> str:
     return value.strip().lower()
+
+
+#Convertir HttpUrl a str
+def httpurl_to_str(value: HttpUrl) -> str:
+    return str(value)
+
+#Validacion de id de ObjectId
+def validate_objectid(v: str) -> str:
+    if not ObjectId.is_valid(v):
+        raise ValueError("Formato de ObjectId invalido")
+    return v
+
+ObjectIdStr = Annotated[str, AfterValidator(validate_objectid)]

@@ -7,12 +7,19 @@ from pydantic import (
     ConfigDict,
     StringConstraints,
 )
+from enum import IntEnum
 from typing import Optional, Annotated
 from app.core.utils import str_trim_lower
 import re
 
 PASSWORD_REGEX = r"^(?=.{8,16}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#_\-%])[A-Za-z\d!@#_\-%]{8,16}$"
 USERNAME_REGEX = r"^[a-z0-9_-]{8,16}$"
+
+
+# Enum para los roles de usuario
+class RolEnum(IntEnum):
+    base_user = 0
+    admin = 1
 
 
 # Schema del payload para el registro y log de usuario
@@ -47,7 +54,8 @@ class UserRegSchema(BaseModel):
     )  # En Field el recibir como parametro ..., hace que este campo sea requerido
     email: Annotated[EmailStr, BeforeValidator(str_trim_lower)]
     password: str = Field(..., min_length=8)
-    rol: int = 0
+    rol: RolEnum = RolEnum.base_user
+    is_active:bool=True
     profile_pic: Optional[int] = None
     created_date: Optional[str] = None
     show_statistics: Optional[int] = 0
@@ -58,7 +66,8 @@ class UserLogRespSchema(BaseModel):
     id: str
     name: str
     email: EmailStr
-    rol: int = 0
+    rol: RolEnum = RolEnum.base_user
+    is_active:bool=True
     profile_pic: Optional[int] = None
     access_token: str
     created_date: Optional[str] = None

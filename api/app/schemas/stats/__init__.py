@@ -3,6 +3,7 @@ from .stats_schemas import (
     StatusViewCountSchema,
     StatsSchema,
     TypeStatisticEnum,
+    ConteoGeneralSchema,
 )
 
 __all__ = [
@@ -10,4 +11,5 @@ __all__ = [
     "StatusViewCountSchema",
     "StatsSchema",
     "TypeStatisticEnum",
+    "ConteoGeneralSchema",
 ]

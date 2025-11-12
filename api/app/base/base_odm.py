@@ -1,8 +1,8 @@
 from typing import Optional
+from app.core.utils.validations import ObjectIdStr
+
 
 # El siguiente es nuestro ODM base que nos permitira el manejar las consultas a Mongo como si fuesen objetos, y a su vez, nos permitira el realizar consultas haciendo uso de pipelines
-
-
 class BaseODMModel:
     collection_name: Optional[str] = None
 
@@ -41,7 +41,13 @@ class BaseODMModel:
     async def update_one(cls, filter: dict, update: dict, upsert: bool = False):
         # Si se indica la actualizacion puede hacer insert si no existe el doc
         return await cls._collection().update_one(
-            filter, {"$set": update}, upsert=upsert
+            filter, update, upsert=upsert
+        )
+
+    @classmethod
+    async def find_and_update(cls, filter: dict, update: dict, upsert: bool = False):
+        return await cls._collection().find_one_and_update(
+            filter, {"$set": update}, upsert=upsert, return_document=True
         )
 
     # Consultas con pipeline
@@ -49,3 +55,7 @@ class BaseODMModel:
     async def aggregate(cls, pipeline: list):
         cursor = await cls._collection().aggregate(pipeline)
         return await cursor.to_list(length=None)
+
+    @classmethod
+    async def delete_one(cls, filter: dict):
+        return await cls._collection().delete_one(filter)

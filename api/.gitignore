@@ -3,3 +3,5 @@
 .env
 **/logs
 /tests
+/jikan4snek_cache
+todos.txt

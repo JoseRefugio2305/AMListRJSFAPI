@@ -141,13 +141,13 @@ class MangaService:
             nowTS = time_now_formatted(True)
             updated = await UTManFavsModel.update_one(
                 {"user": ObjectId(user.id), "manga": ObjectId(data.mangaId)},
-                {
+                {"$set":{
                     "manga": ObjectId(data.mangaId),
                     "user": ObjectId(user.id),
                     "active": data.active,
                     "statusView": data.statusView,
                     "fechaAdicion": nowTS,
-                },
+                }},
                 upsert=True,
             )  # Actualizamos el registro o insertamos en caso de que no exista la relacion
 

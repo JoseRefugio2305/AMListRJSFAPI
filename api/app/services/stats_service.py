@@ -1,4 +1,5 @@
 from bson.objectid import ObjectId
+from typing import Optional
 
 from app.models.anime_model import AnimeModel
 from app.models.manga_model import MangaModel
@@ -8,7 +9,12 @@ from app.models.genero_model import GeneroModel
 from app.models.studio_model import StudioModel
 from app.models.editorial_model import EditorialModel
 from app.schemas.auth import UserLogRespSchema
-from app.schemas.stats import FavsCountSchema, StatsSchema, TypeStatisticEnum
+from app.schemas.stats import (
+    FavsCountSchema,
+    StatsSchema,
+    TypeStatisticEnum,
+    ConteoGeneralSchema,
+)
 from app.core.database import statsGenero, statsTipo, topEditoriales, topEstudios
 
 from app.core.logging import get_logger
@@ -50,7 +56,8 @@ class StatsService:
     # Obtenemos las estadisticas
     @staticmethod
     async def get_stats(
-        user: UserLogRespSchema,
+        only_Favs: bool = False,
+        user: Optional[UserLogRespSchema] = None,
         typeStat: TypeStatisticEnum = TypeStatisticEnum.tipo_a_m,
     ) -> StatsSchema:
         tiposAnime = []
@@ -61,18 +68,34 @@ class StatsService:
         match typeStat:
             case TypeStatisticEnum.tipo_a_m:
                 tiposAnime = await AnimeModel.aggregate(
-                    statsTipo(True, user.id, "anime", "utafavs", "tipoanimes")
+                    statsTipo(
+                        only_Favs,
+                        user.id if user else None,
+                        "anime",
+                        "utafavs",
+                        "tipoanimes",
+                    )
                 )
                 tiposManga = await MangaModel.aggregate(
-                    statsTipo(True, user.id, "manga", "utmanfavs", "tipomangas")
+                    statsTipo(
+                        only_Favs,
+                        user.id if user else None,
+                        "manga",
+                        "utmanfavs",
+                        "tipomangas",
+                    )
                 )
             case TypeStatisticEnum.generos:
-                porGenero = await GeneroModel.aggregate(statsGenero(True, user.id))
+                porGenero = await GeneroModel.aggregate(
+                    statsGenero(only_Favs, user.id if user else None)
+                )
             case TypeStatisticEnum.studios:
-                topStudios = await StudioModel.aggregate(topEstudios(True, user.id))
+                topStudios = await StudioModel.aggregate(
+                    topEstudios(only_Favs, user.id if user else None)
+                )
             case _:
                 topEditorials = await EditorialModel.aggregate(
-                    topEditoriales(True, user.id)
+                    topEditoriales(only_Favs, user.id if user else None)
                 )
         return StatsSchema(
             tiposAnime=tiposAnime,
@@ -81,3 +104,108 @@ class StatsService:
             topStudios=topStudios,
             topEditorials=topEditorials,
         )
+
+    # Conteos generales para al admin dashboard
+    @staticmethod
+    async def get_general_count() -> ConteoGeneralSchema:
+        conteosGenerales = await AnimeModel.aggregate(
+            [
+                {"$count": "key_anime"},
+                {"$project": {"totalAnimes": "$key_anime"}},
+                {
+                    "$lookup": {
+                        "from": "mangas",
+                        "pipeline": [{"$count": "key_manga"}],
+                        "as": "totalMangas",
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "generos",
+                        "pipeline": [{"$count": "id_MAL"}],
+                        "as": "totalGeneros",
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "users",
+                        "pipeline": [{"$count": "email"}],
+                        "as": "totalUsuarios",
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "autors",
+                        "pipeline": [{"$count": "id_MAL"}],
+                        "as": "totalAutoresMangas",
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "editorials",
+                        "pipeline": [{"$count": "id_MAL"}],
+                        "as": "totalEdtManga",
+                    }
+                },
+                {
+                    "$lookup": {
+                        "from": "studios",
+                        "pipeline": [{"$count": "id_MAL"}],
+                        "as": "totalStdAnime",
+                    }
+                },
+                {
+                    "$addFields": {
+                        "totalMangas": {
+                            "$ifNull": [
+                                {"$arrayElemAt": ["$totalMangas.key_manga", 0]},
+                                0,
+                            ]
+                        },
+                        "totalGeneros": {
+                            "$ifNull": [
+                                {"$arrayElemAt": ["$totalGeneros.id_MAL", 0]},
+                                0,
+                            ]
+                        },
+                        "totalAutoresMangas": {
+                            "$ifNull": [
+                                {"$arrayElemAt": ["$totalAutoresMangas.id_MAL", 0]},
+                                0,
+                            ]
+                        },
+                        "totalEdtManga": {
+                            "$ifNull": [
+                                {"$arrayElemAt": ["$totalEdtManga.id_MAL", 0]},
+                                0,
+                            ]
+                        },
+                        "totalStdAnime": {
+                            "$ifNull": [
+                                {"$arrayElemAt": ["$totalStdAnime.id_MAL", 0]},
+                                0,
+                            ]
+                        },
+                        "totalUsuarios": {
+                            "$ifNull": [
+                                {"$arrayElemAt": ["$totalUsuarios.email", 0]},
+                                0,
+                            ]
+                        },
+                    }
+                },
+            ]
+        )
+        if len(conteosGenerales) > 0:
+
+            return ConteoGeneralSchema(
+                totalAnimes=conteosGenerales[0].get("totalAnimes"),
+                totalMangas=conteosGenerales[0].get("totalMangas"),
+                totalAutoresMangas=conteosGenerales[0].get("totalAutoresMangas"),
+                totalEdtManga=conteosGenerales[0].get("totalEdtManga"),
+                totalGeneros=conteosGenerales[0].get("totalGeneros"),
+                totalStdAnime=conteosGenerales[0].get("totalStdAnime"),
+                totalUsuarios=conteosGenerales[0].get("totalUsuarios"),
+            )
+        else:
+            return ConteoGeneralSchema()

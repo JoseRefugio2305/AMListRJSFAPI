@@ -12,7 +12,7 @@ from app.schemas.manga import (
 
 
 class TypeStatisticEnum(IntEnum):
-    a_m_favs = 1
+    a_m_favs = 1  # Sera para conteo general en el caso del dashboard
     tipo_a_m = 2
     generos = 3
     studios = 4
@@ -75,3 +75,13 @@ class FavsCountSchema(StatsSchema):
     conteos_statusA: List[StatusViewCountSchema] = []  # Conteo por statusview de animes
     totalMangas: int = 0
     conteos_statusM: List[StatusViewCountSchema] = []  # Conteo por statusview de mangas
+
+
+class ConteoGeneralSchema(StatsSchema):
+    totalUsuarios: int = 0
+    totalAnimes: int = 0
+    totalMangas: int = 0
+    totalAutoresMangas: int = 0
+    totalStdAnime: int = 0
+    totalEdtManga: int = 0
+    totalGeneros: int = 0

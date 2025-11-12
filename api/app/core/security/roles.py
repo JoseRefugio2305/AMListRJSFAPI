@@ -2,7 +2,8 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 
 from app.models.user_model import UserModel
-from app.schemas.auth import UserLogRespSchema
+from app.schemas.auth import UserLogRespSchema, RolEnum
+from app.schemas.search import ActiveUserEnum
 from app.core.utils import object_id_to_str
 from .jwt_handler import verify_access_token, oauth2_scheme
 
@@ -19,7 +20,11 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserLogRespSc
             detail="Token inválido",
         )
     # Buscamos al usuario usando el identificador del token, que es email
-    user = object_id_to_str(await UserModel.find_by_email(token_data.sub))
+    user = object_id_to_str(
+        await UserModel.find_by_email(
+            email=token_data.sub, username="", tipoactive=ActiveUserEnum.activo
+        )
+    )
     if not user:  # Si no lo encuentra lanzamos excepcion
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado"
@@ -28,7 +33,8 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserLogRespSc
         id=user.get("_id") or user.get("id") or user.get("Id"),
         name=user.get("name"),
         email=user.get("email"),
-        rol=user.get("rol", 0),
+        rol=user.get("rol", RolEnum.base_user),
+        is_active=user.get("is_active", True),
         profile_pic=user.get("profile_pic"),
         created_date=user.get("created_date"),
         show_statistics=user.get("show_statistics"),
@@ -49,14 +55,19 @@ async def optional_current_user(
         token_data = verify_access_token(token)
         if not token_data.sub:
             return None
-        user = object_id_to_str(await UserModel.find_by_email(token_data.sub))
+        user = object_id_to_str(
+            await UserModel.find_by_email(
+                email=token_data.sub, username="", tipoactive=ActiveUserEnum.activo
+            )
+        )
         if not user:
             return None
         return UserLogRespSchema(
             id=user.get("_id") or user.get("id") or user.get("Id"),
             name=user.get("name"),
             email=user.get("email"),
-            rol=user.get("rol", 0),
+            rol=user.get("rol", RolEnum.base_user),
+            is_active=user.get("is_active", True),
             profile_pic=user.get("profile_pic"),
             created_date=user.get("created_date"),
             show_statistics=user.get("show_statistics"),
@@ -70,8 +81,8 @@ async def optional_current_user(
 def require_admin(
     user: UserLogRespSchema = (Depends(get_current_user)),
 ) -> UserLogRespSchema:
-    rol = int(user.rol | 0)
-    if rol != 1:  # Rol 1 es para administradores, 0 para usuario normal
+    rol = int(user.rol | RolEnum.base_user)
+    if rol != RolEnum.admin:  # Rol 1 es para administradores, 0 para usuario normal
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Permiso denegado"
         )

@@ -9,6 +9,7 @@ from app.routers import (
     manga_router,
     search_router,
     user_router,
+    dashboard,
 )
 from app.core.logging import get_logger
 
@@ -52,6 +53,8 @@ app.include_router(anime_router.routerAnime)
 app.include_router(manga_router.routerManga)
 app.include_router(search_router.routerSearch)
 app.include_router(user_router.routerUser)
+app.include_router(dashboard.routerDashboard)
+app.include_router(dashboard.routerDashAnime)
 
 
 # Manejador de excepciones HTTP

@@ -238,3 +238,11 @@ def filtrado_busqueda_avanzada_anime(filtros: FilterSchema) -> List[Dict[str, An
         {"$match": {"$and": condiciones_busqueda}},
     ]
     return pipeline
+
+
+def filtrado_info_incompleta(is_to_update: bool = False):
+    and_query = [
+        {"id_MAL": {"$not": {"$eq": None}}} if is_to_update else {},
+        {"linkMAL": {"$eq": None}},
+    ]
+    return [{"$match": {"$and": and_query}}]
