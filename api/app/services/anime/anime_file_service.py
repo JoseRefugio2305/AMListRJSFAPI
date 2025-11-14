@@ -54,7 +54,9 @@ class AnimeFileService:
             # Filtrado
             animes = [a for a in animes if a.get("key_anime") not in key_list]
             # Insercion de los animes, solo si hay para llevarlo a cabo
-            inserted_animes = await AnimeModel.insert_many(animes) if len(animes)>0 else []
+            inserted_animes = (
+                await AnimeModel.insert_many(animes) if len(animes) > 0 else []
+            )
             logger.debug(inserted_animes)
 
             return ResponseUpdAllMALSchema(
