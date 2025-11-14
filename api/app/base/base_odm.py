@@ -1,5 +1,5 @@
-from typing import Optional
-from app.core.utils.validations import ObjectIdStr
+from typing import Optional, List
+from pymongo import ReturnDocument
 
 
 # El siguiente es nuestro ODM base que nos permitira el manejar las consultas a Mongo como si fuesen objetos, y a su vez, nos permitira el realizar consultas haciendo uso de pipelines
@@ -38,16 +38,22 @@ class BaseODMModel:
         return str(inserted.inserted_id)
 
     @classmethod
+    async def insert_many(cls, data: List[dict]):
+        inserted_data = await cls._collection().insert_many(data)
+        return inserted_data.inserted_ids
+
+    @classmethod
     async def update_one(cls, filter: dict, update: dict, upsert: bool = False):
         # Si se indica la actualizacion puede hacer insert si no existe el doc
-        return await cls._collection().update_one(
-            filter, update, upsert=upsert
-        )
+        return await cls._collection().update_one(filter, update, upsert=upsert)
 
     @classmethod
     async def find_and_update(cls, filter: dict, update: dict, upsert: bool = False):
         return await cls._collection().find_one_and_update(
-            filter, {"$set": update}, upsert=upsert, return_document=True
+            filter,
+            {"$set": update},
+            upsert=upsert,
+            return_document=ReturnDocument.AFTER,
         )
 
     # Consultas con pipeline

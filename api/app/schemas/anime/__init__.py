@@ -12,9 +12,10 @@ from .anime_schema import (
     CreateGenreSchema,
     CreateStudioSchema,
     ResponseUpdAllMALSchema,
+    AnimeIncompleteSchema,
 )
 from .anime_fav import AniFavRespSchema, AniFavPayloadSchema
-from .anime_enums import StatusViewEnum, TipoAnimeEnum, EstadoEmEnum
+from .anime_enums import StatusViewEnum, TipoAnimeEnum, EstadoEmEnum, DictTipoAnime
 
 __all__ = [
     "AnimeSchema",
@@ -35,4 +36,6 @@ __all__ = [
     "CreateGenreSchema",
     "CreateStudioSchema",
     "ResponseUpdAllMALSchema",
+    "DictTipoAnime",
+    "AnimeIncompleteSchema",
 ]

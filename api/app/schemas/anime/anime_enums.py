@@ -1,4 +1,5 @@
-from enum import IntEnum
+from enum import IntEnum, StrEnum
+
 
 class EstadoEmEnum(IntEnum):
     finalizado = 0
@@ -13,6 +14,17 @@ class TipoAnimeEnum(IntEnum):
     especial = 4
     desconocido = 5
     donghua = 6
+
+
+# Enum para los tipos de anime en string
+DictTipoAnime = {
+    "Anime": TipoAnimeEnum.anime,
+    "OVA": TipoAnimeEnum.ova,
+    "Especial": TipoAnimeEnum.especial,
+    "Película": TipoAnimeEnum.pelicula,
+    "Desconocido": TipoAnimeEnum.desconocido,
+    "Donghua": TipoAnimeEnum.donghua,
+}
 
 
 class StatusViewEnum(IntEnum):

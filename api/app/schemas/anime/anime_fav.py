@@ -1,8 +1,9 @@
 from pydantic import BaseModel, Field
 from .anime_enums import StatusViewEnum
+from app.core.utils import ObjectIdStr
 # Animes favoritos
 class AniFavsSchema(BaseModel):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    id: ObjectIdStr
     user: str
     anime: str
     active: bool
@@ -12,7 +13,7 @@ class AniFavsSchema(BaseModel):
 
 # Payload para agregar anime a favoritos
 class AniFavPayloadSchema(BaseModel):
-    animeId: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    animeId: ObjectIdStr
     active: bool
     statusView: StatusViewEnum
 

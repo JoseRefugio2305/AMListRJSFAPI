@@ -1,22 +1,9 @@
-from fastapi import APIRouter, Depends, Path, HTTPException
-import re
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 
-from app.services.user_services import UserService
-from app.services.anime_service import AnimeService
-from app.services.manga_service import MangaService
-from app.core.security import get_current_user, optional_current_user, require_admin
-from app.core.utils import str_trim_lower, ObjectIdStr
-from app.schemas.auth import (
-    UserLogRespSchema,
-    UserListSchema,
-    PayloadActiveStateSchema,
-    USERNAME_REGEX,
-    PayloadProfPicSchema,
-    PayloadUsernameSchema,
-    PayloadEmailSchema,
-    PayloadPassSchema,
-    ResponseNewPassSchema,
-)
+from app.services.anime import AnimeService, AnimeJikanService, AnimeFileService
+from app.core.security import require_admin
+from app.core.utils import ObjectIdStr
+from app.schemas.auth import UserLogRespSchema
 from app.schemas.anime import (
     AnimeCreateSchema,
     ResponseUpdCrtAnime,
@@ -25,15 +12,12 @@ from app.schemas.anime import (
     ResponseUpdAllMALSchema,
 )
 from app.schemas.search import (
-    FilterSchema,
-    AnimeSearchSchema,
-    MangaSearchSchema,
-    UserListFilterSchema,
     PayloadSearchAnimeMAL,
     ResponseSearchAnimeMAL,
+    SearchAnimeIncompleteSchema,
+    FilterSchema,
+    ReadyToMALEnum,
 )
-from app.schemas.stats import FavsCountSchema, TypeStatisticEnum, ConteoGeneralSchema
-from app.services.stats_service import StatsService
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -82,7 +66,7 @@ async def delete_anime(
 async def search_anime_mal(
     payload: PayloadSearchAnimeMAL, user: UserLogRespSchema = Depends(require_admin)
 ):
-    listAnimes = await AnimeService.search_anime_mal(payload)
+    listAnimes = await AnimeJikanService.search_anime_mal(payload)
     return listAnimes.model_dump()
 
 
@@ -91,7 +75,7 @@ async def search_anime_mal(
 async def assign_id_mal_anime(
     payload: PayloadAnimeIDMAL, user: UserLogRespSchema = Depends(require_admin)
 ):
-    response = await AnimeService.assign_id_mal_anime(payload)
+    response = await AnimeJikanService.assign_id_mal_anime(payload)
     return response.model_dump()
 
 
@@ -100,12 +84,35 @@ async def assign_id_mal_anime(
 async def update_one_from_mal(
     anime_id: ObjectIdStr, user: UserLogRespSchema = Depends(require_admin)
 ):
-    response = await AnimeService.update_anime_from_mal(anime_id, False)
+    response = await AnimeJikanService.update_anime_from_mal(
+        animeId=anime_id, is_all=False
+    )
     return response.model_dump()
 
 
 # Actualizar todos los animes que esten incompletos con su informacion desde MAL
 @routerDashAnime.get("/update_all_to_mal/", response_model=ResponseUpdAllMALSchema)
 async def update_all_from_mal(user: UserLogRespSchema = Depends(require_admin)):
-    response = await AnimeService.update_all_animes_from_mal()
+    response = await AnimeJikanService.update_all_animes_from_mal()
     return response.model_dump()
+
+
+# Obtener los animes que tienen la informacion incompleta (no hn sido actualizados a su informacion con MAL)
+@routerDashAnime.post(
+    "/get_incomplete_animes/{ready_to_mal}", response_model=SearchAnimeIncompleteSchema
+)
+async def get_incomplete_animes(
+    ready_to_mal: ReadyToMALEnum,
+    filters: FilterSchema,
+    user: UserLogRespSchema = Depends(require_admin),
+):
+    incompleteAnimes = await AnimeService.get_incomplete_animes(filters, ready_to_mal)
+
+    return incompleteAnimes.model_dump()
+
+
+# Subir archivo para insertar multiples animes
+@routerDashAnime.post("/upload_file_animes/")
+async def upload_file_animes(file: UploadFile = File(...)):
+    response = await AnimeFileService.insert_from_file(file)
+    return response

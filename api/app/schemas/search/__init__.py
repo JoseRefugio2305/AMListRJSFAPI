@@ -4,6 +4,7 @@ from .filters_enum import (
     EmisionFilterEnum,
     ActiveUserEnum,
     TipoContMALEnum,
+    ReadyToMALEnum,
 )
 from .search_schemas import (
     AnimeSearchSchema,
@@ -11,6 +12,7 @@ from .search_schemas import (
     SearchAllSchema,
     PayloadSearchAnimeMAL,
     ResponseSearchAnimeMAL,
+    SearchAnimeIncompleteSchema,
 )
 
 __all__ = [
@@ -25,4 +27,6 @@ __all__ = [
     "PayloadSearchAnimeMAL",
     "ResponseSearchAnimeMAL",
     "TipoContMALEnum",
+    "SearchAnimeIncompleteSchema",
+    "ReadyToMALEnum",
 ]

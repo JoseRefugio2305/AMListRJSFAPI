@@ -11,7 +11,7 @@ from app.schemas.search import (
 )
 from app.schemas.auth import UserLogRespSchema
 from app.services.manga_service import MangaService
-from app.services.anime_service import AnimeService
+from app.services.anime import AnimeService
 
 logger = get_logger(__name__)
 

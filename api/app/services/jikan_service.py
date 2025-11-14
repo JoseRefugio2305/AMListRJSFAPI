@@ -34,8 +34,8 @@ class JikanService:
 
         if "data" not in animedata:
             return None
-        
-        animedata=animedata.get("data")
+
+        animedata = animedata.get("data")
 
         # logger.debug(animedata)
         # logger.debug("       ")
@@ -43,14 +43,19 @@ class JikanService:
         dict_anime = {
             "id_MAL": id_MAL,
             "linkMAL": animedata.get("url"),
-            "animeImages": [{
-                "img_sm": animedata.get("images", {})
-                .get("jpg", {})
-                .get("image_url", {}),
-                "img_l": animedata.get("images", {})
-                .get("jpg", {})
-                .get("large_image_url", {}),
-            }],
+            "animeImages": [
+                {
+                    "img_sm": animedata.get("images", {})
+                    .get("jpg", {})
+                    .get("small_image_url", {}),
+                    "img": animedata.get("images", {})
+                    .get("jpg", {})
+                    .get("image_url", {}),
+                    "img_l": animedata.get("images", {})
+                    .get("jpg", {})
+                    .get("large_image_url", {}),
+                }
+            ],
             "titulos_alt": [
                 {"tit_alt": tit.get("title"), "tipo": animedata.get("type")}
                 for tit in animedata.get("titles")

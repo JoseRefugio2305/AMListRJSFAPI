@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.core.security import get_current_user, optional_current_user
-from app.services.anime_service import AnimeService
+from app.services.anime import AnimeService
 from app.schemas.search import FilterSchema, EmisionFilterEnum, AnimeSearchSchema
 from app.schemas.anime import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
 from app.schemas.auth import UserLogRespSchema

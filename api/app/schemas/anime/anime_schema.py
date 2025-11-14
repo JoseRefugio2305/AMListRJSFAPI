@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AfterValidator, AliasChoices
 from typing import Optional, List, Annotated
 from .anime_enums import EstadoEmEnum, TipoAnimeEnum, StatusViewEnum
-from app.core.utils import httpurl_to_str
+from app.core.utils import httpurl_to_str, ObjectIdStr
 
 
 PATTERN_ID = r"^([a-fA-F0-9]{24})$"
@@ -21,13 +21,14 @@ class CreateGenreSchema(GenreARelSchema):
 
 # Generos
 class GenreSchema(CreateGenreSchema):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    id: ObjectIdStr
     fechaAdicion: str
 
 
 # Imagenes de los animes
 class AnimeImagesSchema(BaseModel):
     img_sm: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
+    img: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]]=None
     img_l: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
 
 
@@ -44,12 +45,12 @@ class CreateStudioSchema(StudiosARelSchema):
 
 # Estudios de Animacion
 class StudiosSchema(CreateStudioSchema):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    id: ObjectIdStr
 
 
 # Tipos de animes (animes, OVA, ONA, etc.)
 class AnimeTypesSchema(BaseModel):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    id: ObjectIdStr
     code: int = Field(..., ge=1, le=6)
     nombre: str
     fechaAdicion: str
@@ -78,6 +79,12 @@ class AnimeCreateSchema(BaseModel):
     tipo: TipoAnimeEnum = Field(TipoAnimeEnum.anime)
 
 
+# Schema para la consulta de animes que tienen su informacion incompleta
+class AnimeIncompleteSchema(AnimeCreateSchema):
+    id: ObjectIdStr
+    id_MAL: Optional[int] = None
+
+
 # Respuesta anime creado, actualizado
 class ResponseUpdCrtAnime(BaseModel):
     message: str
@@ -90,7 +97,7 @@ class RespUpdMALAnimeSchema(ResponseUpdCrtAnime):
 
 # Anime
 class AnimeSchema(AnimeCreateSchema):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    id: ObjectIdStr
     animeImages: List[AnimeImagesSchema]
     calificacion: float = Field(ge=0, le=10)
     descripcion: str
@@ -146,7 +153,7 @@ class AnimeMALSearch(BaseModel):
 
 # Asignar id_MAL a un anime
 class PayloadAnimeIDMAL(BaseModel):
-    id: str = Field(..., pattern=r"^([a-fA-F0-9]{24})$")
+    id: ObjectIdStr
     id_MAL: int = Field(..., ge=1)
 
 

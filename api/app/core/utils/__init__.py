@@ -5,6 +5,7 @@ from .validations import (
     str_trim_lower,
     httpurl_to_str,
     ObjectIdStr,
+    validate_file_animes,
 )
 
 __all__ = [
@@ -14,4 +15,5 @@ __all__ = [
     "str_trim_lower",
     "httpurl_to_str",
     "ObjectIdStr",
+    "validate_file_animes",
 ]

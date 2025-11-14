@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Path, HTTPException
 import re
 
 from app.services.user_services import UserService
-from app.services.anime_service import AnimeService
+from app.services.anime import AnimeService
 from app.services.manga_service import MangaService
 from app.core.security import get_current_user, optional_current_user
 from app.core.utils import str_trim_lower

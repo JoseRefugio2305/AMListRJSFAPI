@@ -1,7 +1,8 @@
 from bson import ObjectId
-from typing import Any,Annotated
-from pydantic import AfterValidator
-from pydantic import HttpUrl
+from typing import Any, Annotated
+from pydantic import AfterValidator, HttpUrl
+from fastapi import UploadFile
+
 
 # Recibe un diccionario y convierte el _id de mongo de ObjectId a string
 def object_id_to_str(doc: dict) -> dict:
@@ -40,14 +41,31 @@ def str_trim_lower(value: str) -> str:
     return value.strip().lower()
 
 
-#Convertir HttpUrl a str
+# Convertir HttpUrl a str
 def httpurl_to_str(value: HttpUrl) -> str:
     return str(value)
 
-#Validacion de id de ObjectId
+
+# Validacion de id de ObjectId
 def validate_objectid(v: str) -> str:
     if not ObjectId.is_valid(v):
         raise ValueError("Formato de ObjectId invalido")
     return v
 
+
 ObjectIdStr = Annotated[str, AfterValidator(validate_objectid)]
+
+
+# Validacion del archivo de animes
+def validate_file_animes(filename: str, file_size: int) -> bool:
+    # Revisamos la extension
+    if not filename.endswith(".json"):
+        return False
+    # Revisamos el tamaño del archivo
+    MAX_SIZE = 1024 * 1024  # 1 MB en bytes de tamano maximo
+
+    # Comparamos el tamano
+    if file_size > MAX_SIZE:
+        return False
+
+    return True
