@@ -1,8 +1,8 @@
 from pydantic import BaseModel, Field, BeforeValidator
-from typing import List,Annotated
+from typing import List, Annotated
 
-from app.schemas.anime import AnimeSchema, AnimeMALSearch,AnimeIncompleteSchema
-from app.schemas.manga import MangaSchema
+from app.schemas.anime import AnimeSchema, AnimeMALSearch, AnimeIncompleteSchema
+from app.schemas.manga import MangaSchema, MangaMALSearch, MangaIncompleteSchema
 from app.core.utils import str_trim_lower
 
 
@@ -29,7 +29,9 @@ class SearchAllSchema(AnimeSearchSchema, MangaSearchSchema):
 
 # Payload busqueda de anime en MAL por titulo
 class PayloadSearchAnimeMAL(BaseModel):
-    tit_search: Annotated[str, BeforeValidator(str_trim_lower)]=Field(...,min_length=4)
+    tit_search: Annotated[str, BeforeValidator(str_trim_lower)] = Field(
+        ..., min_length=4
+    )
 
 
 # Respuesta de busqueda de anime en MAL por titulo
@@ -37,9 +39,24 @@ class ResponseSearchAnimeMAL(BaseModel):
     listaAnimes: List[AnimeMALSearch] = Field([], max_length=10)
     totalResults: int = 0
 
-#Schema de respuesta para la busqueda de animes con la informacion sin actualizar
+
+# Schema de respuesta para la busqueda de animes con la informacion sin actualizar
 class SearchAnimeIncompleteSchema(BaseModel):
-    listaAnimes:List[AnimeIncompleteSchema]
+    listaAnimes: List[AnimeIncompleteSchema]
     totalAnimes: int = 0
+    page: int = 1
+    totalPages: int = 1
+
+
+# Respuesta de busqueda de manga en MAL por titulo
+class ResponseSearchMangaMAL(BaseModel):
+    listaMangas: List[MangaMALSearch] = Field([], max_length=10)
+    totalResults: int = 0
+
+
+# Schema de respuesta para la busqueda de mangas con la informacion sin actualizar
+class SearchMangaIncompleteSchema(BaseModel):
+    listaMangas: List[MangaIncompleteSchema]
+    totalMangas: int = 0
     page: int = 1
     totalPages: int = 1

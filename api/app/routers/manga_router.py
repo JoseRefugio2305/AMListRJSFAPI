@@ -6,7 +6,7 @@ from app.schemas.search import FilterSchema, EmisionFilterEnum, MangaSearchSchem
 from app.schemas.auth import UserLogRespSchema
 from app.schemas.manga import MangaSchema, MangaFavPayloadSchema
 from app.schemas.anime import AniFavRespSchema
-from app.services.manga_service import MangaService
+from app.services.manga import MangaService
 
 logger = get_logger(__name__)
 

@@ -21,6 +21,7 @@ def dict_to_anime_schema(anime: dict, is_User: bool = False) -> AnimeSchema:
         linkMAL=anime.get("linkMAL"),
         numRatings=anime.get("numRatings"),
         relaciones=anime.get("relaciones"),
+        adaptaciones=anime.get("adaptaciones"),
         studios=anime.get("studios"),
         titulos_alt=anime.get("titulos_alt"),
         isFav=anime.get("is_fav") if is_User else False,

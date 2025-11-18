@@ -13,6 +13,8 @@ from .search_schemas import (
     PayloadSearchAnimeMAL,
     ResponseSearchAnimeMAL,
     SearchAnimeIncompleteSchema,
+    ResponseSearchMangaMAL,
+    SearchMangaIncompleteSchema,
 )
 
 __all__ = [
@@ -29,4 +31,6 @@ __all__ = [
     "TipoContMALEnum",
     "SearchAnimeIncompleteSchema",
     "ReadyToMALEnum",
+    "ResponseSearchMangaMAL",
+    "SearchMangaIncompleteSchema",
 ]

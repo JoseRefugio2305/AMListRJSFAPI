@@ -10,7 +10,7 @@ from app.schemas.search import (
     MangaSearchSchema,
 )
 from app.schemas.auth import UserLogRespSchema
-from app.services.manga_service import MangaService
+from app.services.manga import MangaService
 from app.services.anime import AnimeService
 
 logger = get_logger(__name__)

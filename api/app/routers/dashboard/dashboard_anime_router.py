@@ -10,6 +10,7 @@ from app.schemas.anime import (
     AnimeUpdateSchema,
     PayloadAnimeIDMAL,
     ResponseUpdAllMALSchema,
+    RespUpdMALAnimeSchema,
 )
 from app.schemas.search import (
     PayloadSearchAnimeMAL,
@@ -80,8 +81,10 @@ async def assign_id_mal_anime(
 
 
 # Actualizar un anime con su informacion desde MAL
-@routerDashAnime.get("/update_one_from_mal/{anime_id}")
-async def update_one_from_mal(
+@routerDashAnime.get(
+    "/update_anime_from_mal/{anime_id}", response_model=RespUpdMALAnimeSchema
+)
+async def update_anime_from_mal(
     anime_id: ObjectIdStr, user: UserLogRespSchema = Depends(require_admin)
 ):
     response = await AnimeJikanService.update_anime_from_mal(
@@ -91,8 +94,10 @@ async def update_one_from_mal(
 
 
 # Actualizar todos los animes que esten incompletos con su informacion desde MAL
-@routerDashAnime.get("/update_all_to_mal/", response_model=ResponseUpdAllMALSchema)
-async def update_all_from_mal(user: UserLogRespSchema = Depends(require_admin)):
+@routerDashAnime.get(
+    "/update_all_animes_to_mal/", response_model=ResponseUpdAllMALSchema
+)
+async def update_all_animes_from_mal(user: UserLogRespSchema = Depends(require_admin)):
     response = await AnimeJikanService.update_all_animes_from_mal()
     return response.model_dump()
 
