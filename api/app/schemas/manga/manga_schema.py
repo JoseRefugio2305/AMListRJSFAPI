@@ -6,7 +6,6 @@ from app.schemas.anime import (
     EstadoEmEnum,
     GenreARelSchema,
     AltTitlesSchema,
-    PATTERN_ID,
     AnimeMALSearch,
 )
 from app.core.utils import httpurl_to_str, ObjectIdStr
@@ -73,10 +72,12 @@ class MangaCreateSchema(BaseModel):
     )  # La conversion posterior es necesaria para que al serializar antes de insertar no de errores al intentar serializar HttpUrl como string
     tipo: TipoMangaEnum = Field(TipoMangaEnum.manga)
 
+
 # Schema para la consulta de mangas que tienen su informacion incompleta
 class MangaIncompleteSchema(MangaCreateSchema):
     id: ObjectIdStr
     id_MAL: Optional[int] = None
+
 
 # Manga
 class MangaSchema(MangaCreateSchema):

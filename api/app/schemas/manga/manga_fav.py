@@ -1,12 +1,11 @@
-from pydantic import BaseModel, Field
-from app.schemas.anime import (
-    StatusViewEnum,
-    PATTERN_ID,
-)
+from pydantic import BaseModel
+from app.schemas.anime import StatusViewEnum
+from app.core.utils import ObjectIdStr
+
 
 # Mangas favoritos
 class MangaFavsSchema(BaseModel):
-    id: str = Field(..., pattern=PATTERN_ID)
+    id: ObjectIdStr
     user: str
     manga: str
     active: bool
@@ -16,6 +15,6 @@ class MangaFavsSchema(BaseModel):
 
 # Payload para agregar manga a favoritos
 class MangaFavPayloadSchema(BaseModel):
-    mangaId: str = Field(..., pattern=PATTERN_ID)
+    mangaId: ObjectIdStr
     active: bool
     statusView: StatusViewEnum

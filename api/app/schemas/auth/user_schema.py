@@ -10,7 +10,7 @@ from typing import Annotated, List
 import re
 
 from .auth_schema import PASSWORD_REGEX, USERNAME_REGEX, UserLogRespSchema
-from app.core.utils import str_trim_lower
+from app.core.utils import str_trim_lower,ObjectIdStr
 
 
 # Schema del payload para hacer el cambio de imagen de perfil
@@ -50,14 +50,17 @@ class PayloadPassSchema(BaseModel):
             )
         return v
 
-#Schema de respuesta al cambio de contraseña de un usuario
+
+# Schema de respuesta al cambio de contraseña de un usuario
 class ResponseNewPassSchema(BaseModel):
     message: str = "La contraseña fue actualizada con exito"
 
-#Schema para payload de cambiar estado activo del usuario
+
+# Schema para payload de cambiar estado activo del usuario
 class PayloadActiveStateSchema(BaseModel):
-    userId:str
+    userId: ObjectIdStr
     is_active: bool
+
 
 # Lista de usuarios filtrada para eldashboard
 class UserListSchema(BaseModel):
