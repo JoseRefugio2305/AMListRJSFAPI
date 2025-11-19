@@ -1,7 +1,27 @@
 from bson import ObjectId
+import re
 from typing import Any, Annotated
-from pydantic import AfterValidator, HttpUrl
-from fastapi import UploadFile
+from pydantic import AfterValidator, HttpUrl, BeforeValidator
+
+
+# Funcion usada para quitar esacios de extremos y convertir a minusculas para validacion
+def str_trim_lower(value: str) -> str:
+    return value.strip().lower()
+
+
+# Verificamos el formato del username
+def val_username(username: str) -> str:
+    from app.schemas.auth import USERNAME_REGEX
+
+    username = str_trim_lower(username)
+    if not re.fullmatch(USERNAME_REGEX, username):
+        raise ValueError(
+            "Formato de username invalido, debe terner letras, digitos y guienes bajos y medios."
+        )
+    return username
+
+
+UsernameType = Annotated[str, BeforeValidator(val_username)]
 
 
 # Recibe un diccionario y convierte el _id de mongo de ObjectId a string
@@ -34,11 +54,6 @@ def objects_id_list_to_str(data: Any) -> Any:
         return str(data)
     else:  # Si no lo es la retornamos sin cambio
         return data
-
-
-# Funcion usada para quitar esacios de extremos y convertir a minusculas para validacion
-def str_trim_lower(value: str) -> str:
-    return value.strip().lower()
 
 
 # Convertir HttpUrl a str

@@ -4,13 +4,12 @@ from pydantic import (
     Field,
     EmailStr,
     field_validator,
-    StringConstraints,
 )
 from typing import Annotated, List
 import re
 
-from .auth_schema import PASSWORD_REGEX, USERNAME_REGEX, UserLogRespSchema
-from app.core.utils import str_trim_lower,ObjectIdStr
+from .auth_schema import PASSWORD_REGEX, UserLogRespSchema
+from app.core.utils import str_trim_lower, ObjectIdStr, UsernameType
 
 
 # Schema del payload para hacer el cambio de imagen de perfil
@@ -20,16 +19,8 @@ class PayloadProfPicSchema(BaseModel):
 
 # Schema para el payload de cambio de username
 class PayloadUsernameSchema(BaseModel):
-    new_name: Annotated[
-        str,
-        BeforeValidator(str_trim_lower),
-        StringConstraints(min_length=8, max_length=16, pattern=USERNAME_REGEX),
-    ]
-    old_name: Annotated[
-        str,
-        BeforeValidator(str_trim_lower),
-        StringConstraints(min_length=8, max_length=16, pattern=USERNAME_REGEX),
-    ]
+    new_name: UsernameType
+    old_name: UsernameType
 
 
 # Schema para payload de cambio de email

@@ -1,14 +1,12 @@
-from fastapi import APIRouter, Depends, Path, HTTPException
-import re
+from fastapi import APIRouter, Depends, Path
 
 from app.services.user_services import UserService
 from app.services.anime import AnimeService
 from app.services.manga import MangaService
 from app.core.security import get_current_user, optional_current_user
-from app.core.utils import str_trim_lower
+from app.core.utils import UsernameType
 from app.schemas.auth import (
     UserLogRespSchema,
-    USERNAME_REGEX,
     PayloadProfPicSchema,
     PayloadUsernameSchema,
     PayloadEmailSchema,
@@ -27,17 +25,6 @@ logger = get_logger(__name__)
 routerUser = APIRouter(prefix="/user", tags=["user"])
 
 
-# Verificamos el formato del username
-def val_username(username: str) -> str:
-    username = str_trim_lower(username)
-    if not re.fullmatch(USERNAME_REGEX, username):
-        raise HTTPException(
-            status_code=400,
-            detail="Formato de username invalido, debe terner letras, digitos y guienes bajos y medios.",
-        )
-    return username
-
-
 # Obtener informacion de perfil propio
 @routerUser.get("/me/", response_model=UserLogRespSchema)
 async def me(user: UserLogRespSchema = Depends(get_current_user)):
@@ -48,16 +35,9 @@ async def me(user: UserLogRespSchema = Depends(get_current_user)):
 # Obtener informacion de otro perfil de usuario
 @routerUser.get("/{username}", response_model=UserLogRespSchema)
 async def profile(
-    username: str = Path(
-        ...,
-        min_length=8,
-        max_length=16,
-        description="La extension minima es de 8 caracteres y la maxima es de 16.",
-    ),
+    username: UsernameType,
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    username = val_username(username)
-
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
         if user.name != username:
@@ -72,21 +52,16 @@ async def profile(
 # Obtencion de estadisticas del usuario
 @routerUser.get("/stats/{username}", response_model=FavsCountSchema)
 async def estadisticas(
-    username: str = Path(
-        ...,
-        min_length=8,
-        max_length=16,
-        description="La extension minima es de 8 caracteres y la maxima es de 16.",
-    ),
+    username: UsernameType,
     tipoStats: TypeStatisticEnum = TypeStatisticEnum.a_m_favs,
     user: UserLogRespSchema = Depends(optional_current_user),
 ) -> FavsCountSchema:
-    username = val_username(username)
-
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
         if user.name != username:
             user = await UserService.get_UserInfo(username)
+    else:
+        user = await UserService.get_UserInfo(username)
     # Si queremos el conteo de favoritos
     if tipoStats == TypeStatisticEnum.a_m_favs:
         conteoFavoritos = await StatsService.get_count_favs(user)
@@ -99,18 +74,10 @@ async def estadisticas(
 # Lista de animes favoritos de un usuario especifico
 @routerUser.post("/anime_list/{username}", response_model=AnimeSearchSchema)
 async def get_anime_list(
-    username: str = Path(
-        ...,
-        min_length=8,
-        max_length=16,
-        description="La extension minima es de 8 caracteres y la maxima es de 16.",
-    ),
+    username: UsernameType,
     filters: FilterSchema = FilterSchema(),
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-
-    username = val_username(username)
-
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
         if user.name != username:
@@ -124,18 +91,10 @@ async def get_anime_list(
 # Lista de mangas favoritos de un usuario especifico
 @routerUser.post("/manga_list/{username}", response_model=MangaSearchSchema)
 async def get_manga_list(
-    username: str = Path(
-        ...,
-        min_length=8,
-        max_length=16,
-        description="La extension minima es de 8 caracteres y la maxima es de 16.",
-    ),
+    username: UsernameType,
     filters: FilterSchema = FilterSchema(),
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    # Verificamos el formato del username
-    username = val_username(username)
-
     # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
     if user:
         if user.name != username:

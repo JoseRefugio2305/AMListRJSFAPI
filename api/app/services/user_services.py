@@ -1,6 +1,5 @@
 from fastapi import HTTPException, status
 from bson.objectid import ObjectId
-from typing import List
 import math
 
 from app.models.user_model import UserModel
@@ -15,7 +14,7 @@ from app.schemas.auth import (
 )
 from app.schemas.search import ActiveUserEnum, UserListFilterSchema
 from app.schemas.auth import UserListSchema, PayloadActiveStateSchema
-from app.core.utils import object_id_to_str, objects_id_list_to_str
+from app.core.utils import object_id_to_str, objects_id_list_to_str, UsernameType
 from app.services.auth_service import verify_pass, get_pass_hash
 
 from app.core.logging import get_logger
@@ -41,7 +40,7 @@ class UserService:
 
     # Obtener la informacion del usuario, por medio del username
     @staticmethod
-    async def get_UserInfo(username: str) -> UserLogRespSchema:
+    async def get_UserInfo(username: UsernameType) -> UserLogRespSchema:
         userInfo = object_id_to_str(
             await UserModel.find_by_email(
                 email="", username=username, tipoactive=ActiveUserEnum.activo

@@ -6,6 +6,7 @@ from .validations import (
     httpurl_to_str,
     ObjectIdStr,
     validate_file_animes,
+    UsernameType,
 )
 
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "httpurl_to_str",
     "ObjectIdStr",
     "validate_file_animes",
+    "UsernameType",
 ]
