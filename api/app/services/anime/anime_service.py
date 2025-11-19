@@ -37,6 +37,7 @@ from app.core.database import (
     filtro_emision,
     filtrado_tipos,
     filtrado_busqueda_avanzada_anime,
+    apply_paginacion_ordenacion,
 )
 
 from app.core.logging import get_logger
@@ -51,7 +52,6 @@ class AnimeService:
     async def get_all(
         filters: FilterSchema, user: Optional[UserLogRespSchema] = None
     ) -> AnimeSearchSchema:
-        logger.debug(filters)
         pipeline = [
             {
                 "$match": {"linkMAL": {"$not": {"$eq": None}}},
@@ -67,14 +67,19 @@ class AnimeService:
                 filters.statusView,
             ),
         ]
-        logger.debug(pipeline)
+
         # Obtenemos el conteo de los animes que concuerdan con la busqueda
         totalAnimes = await AnimeModel.aggregate([*pipeline, {"$count": "totalAnimes"}])
 
         totalAnimes = totalAnimes[0]["totalAnimes"] if len(totalAnimes) > 0 else 0
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": (filters.page - 1) * filters.limit})
-        pipeline.append({"$limit": filters.limit})
+        pipeline.extend(
+            apply_paginacion_ordenacion(
+                filters.limit, filters.page, filters.orderBy, filters.orderField, True
+            )
+        )
+
+        logger.debug(pipeline)
         results = (
             objects_id_list_to_str(await AnimeModel.aggregate(pipeline))
             if totalAnimes
@@ -341,15 +346,17 @@ class AnimeService:
             *filtrado_tipos(filters.tiposAnime, True),
             *filtrado_busqueda_avanzada_anime(filters),
         ]
-        logger.debug(pipeline)
 
         # Obtenemos el conteo de los animes que tienen su informacion incompleta
         totalAnimes = await AnimeModel.aggregate([*pipeline, {"$count": "totalAnimes"}])
 
         totalAnimes = totalAnimes[0]["totalAnimes"] if len(totalAnimes) > 0 else 0
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": (filters.page - 1) * filters.limit})
-        pipeline.append({"$limit": filters.limit})
+        pipeline.extend(
+            apply_paginacion_ordenacion(
+                filters.limit, filters.page, filters.orderBy, filters.orderField, True
+            )
+        )
         results = (
             objects_id_list_to_str(await AnimeModel.aggregate(pipeline))
             if totalAnimes
@@ -359,7 +366,8 @@ class AnimeService:
 
         results = [dict_to_incomplete_anime(a) for a in results]
 
-        logger.debug(results)
+        logger.debug(pipeline)
+
         return SearchAnimeIncompleteSchema(
             listaAnimes=results,
             totalAnimes=totalAnimes,

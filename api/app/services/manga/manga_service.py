@@ -36,6 +36,7 @@ from app.core.database import (
     filtro_emision,
     filtrado_tipos,
     filtrado_busqueda_avanzada_manga,
+    apply_paginacion_ordenacion,
 )
 
 from app.core.logging import get_logger
@@ -71,8 +72,11 @@ class MangaService:
 
         totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": (filters.page - 1) * filters.limit})
-        pipeline.append({"$limit": filters.limit})
+        pipeline.extend(
+            apply_paginacion_ordenacion(
+                filters.limit, filters.page, filters.orderBy, filters.orderField, False
+            )
+        )
         results = (
             objects_id_list_to_str(await MangaModel.aggregate(pipeline))
             if totalMangas
@@ -344,8 +348,11 @@ class MangaService:
 
         totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": (filters.page - 1) * filters.limit})
-        pipeline.append({"$limit": filters.limit})
+        pipeline.extend(
+            apply_paginacion_ordenacion(
+                filters.limit, filters.page, filters.orderBy, filters.orderField, False
+            )
+        )
         results = (
             objects_id_list_to_str(await MangaModel.aggregate(pipeline))
             if totalMangas

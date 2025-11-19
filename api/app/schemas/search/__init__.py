@@ -5,6 +5,10 @@ from .filters_enum import (
     ActiveUserEnum,
     TipoContMALEnum,
     ReadyToMALEnum,
+    FieldOrdEnum,
+    OrderByEnum,
+    UserTypeEnum,
+    FieldOrdUsersEnum,
 )
 from .search_schemas import (
     AnimeSearchSchema,
@@ -33,4 +37,8 @@ __all__ = [
     "ReadyToMALEnum",
     "ResponseSearchMangaMAL",
     "SearchMangaIncompleteSchema",
+    "FieldOrdEnum",
+    "OrderByEnum",
+    "UserTypeEnum",
+    "FieldOrdUsersEnum",
 ]

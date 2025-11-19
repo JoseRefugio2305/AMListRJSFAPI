@@ -1,11 +1,16 @@
 from pydantic import BaseModel, Field, BeforeValidator
 from typing import Optional, Annotated, List
-from .filters_enum import EmisionFilterEnum, TipoContenidoEnum, ActiveUserEnum
-
-from app.schemas.anime import (
-    StatusViewEnum,
-    TipoAnimeEnum,
+from .filters_enum import (
+    EmisionFilterEnum,
+    TipoContenidoEnum,
+    ActiveUserEnum,
+    OrderByEnum,
+    FieldOrdEnum,
+    UserTypeEnum,
+    FieldOrdUsersEnum,
 )
+
+from app.schemas.anime import StatusViewEnum, TipoAnimeEnum
 from app.schemas.manga import (
     TipoMangaEnum,
 )
@@ -31,6 +36,8 @@ class FilterSchema(BaseModel):
     mangaAutores: List[int] = []
     generos: List[int] = []
     tipoContenido: TipoContenidoEnum = TipoContenidoEnum.todos
+    orderBy: OrderByEnum = OrderByEnum.asc
+    orderField: FieldOrdEnum = FieldOrdEnum.key
 
 
 # Schema de filtros para busqueda de usuarios en dashboard
@@ -40,4 +47,7 @@ class UserListFilterSchema(BaseModel):
     txtSearch: Annotated[Optional[str], BeforeValidator(str_trim_lower)] = Field(
         default="", max_length=20
     )
+    userType: UserTypeEnum = UserTypeEnum.todos
     is_active: ActiveUserEnum = ActiveUserEnum.todos
+    orderBy: OrderByEnum = OrderByEnum.asc
+    orderField: FieldOrdUsersEnum = FieldOrdUsersEnum.name

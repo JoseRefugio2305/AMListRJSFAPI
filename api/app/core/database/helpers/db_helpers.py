@@ -4,6 +4,8 @@ from bson.objectid import ObjectId
 from app.schemas.search import (
     EmisionFilterEnum,
     FilterSchema,
+    OrderByEnum,
+    FieldOrdEnum,
 )
 from app.schemas.anime import TipoAnimeEnum, StatusViewEnum
 from app.schemas.manga import TipoMangaEnum
@@ -240,9 +242,32 @@ def filtrado_busqueda_avanzada_anime(filtros: FilterSchema) -> List[Dict[str, An
     return pipeline
 
 
+# Filtrado para animes y mangas incompletos
 def filtrado_info_incompleta(is_to_update: bool = False):
     and_query = [
         {"id_MAL": {"$not": {"$eq": None}}} if is_to_update else {},
         {"linkMAL": {"$eq": None}},
     ]
     return [{"$match": {"$and": and_query}}]
+
+
+# Limitacion, paginado y ordenacion de la informacion
+def apply_paginacion_ordenacion(
+    limit: int = 20,
+    pagina: int = 1,
+    ordBy: OrderByEnum = OrderByEnum.asc,
+    ordField: str = "",
+    is_anime: bool = True,
+):
+
+    # Si se pretende ordenar por el key de la coleccion,  se debe identificar si es de animes o mangas
+    if ordField == FieldOrdEnum.key:
+        ordField = "key_anime" if is_anime else "key_manga"
+
+    # Preparamos la query de ordenacion
+    ord_query = {"$sort": {ordField: ordBy}}
+
+    # Preparamos la pipe de paginacion y limitacion
+    pipe_pag = [{"$skip": (pagina - 1) * limit}, {"$limit": limit}]
+
+    return [ord_query, *pipe_pag]

@@ -12,10 +12,11 @@ from app.schemas.auth import (
     ResponseNewPassSchema,
     RolEnum,
 )
-from app.schemas.search import ActiveUserEnum, UserListFilterSchema
+from app.schemas.search import ActiveUserEnum, UserListFilterSchema, UserTypeEnum
 from app.schemas.auth import UserListSchema, PayloadActiveStateSchema
 from app.core.utils import object_id_to_str, objects_id_list_to_str, UsernameType
 from app.services.auth_service import verify_pass, get_pass_hash
+from app.core.database import apply_paginacion_ordenacion
 
 from app.core.logging import get_logger
 
@@ -51,17 +52,6 @@ class UserService:
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
         return dict_to_user_schema(userInfo)
-        # UserLogRespSchema(
-        #     id=userInfo.get("_id") or userInfo.get("id") or userInfo.get("Id"),
-        #     name=userInfo.get("name"),
-        #     email=userInfo.get("email"),
-        #     rol=userInfo.get("rol", RolEnum.base_user),
-        #     is_active=userInfo.get("is_active", True),
-        #     profile_pic=userInfo.get("profile_pic"),
-        #     created_date=userInfo.get("created_date"),
-        #     show_statistics=userInfo.get("show_statistics"),
-        #     access_token="",
-        # )
 
     # Cambio de goto de perfil
     @staticmethod
@@ -197,6 +187,9 @@ class UserService:
                     ]
                 }
             )
+
+        if userFilters.userType != UserTypeEnum.todos:
+            query_active.append({"rol": userFilters.userType})
         # Preparamos la consulta base
         pipeline = [{"$match": {"$and": query_active}}] if len(query_active) > 0 else []
         logger.debug(pipeline)
@@ -205,8 +198,15 @@ class UserService:
         totalUsers = totalUsers[0]["totalUsers"] if len(totalUsers) > 0 else 0
 
         # Aplicamos la limitacion a la busqueda
-        pipeline.append({"$skip": (userFilters.page - 1) * userFilters.limit})
-        pipeline.append({"$limit": userFilters.limit})
+        pipeline.extend(
+            apply_paginacion_ordenacion(
+                userFilters.limit,
+                userFilters.page,
+                userFilters.orderBy,
+                userFilters.orderField,
+                False,
+            )
+        )
 
         results = (
             objects_id_list_to_str(await UserModel.aggregate(pipeline))

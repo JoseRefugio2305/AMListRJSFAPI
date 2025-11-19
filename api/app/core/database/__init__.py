@@ -6,6 +6,7 @@ from .helpers.db_helpers import (
     filtrado_tipos,
     filtro_emision,
     filtrado_info_incompleta,
+    apply_paginacion_ordenacion,
 )
 from .helpers.stats_db_helpers import (
     statsTipo,
@@ -27,4 +28,5 @@ __all__ = [
     "topEditoriales",
     "topEstudios",
     "filtrado_info_incompleta",
+    "apply_paginacion_ordenacion",
 ]

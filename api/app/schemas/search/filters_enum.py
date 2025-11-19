@@ -1,4 +1,5 @@
-from enum import IntEnum
+from enum import IntEnum, StrEnum
+from app.schemas.auth import RolEnum
 
 
 # Estado de emision/publicacion para filtrado
@@ -33,3 +34,32 @@ class ReadyToMALEnum(IntEnum):
     no_listo = 0
     listo = 1
     todos = 2  # Se refiere a traer ambos
+
+
+# Enum de campos por los cuales se puede hacer ordenamiento en anime y manga
+class FieldOrdEnum(StrEnum):
+    key = "key"
+    id_mal = "id_MAL"
+    titulo = "titulo"
+    calificacion = "calificacion"
+    episodios = "episodios"
+    capitulos = "capitulos"
+
+
+# Enum de ordenacion
+class OrderByEnum(IntEnum):
+    asc = 1
+    desc = -1
+
+
+# Enum de campos por los cuales se ordenaran las consultas de usuarios
+class FieldOrdUsersEnum(StrEnum):
+    name = "name"
+    email = "email"
+
+
+# Enum de tipos de usuarios para el filtrado
+class UserTypeEnum(IntEnum):
+    base_user = RolEnum.base_user
+    admin = RolEnum.admin
+    todos = 2
