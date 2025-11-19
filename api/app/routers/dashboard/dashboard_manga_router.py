@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 
 from app.services.manga import MangaService, MangaJikanService
 from app.core.security import require_admin
@@ -27,7 +27,11 @@ routerDashManga = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 # Ruta de creacion de manga
-@routerDashManga.post("/create_manga/", response_model=ResponseUpdCrtManga)
+@routerDashManga.post(
+    "/create_manga/",
+    response_model=ResponseUpdCrtManga,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_manga(
     payload: MangaCreateSchema, user: UserLogRespSchema = Depends(require_admin)
 ):

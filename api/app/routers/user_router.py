@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path
+from fastapi import APIRouter, Depends
 
 from app.services.user_services import UserService
 from app.services.anime import AnimeService

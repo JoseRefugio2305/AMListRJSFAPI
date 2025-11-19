@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
 
 from app.services.anime import AnimeService, AnimeJikanService, AnimeFileService
 from app.core.security import require_admin
@@ -28,7 +28,11 @@ routerDashAnime = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
 # Creacion del anime
-@routerDashAnime.post("/create_anime/", response_model=ResponseUpdCrtAnime)
+@routerDashAnime.post(
+    "/create_anime/",
+    response_model=ResponseUpdCrtAnime,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_anime(
     payload: AnimeCreateSchema, user: UserLogRespSchema = Depends(require_admin)
 ):
