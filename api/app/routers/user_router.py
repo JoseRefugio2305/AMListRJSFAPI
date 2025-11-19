@@ -42,6 +42,8 @@ async def profile(
     if user:
         if user.name != username:
             user = await UserService.get_UserInfo(username)
+    else:
+        user = await UserService.get_UserInfo(username)
 
     user.access_token = ""
     user = user.model_dump()
@@ -82,6 +84,8 @@ async def get_anime_list(
     if user:
         if user.name != username:
             user = await UserService.get_UserInfo(username)
+    else:
+        user = await UserService.get_UserInfo(username)
 
     animeList = await AnimeService.get_all(filters, user)
 
@@ -99,6 +103,8 @@ async def get_manga_list(
     if user:
         if user.name != username:
             user = await UserService.get_UserInfo(username)
+    else:
+        user = await UserService.get_UserInfo(username)
 
     mangaList = await MangaService.get_all(filters, user)
 
