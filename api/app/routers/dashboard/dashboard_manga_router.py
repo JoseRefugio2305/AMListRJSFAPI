@@ -3,7 +3,6 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.services.manga import MangaService, MangaJikanService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
-from app.schemas.auth import UserLogRespSchema
 from app.schemas.anime import (
     PayloadAnimeIDMAL,
     ResponseUpdAllMALSchema,
@@ -23,28 +22,27 @@ from app.core.logging import get_logger
 logger = get_logger(__name__)
 
 # Creamos el router con el prefijo y la tag de la documentacion
-routerDashManga = APIRouter(prefix="/dashboard", tags=["dashboard"])
+routerDashManga = APIRouter(
+    prefix="/dashboard/manga", tags=["dashboard"], dependencies=[Depends(require_admin)]
+)
 
 
 # Ruta de creacion de manga
 @routerDashManga.post(
-    "/create_manga/",
+    "/create/",
     response_model=ResponseUpdCrtManga,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_manga(
-    payload: MangaCreateSchema, user: UserLogRespSchema = Depends(require_admin)
-):
+async def create(payload: MangaCreateSchema):
     response = await MangaService.create_manga(payload)
     return response.model_dump()
 
 
 # Ruta para actualizar manga
-@routerDashManga.put("/update_manga/{manga_id}", response_model=ResponseUpdCrtManga)
-async def update_anime(
+@routerDashManga.put("/update/{manga_id}", response_model=ResponseUpdCrtManga)
+async def update(
     manga_id: ObjectIdStr,
     payload: MangaUpdateSchema = None,
-    user: UserLogRespSchema = Depends(require_admin),
 ):
     # SI no se recibe informacion para actualizar se lanza un error
     if payload is None:
@@ -56,10 +54,8 @@ async def update_anime(
 
 
 # Eliminar manga
-@routerDashManga.delete("/delete_manga/{manga_id}", response_model=ResponseUpdCrtManga)
-async def delete_manga(
-    manga_id: ObjectIdStr, user: UserLogRespSchema = Depends(require_admin)
-):
+@routerDashManga.delete("/delete/{manga_id}", response_model=ResponseUpdCrtManga)
+async def delete(manga_id: ObjectIdStr):
 
     response = await MangaService.delete_manga(manga_id)
 
@@ -67,30 +63,24 @@ async def delete_manga(
 
 
 # Buscar anime en MAL por su titulo
-@routerDashManga.post("/search_manga_on_mal/", response_model=ResponseSearchMangaMAL)
-async def search_manga_mal(
-    payload: PayloadSearchAnimeMAL, user: UserLogRespSchema = Depends(require_admin)
-):
+@routerDashManga.post("/search_on_mal/", response_model=ResponseSearchMangaMAL)
+async def search_on_mal(payload: PayloadSearchAnimeMAL):
     listAnimes = await MangaJikanService.search_manga_mal(payload)
     return listAnimes.model_dump()
 
 
 # Asignar un ID MAL  a un manga
-@routerDashManga.post("/assign_id_mal_manga/", response_model=ResponseUpdCrtManga)
-async def assign_id_mal_manga(
-    payload: PayloadAnimeIDMAL, user: UserLogRespSchema = Depends(require_admin)
-):
+@routerDashManga.post("/assign_id_mal/", response_model=ResponseUpdCrtManga)
+async def assign_id_mal(payload: PayloadAnimeIDMAL):
     response = await MangaJikanService.assign_id_mal_manga(payload)
     return response.model_dump()
 
 
 # Actualizar un manga con su informacion desde MAL
 @routerDashManga.get(
-    "/update_manga_from_mal/{manga_id}", response_model=RespUpdMALAnimeSchema
+    "/update_from_mal/{manga_id}", response_model=RespUpdMALAnimeSchema
 )
-async def update_manga_from_mal(
-    manga_id: ObjectIdStr, user: UserLogRespSchema = Depends(require_admin)
-):
+async def update_from_mal(manga_id: ObjectIdStr):
     response = await MangaJikanService.update_manga_from_mal(
         mangaId=manga_id, is_all=False
     )
@@ -98,22 +88,19 @@ async def update_manga_from_mal(
 
 
 # Actualizar todos los mangas que esten incompletos con su informacion desde MAL
-@routerDashManga.get(
-    "/update_all_mangas_to_mal/", response_model=ResponseUpdAllMALSchema
-)
-async def update_all_mangas_from_mal(user: UserLogRespSchema = Depends(require_admin)):
+@routerDashManga.get("/update_all_to_mal/", response_model=ResponseUpdAllMALSchema)
+async def update_all_from_mal():
     response = await MangaJikanService.update_all_mangas_from_mal()
     return response.model_dump()
 
 
 # Obtener los mangas que tienen la informacion incompleta (no han sido actualizados a su informacion con MAL)
 @routerDashManga.post(
-    "/get_incomplete_mangas/{ready_to_mal}", response_model=SearchMangaIncompleteSchema
+    "/get_incomplete/{ready_to_mal}", response_model=SearchMangaIncompleteSchema
 )
-async def get_incomplete_mangas(
+async def get_incomplete(
     ready_to_mal: ReadyToMALEnum,
     filters: FilterSchema,
-    user: UserLogRespSchema = Depends(require_admin),
 ):
     incompleteMangas = await MangaService.get_incomplete_mangas(filters, ready_to_mal)
 
