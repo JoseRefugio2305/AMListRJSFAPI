@@ -1,7 +1,6 @@
 from jikan4snek import Jikan4SNEK
 from app.schemas.search import TipoContMALEnum
-from app.schemas.anime import AnimeSchema
-from typing import List, Dict
+from typing import Dict
 
 from app.core.logging import get_logger
 

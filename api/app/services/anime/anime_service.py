@@ -38,7 +38,7 @@ from app.core.database import (
     filtrado_tipos,
     filtrado_busqueda_avanzada_anime,
     apply_paginacion_ordenacion,
-    get_full_anime
+    get_full_anime,
 )
 
 from app.core.logging import get_logger
