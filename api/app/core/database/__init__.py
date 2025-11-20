@@ -1,15 +1,13 @@
 from .connection import connect_mongo, close_mongo
 from .helpers.db_helpers import (
     lookup_user_favorites,
-    filtrado_busqueda_avanzada_anime,
-    filtrado_busqueda_avanzada_manga,
     filtrado_tipos,
     filtro_emision,
     filtrado_info_incompleta,
     apply_paginacion_ordenacion,
-    get_full_manga,
-    get_full_anime,
 )
+from .helpers.manga_helpers import filtrado_busqueda_avanzada_manga, get_full_manga
+from .helpers.anime_helpers import filtrado_busqueda_avanzada_anime, get_full_anime
 from .helpers.stats_db_helpers import (
     statsTipo,
     statsGenero,
