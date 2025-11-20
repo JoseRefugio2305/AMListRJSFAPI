@@ -7,20 +7,19 @@ from app.schemas.manga import (
     MangaUpdateSchema,
     ResponseUpdCrtManga,
     MangaMALSearch,
-    CreateAutorSchema,
-    CreateEditorialSchema,
 )
 from app.schemas.anime import (
     PayloadAnimeIDMAL,
     ResponseUpdAllMALSchema,
     RespUpdMALAnimeSchema,
-    CreateGenreSchema,
 )
 from app.schemas.search import (
     PayloadSearchAnimeMAL,
     ResponseSearchMangaMAL,
     TipoContMALEnum,
 )
+from app.schemas.common.relations import CreateAutorSchema,CreateEditorialSchema
+from app.schemas.common.genres import CreateGenreSchema
 from app.core.utils import objects_id_list_to_str, ObjectIdStr
 from app.core.database import filtrado_info_incompleta
 from app.services.jikan_service import JikanService

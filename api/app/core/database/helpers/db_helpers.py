@@ -150,6 +150,9 @@ def filtrado_busqueda_avanzada_manga(filtros: FilterSchema) -> List[Dict[str, An
                 "linkMAL": 1,
                 "numRatings": 1,
                 "titulos_alt": 1,
+                "fechaComienzoPub": 1,
+                "fechaFinPub": 1,
+                "fechaAdicion": 1,
                 # Titulo y titulos alternativos se convierten a minusculas para las comparaciones
                 "tit_search": {"$toLower": "$titulo"},
                 "titulos_alt_search": {
@@ -243,7 +246,7 @@ def filtrado_busqueda_avanzada_anime(filtros: FilterSchema) -> List[Dict[str, An
 
 
 # Filtrado para animes y mangas incompletos
-def filtrado_info_incompleta(is_to_update: bool = False):
+def filtrado_info_incompleta(is_to_update: bool = False) -> List[Dict[str, Any]]:
     and_query = [
         {"id_MAL": {"$not": {"$eq": None}}} if is_to_update else {},
         {"linkMAL": {"$eq": None}},
@@ -258,7 +261,7 @@ def apply_paginacion_ordenacion(
     ordBy: OrderByEnum = OrderByEnum.asc,
     ordField: str = "",
     is_anime: bool = True,
-):
+) -> List[Dict[str, Any]]:
 
     # Si se pretende ordenar por el key de la coleccion,  se debe identificar si es de animes o mangas
     if ordField == FieldOrdEnum.key:
@@ -271,3 +274,95 @@ def apply_paginacion_ordenacion(
     pipe_pag = [{"$skip": (pagina - 1) * limit}, {"$limit": limit}]
 
     return [ord_query, *pipe_pag]
+
+
+# Obtener la informacion full de un manga
+def get_full_manga() -> List[Dict[str, Any]]:
+    return [
+        {
+            "$lookup": {
+                "from": "animes",
+                "localField": "adaptaciones.id_MAL",
+                "foreignField": "id_MAL",
+                "as": "adaptaciones",
+                "pipeline": [
+                    {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "id_MAL": 1,
+                            "key_anime": 1,
+                            "titulo": 1,
+                            "animeImages": 1,
+                        }
+                    },
+                ],
+            }
+        },
+        {
+            "$lookup": {
+                "from": "mangas",
+                "localField": "relaciones.id_MAL",
+                "foreignField": "id_MAL",
+                "as": "relaciones",
+                "pipeline": [
+                    {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "id_MAL": 1,
+                            "key_manga": 1,
+                            "titulo": 1,
+                            "mangaImages": 1,
+                        }
+                    },
+                ],
+            }
+        },
+    ]
+
+
+# Obtener la informacion completa del anime
+def get_full_anime() -> List[Dict[str, Any]]:
+    return [
+        {
+            "$lookup": {
+                "from": "animes",
+                "localField": "relaciones.id_MAL",
+                "foreignField": "id_MAL",
+                "as": "relaciones",
+                "pipeline": [
+                    {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "id_MAL": 1,
+                            "key_anime": 1,
+                            "titulo": 1,
+                            "animeImages": 1,
+                        }
+                    },
+                ],
+            }
+        },
+        {
+            "$lookup": {
+                "from": "mangas",
+                "localField": "adaptaciones.id_MAL",
+                "foreignField": "id_MAL",
+                "as": "adaptaciones",
+                "pipeline": [
+                    {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "id_MAL": 1,
+                            "key_manga": 1,
+                            "titulo": 1,
+                            "mangaImages": 1,
+                        }
+                    },
+                ],
+            }
+        },
+    ]

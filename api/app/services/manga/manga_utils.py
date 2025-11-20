@@ -2,7 +2,9 @@ from app.schemas.manga import MangaSchema, MangaIncompleteSchema
 
 
 ##Convertir el dict de bdd a un schema de ANimeSchema
-def dict_to_manga_schema(manga: dict, is_User: bool = False) -> MangaSchema:
+def dict_to_manga_schema(
+    manga: dict, is_User: bool = False, is_Full=False
+) -> MangaSchema:
     return MangaSchema(
         id=manga.get("_id") or manga.get("id") or manga.get("Id"),
         key_manga=manga.get("key_manga"),
@@ -18,15 +20,15 @@ def dict_to_manga_schema(manga: dict, is_User: bool = False) -> MangaSchema:
         fechaAdicion=str(manga.get("fechaAdicion")),
         fechaComienzoPub=str(manga.get("fechaComienzoPub")),
         fechaFinPub=str(manga.get("fechaFinPub")),
-        generos=manga.get("generos"),
+        generos=manga.get("generos") if is_Full else None,
         id_MAL=manga.get("id_MAL"),
         linkMAL=manga.get("linkMAL"),
         numRatings=manga.get("numRatings"),
-        relaciones=manga.get("relaciones"),
-        editoriales=manga.get("editoriales"),
-        autores=manga.get("autores"),
-        adaptaciones=manga.get("adaptaciones"),
-        titulos_alt=manga.get("titulos_alt"),
+        relaciones=manga.get("relaciones") if is_Full else None,
+        editoriales=manga.get("editoriales") if is_Full else None,
+        autores=manga.get("autores") if is_Full else None,
+        adaptaciones=manga.get("adaptaciones") if is_Full else None,
+        titulos_alt=manga.get("titulos_alt") if is_Full else None,
         isFav=manga.get("is_fav") if is_User else False,
         statusView=manga.get("statusView") if is_User else None,
     )

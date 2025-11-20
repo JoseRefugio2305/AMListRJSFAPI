@@ -5,8 +5,6 @@ from .manga_schema import (
     ResponseUpdCrtManga,
     RespUpdMALMangaSchema,
     MangaMALSearch,
-    CreateEditorialSchema,
-    CreateAutorSchema,
     MangaIncompleteSchema,
 )
 from .manga_enums import TipoMangaEnum
@@ -22,7 +20,5 @@ __all__ = [
     "ResponseUpdCrtManga",
     "RespUpdMALMangaSchema",
     "MangaMALSearch",
-    "CreateEditorialSchema",
-    "CreateAutorSchema",
     "MangaIncompleteSchema",
 ]

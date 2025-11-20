@@ -9,10 +9,10 @@ from app.schemas.anime import (
     AnimeMALSearch,
     PayloadAnimeIDMAL,
     RespUpdMALAnimeSchema,
-    CreateGenreSchema,
-    CreateStudioSchema,
     ResponseUpdAllMALSchema,
 )
+from app.schemas.common.relations import CreateStudioSchema
+from app.schemas.common.genres import CreateGenreSchema
 from app.schemas.search import (
     PayloadSearchAnimeMAL,
     ResponseSearchAnimeMAL,

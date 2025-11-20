@@ -15,9 +15,9 @@ from app.schemas.anime import (
     AnimeUpdateSchema,
     ResponseUpdCrtAnime,
     RespUpdMALAnimeSchema,
-    CreateGenreSchema,
-    CreateStudioSchema,
 )
+from app.schemas.common.relations import CreateStudioSchema
+from app.schemas.common.genres import CreateGenreSchema
 from .anime_utils import dict_to_anime_schema, dict_to_incomplete_anime
 from app.schemas.search import (
     AnimeSearchSchema,
@@ -38,6 +38,7 @@ from app.core.database import (
     filtrado_tipos,
     filtrado_busqueda_avanzada_anime,
     apply_paginacion_ordenacion,
+    get_full_anime
 )
 
 from app.core.logging import get_logger
@@ -89,7 +90,7 @@ class AnimeService:
 
         return AnimeSearchSchema(
             listaAnimes=[
-                dict_to_anime_schema(r, True if user else False) for r in results
+                dict_to_anime_schema(r, True if user else False, False) for r in results
             ],
             pageA=filters.page,
             totalPagesA=math.ceil(totalAnimes / filters.limit),
@@ -105,6 +106,7 @@ class AnimeService:
             {
                 "$match": {"key_anime": key_anime},
             },
+            *get_full_anime(),
             *lookup_user_favorites(
                 user.id if user else None, "anime", "utafavs", False, 5
             ),
@@ -119,7 +121,7 @@ class AnimeService:
         anime = object_id_to_str(
             results[0]
         )  # Agregate retorna por defecto una lista, por lo cual se debe de tomar el primer elemento, si no da resultados, seria un elemento vacio
-        return dict_to_anime_schema(anime, True if user else False)
+        return dict_to_anime_schema(anime, True if user else False, True)
 
     # Agregar o quitar de favs y cambiar estatus de anime
     @staticmethod

@@ -1,66 +1,19 @@
 from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AliasChoices, AfterValidator
 from typing import Optional, List, Annotated
 from .manga_enums import TipoMangaEnum
-from app.schemas.anime import (
-    StatusViewEnum,
-    EstadoEmEnum,
-    GenreARelSchema,
+from app.schemas.common.relations import (
+    MangaRelationsSchema,
+    MangaRelFullSchema,
     AltTitlesSchema,
-    AnimeMALSearch,
+    EditorialMRelSchema,
+    AutoresMRelSchema,
+    AdaptacionFullSchema,
+    AdaptacionSchema,
 )
+from app.schemas.common.images import MangaImagesSchema
+from app.schemas.common.genres import GenreARelSchema
+from app.schemas.anime import AnimeMALSearch, EstadoEmEnum, StatusViewEnum
 from app.core.utils import httpurl_to_str, ObjectIdStr
-
-
-# Imagenes de los mangas
-class MangaImagesSchema(BaseModel):
-    img_sm: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-    img: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
-    img_l: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-
-
-# Relacion de autores de manga
-class AutoresMRelSchema(BaseModel):
-    nombre: str
-    id_MAL: int
-
-
-# Esuqema de creacion de autor
-class CreateAutorSchema(AutoresMRelSchema):
-    tipo: str
-    linkMAL: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-
-
-# Relacion editorial de manga
-class EditorialMRelSchema(BaseModel):
-    nombre: str
-    id_MAL: int
-
-
-# Esquema de creacion de Editorial
-class CreateEditorialSchema(EditorialMRelSchema):
-    tipo: str
-    linkMAL: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-
-
-# Relacion de adaptaciones del manga
-class AdaptacionSchema(BaseModel):
-    titulo: str = Field(validation_alias=AliasChoices("titulo", "nombre"))
-    id_MAL: int
-
-
-# Relaciones del manga
-class MangaRelationsSchema(BaseModel):
-    titulo: str = Field(validation_alias=AliasChoices("titulo", "nombre"))
-    id_MAL: int
-    type_rel: Optional[str] = None
-
-
-# Tipos de mangas (manga, NL, one-shot, etc.)
-class MangaTypesSchema(BaseModel):
-    id: ObjectIdStr
-    code: int = Field(..., ge=1, le=6)
-    nombre: str
-    fechaAdicion: str
 
 
 # Schema para la creacion del manga por el administrador
@@ -91,14 +44,14 @@ class MangaSchema(MangaCreateSchema):
     fechaAdicion: str
     fechaComienzoPub: str
     fechaFinPub: Optional[str] = None
-    generos: List[GenreARelSchema]
+    generos: Optional[List[GenreARelSchema]] = None
     id_MAL: int
     linkMAL: HttpUrl
     numRatings: int = Field(..., ge=0)
-    relaciones: Optional[List[MangaRelationsSchema]] = None
-    editoriales: List[EditorialMRelSchema]
-    autores: List[AutoresMRelSchema]
-    adaptaciones: List[AdaptacionSchema]
+    relaciones: Optional[List[MangaRelFullSchema]] = None
+    editoriales: Optional[List[EditorialMRelSchema]] = None
+    autores: Optional[List[AutoresMRelSchema]] = None
+    adaptaciones: Optional[List[AdaptacionFullSchema]] = None
     titulos_alt: Optional[List[AltTitlesSchema]] = None
     isFav: Optional[bool] = None
     statusView: Optional[StatusViewEnum] = None

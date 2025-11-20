@@ -1,72 +1,19 @@
-from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AfterValidator, AliasChoices
+from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AfterValidator
 from typing import Optional, List, Annotated
 from .anime_enums import EstadoEmEnum, TipoAnimeEnum, StatusViewEnum
+from app.schemas.common.relations import (
+    AnimeRelationsSchema,
+    StudiosARelSchema,
+    AltTitlesSchema,
+    AnimeAdapFullSchema,
+    AnimeRelFullSchema,
+)
+from app.schemas.common.images import AnimeImagesSchema
+from app.schemas.common.genres import GenreARelSchema
 from app.core.utils import httpurl_to_str, ObjectIdStr
 
 
 PATTERN_ID = r"^([a-fA-F0-9]{24})$"
-
-
-# Relacion de generos en animes y mangas
-class GenreARelSchema(BaseModel):
-    nombre: str
-    id_MAL: int
-
-
-# Schema para crear un genero
-class CreateGenreSchema(GenreARelSchema):
-    nombre_mal: str
-    linkMAL: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-
-
-# Generos
-class GenreSchema(CreateGenreSchema):
-    id: ObjectIdStr
-    fechaAdicion: str
-
-
-# Imagenes de los animes
-class AnimeImagesSchema(BaseModel):
-    img_sm: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-    img: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]]=None
-    img_l: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-
-
-# Relacion de estudios en animes
-class StudiosARelSchema(BaseModel):
-    nombre: str
-    id_MAL: int
-
-
-class CreateStudioSchema(StudiosARelSchema):
-    linkMAL: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
-    fechaAdicion: str
-
-
-# Estudios de Animacion
-class StudiosSchema(CreateStudioSchema):
-    id: ObjectIdStr
-
-
-# Tipos de animes (animes, OVA, ONA, etc.)
-class AnimeTypesSchema(BaseModel):
-    id: ObjectIdStr
-    code: int = Field(..., ge=1, le=6)
-    nombre: str
-    fechaAdicion: str
-
-
-# Relaciones del anime
-class AnimeRelationsSchema(BaseModel):
-    id_MAL: int
-    titulo: str
-    type_rel: Optional[str] = None
-
-
-# Titulos Alternaivos usado en manga tambien
-class AltTitlesSchema(BaseModel):
-    tit_alt: str
-    tipo: str
 
 
 # Schema para la creacion del anime por el administrador
@@ -105,14 +52,14 @@ class AnimeSchema(AnimeCreateSchema):
     episodios: float = Field(..., ge=0)
     fechaAdicion: str
     fechaEmision: str
-    generos: List[GenreARelSchema]
+    generos: Optional[List[GenreARelSchema]]
     id_MAL: int
     linkMAL: HttpUrl
     link_p: str  # En Este esquema se usa el link_p como string para evitar errores de conversion a HttpUrl
     numRatings: int = Field(..., ge=0)
-    relaciones: Optional[List[AnimeRelationsSchema]] = None
-    adaptaciones: Optional[List[AnimeRelationsSchema]] = None
-    studios: List[StudiosARelSchema]
+    relaciones: Optional[List[AnimeRelFullSchema]] = None
+    adaptaciones: Optional[List[AnimeAdapFullSchema]] = None
+    studios: Optional[List[StudiosARelSchema]] = None
     titulos_alt: Optional[List[AltTitlesSchema]] = None
     isFav: Optional[bool] = None
     statusView: Optional[StatusViewEnum] = None

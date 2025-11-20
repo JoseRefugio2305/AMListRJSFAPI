@@ -7,6 +7,8 @@ from .helpers.db_helpers import (
     filtro_emision,
     filtrado_info_incompleta,
     apply_paginacion_ordenacion,
+    get_full_manga,
+    get_full_anime,
 )
 from .helpers.stats_db_helpers import (
     statsTipo,
@@ -29,4 +31,6 @@ __all__ = [
     "topEstudios",
     "filtrado_info_incompleta",
     "apply_paginacion_ordenacion",
+    "get_full_manga",
+    "get_full_anime",
 ]

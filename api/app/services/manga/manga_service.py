@@ -14,9 +14,8 @@ from app.schemas.manga import (
     MangaCreateSchema,
     MangaUpdateSchema,
     ResponseUpdCrtManga,
-    CreateEditorialSchema,
-    CreateAutorSchema,
 )
+from app.schemas.common.relations import CreateAutorSchema, CreateEditorialSchema
 from app.schemas.anime import AniFavRespSchema, RespUpdMALAnimeSchema
 from app.schemas.search import (
     MangaSearchSchema,
@@ -37,6 +36,7 @@ from app.core.database import (
     filtrado_tipos,
     filtrado_busqueda_avanzada_manga,
     apply_paginacion_ordenacion,
+    get_full_manga,
 )
 
 from app.core.logging import get_logger
@@ -65,7 +65,6 @@ class MangaService:
                 filters.statusView,
             ),
         ]
-        logger.debug(pipeline)
 
         # Obtenemos el conteo de los animes que concuerdan con la busqueda
         totalMangas = await MangaModel.aggregate([*pipeline, {"$count": "totalMangas"}])
@@ -86,7 +85,7 @@ class MangaService:
 
         return MangaSearchSchema(
             listaMangas=[
-                dict_to_manga_schema(r, True if user else False) for r in results
+                dict_to_manga_schema(r, True if user else False, False) for r in results
             ],
             pageM=filters.page,
             totalPagesM=math.ceil(totalMangas / filters.limit),
@@ -102,10 +101,12 @@ class MangaService:
             {
                 "$match": {"key_manga": key_manga},
             },
+            *get_full_manga(),
             *lookup_user_favorites(
                 user.id if user else None, "manga", "utmanfavs", False, 5
             ),
         ]
+        logger.debug(pipeline)
         results = await MangaModel.aggregate(pipeline)
 
         if len(results) == 0:
@@ -116,7 +117,7 @@ class MangaService:
         manga = object_id_to_str(
             results[0]
         )  # Agregate retorna por defecto una lista, por lo cual se debe de tomar el primer elemento, si no da resultados, seria un elemento vacio
-        return dict_to_manga_schema(manga, True if user else False)
+        return dict_to_manga_schema(manga, True if user else False, True)
 
     # Agregar o quitar de favs y cambiar estatus de manga
     @staticmethod
