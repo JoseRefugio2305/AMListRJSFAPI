@@ -45,7 +45,7 @@ class RespUpdMALAnimeSchema(ResponseUpdCrtAnime):
 # Anime
 class AnimeSchema(AnimeCreateSchema):
     id: ObjectIdStr
-    animeImages: List[AnimeImagesSchema]
+    animeImages: AnimeImagesSchema
     calificacion: float = Field(ge=0, le=10)
     descripcion: str
     emision: EstadoEmEnum
@@ -74,7 +74,7 @@ class AnimeUpdateSchema(AnimeCreateSchema):
     titulo: Optional[str] = None
     link_p: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     tipo: Optional[TipoAnimeEnum] = None
-    animeImages: Optional[List[AnimeImagesSchema]] = None
+    animeImages: Optional[AnimeImagesSchema] = None
     calificacion: Optional[float] = Field(default=None, ge=0, le=10)
     descripcion: Optional[str] = None
     emision: Optional[EstadoEmEnum] = None

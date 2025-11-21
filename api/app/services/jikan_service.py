@@ -42,19 +42,15 @@ class JikanService:
         dict_anime = {
             "id_MAL": id_MAL,
             "linkMAL": animedata.get("url"),
-            "animeImages": [
-                {
-                    "img_sm": animedata.get("images", {})
-                    .get("jpg", {})
-                    .get("small_image_url", {}),
-                    "img": animedata.get("images", {})
-                    .get("jpg", {})
-                    .get("image_url", {}),
-                    "img_l": animedata.get("images", {})
-                    .get("jpg", {})
-                    .get("large_image_url", {}),
-                }
-            ],
+            "animeImages": {
+                "img_sm": animedata.get("images", {})
+                .get("jpg", {})
+                .get("small_image_url", {}),
+                "img": animedata.get("images", {}).get("jpg", {}).get("image_url", {}),
+                "img_l": animedata.get("images", {})
+                .get("jpg", {})
+                .get("large_image_url", {}),
+            },
             "titulos_alt": [
                 {"tit_alt": tit.get("title"), "tipo": animedata.get("type")}
                 for tit in animedata.get("titles")
@@ -128,19 +124,15 @@ class JikanService:
         dict_manga = {
             "id_MAL": id_MAL,
             "linkMAL": mangadata.get("url"),
-            "mangaImages": [
-                {
-                    "img_sm": mangadata.get("images", {})
-                    .get("jpg", {})
-                    .get("small_image_url", {}),
-                    "img": mangadata.get("images", {})
-                    .get("jpg", {})
-                    .get("image_url", {}),
-                    "img_l": mangadata.get("images", {})
-                    .get("jpg", {})
-                    .get("large_image_url", {}),
-                }
-            ],
+            "mangaImages": {
+                "img_sm": mangadata.get("images", {})
+                .get("jpg", {})
+                .get("small_image_url", {}),
+                "img": mangadata.get("images", {}).get("jpg", {}).get("image_url", {}),
+                "img_l": mangadata.get("images", {})
+                .get("jpg", {})
+                .get("large_image_url", {}),
+            },
             "titulos_alt": [
                 {"tit_alt": tit.get("title"), "tipo": mangadata.get("type")}
                 for tit in mangadata.get("titles")

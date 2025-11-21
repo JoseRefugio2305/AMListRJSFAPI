@@ -18,7 +18,7 @@ from app.schemas.search import (
     ResponseSearchMangaMAL,
     TipoContMALEnum,
 )
-from app.schemas.common.relations import CreateAutorSchema,CreateEditorialSchema
+from app.schemas.common.relations import CreateAutorSchema, CreateEditorialSchema
 from app.schemas.common.genres import CreateGenreSchema
 from app.core.utils import objects_id_list_to_str, ObjectIdStr
 from app.core.database import filtrado_info_incompleta
@@ -118,7 +118,7 @@ class MangaJikanService:
             # Si no se encuentra nada
             if not mangaMAL:
                 return RespUpdMALAnimeSchema(
-                    message="Error al intentar obtener la informacion del manga desde MAL",
+                    message=f"Error al intentar obtener la informacion del manga con id_MAL {id_MAL} desde MAL",
                     is_success=False,
                 )
 
@@ -162,12 +162,13 @@ class MangaJikanService:
                 )
 
             return RespUpdMALAnimeSchema(
-                message="Manga Actualizado Correctamente", is_success=True
+                message=f"Manga con key_manga {key_manga} Actualizado Correctamente",
+                is_success=True,
             )
         except Exception as e:
             logger.debug(str(e))
             return RespUpdMALAnimeSchema(
-                message="Ocurrio un error al intentar actualizar la informacion",
+                message=f"Ocurrio un error al intentar actualizar la informacion del manga con key_manga {key_manga}",
                 is_success=False,
             )
 
@@ -191,7 +192,7 @@ class MangaJikanService:
                 )
                 # Agregamos la respuesta
                 responses.append(resp)
-
+            logger.debug(responses)
             success_count = sum(
                 1 for r in responses if r.is_success
             )  # Realizamos el conteo de los mangas que se actualizaron correctamente

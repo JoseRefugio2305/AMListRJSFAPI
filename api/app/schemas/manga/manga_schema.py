@@ -35,7 +35,7 @@ class MangaIncompleteSchema(MangaCreateSchema):
 # Manga
 class MangaSchema(MangaCreateSchema):
     id: ObjectIdStr
-    mangaImages: List[MangaImagesSchema]
+    mangaImages: MangaImagesSchema
     calificacion: float = Field(ge=0, le=10)
     descripcion: str
     publicando: EstadoEmEnum
@@ -66,7 +66,7 @@ class MangaUpdateSchema(MangaCreateSchema):
     titulo: Optional[str] = None
     link_p: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     tipo: Optional[TipoMangaEnum] = None
-    mangaImages: Optional[List[MangaImagesSchema]] = None
+    mangaImages: Optional[MangaImagesSchema] = None
     calificacion: Optional[float] = Field(default=None, ge=0, le=10)
     descripcion: Optional[str] = None
     publicando: Optional[EstadoEmEnum] = None

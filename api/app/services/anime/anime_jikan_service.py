@@ -120,7 +120,7 @@ class AnimeJikanService:
             # Si no se encuentra nada
             if not animeMAL:
                 return RespUpdMALAnimeSchema(
-                    message="Error al intentar obtener la informacion del anime desde MAL",
+                    message=f"Error al intentar obtener la informacion del anime con id_MAL {id_MAL} desde MAL",
                     is_success=False,
                 )
 
@@ -153,12 +153,13 @@ class AnimeJikanService:
                 )
 
             return RespUpdMALAnimeSchema(
-                message="Anime Actualizado Correctamente", is_success=True
+                message=f"Anime con key_anime {key_anime} Actualizado Correctamente",
+                is_success=True,
             )
         except Exception as e:
             logger.debug(str(e))
             return RespUpdMALAnimeSchema(
-                message="Ocurrio un error al intentar actualizar la informacion",
+                message=f"Ocurrio un error al intentar actualizar la informacion en el anime con key_anime {key_anime}",
                 is_success=False,
             )
 
@@ -182,7 +183,7 @@ class AnimeJikanService:
                 )
                 # Agregamos la respuesta
                 responses.append(resp)
-
+            logger.debug(responses)
             success_count = sum(
                 1 for r in responses if r.is_success
             )  # Realizamos el conteo de los animes que se actualizaron correctamente
