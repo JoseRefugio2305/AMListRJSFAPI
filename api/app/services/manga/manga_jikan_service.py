@@ -87,6 +87,16 @@ class MangaJikanService:
                 detail="Error al intentar actualizar el manga",
             )
 
+    # Wrapper para la ejecucion de la actualizacion del manga desde MAL
+    @staticmethod
+    async def run_update_manga_mal_back(mangaId: ObjectIdStr):
+        await MangaJikanService.update_manga_from_mal(mangaId=mangaId, is_all=False)
+
+    # Wrapper para la ejecucion de la actualizacion masiva de mangas desde MAL
+    @staticmethod
+    async def run_update_all_mangas_back():
+        await MangaJikanService.update_all_mangas_from_mal()
+
     # Actualizar la informacion de un manga desde MAL
     @staticmethod
     async def update_manga_from_mal(

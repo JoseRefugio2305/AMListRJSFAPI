@@ -1,4 +1,13 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, status
+from fastapi import (
+    APIRouter,
+    Depends,
+    HTTPException,
+    UploadFile,
+    File,
+    status,
+    BackgroundTasks,
+)
+
 
 from app.services.anime import AnimeService, AnimeJikanService, AnimeFileService
 from app.core.security import require_admin
@@ -86,22 +95,18 @@ async def assign_id_mal(
 
 # Actualizar un anime con su informacion desde MAL
 @routerDashAnime.get(
-    "/update_from_mal/{anime_id}", response_model=RespUpdMALAnimeSchema
+    "/update_from_mal/{anime_id}",
 )
-async def update_from_mal(
-    anime_id: ObjectIdStr,
-):
-    response = await AnimeJikanService.update_anime_from_mal(
-        animeId=anime_id, is_all=False
-    )
-    return response.model_dump()
+async def update_from_mal(anime_id: ObjectIdStr, backTasks: BackgroundTasks):
+    backTasks.add_task(AnimeJikanService.run_update_anime_mal_back, anime_id)
+    return {"message": "Actualización de anime iniciada en background."}
 
 
 # Actualizar todos los animes que esten incompletos con su informacion desde MAL
-@routerDashAnime.get("/update_all_to_mal/", response_model=ResponseUpdAllMALSchema)
-async def update_all_from_mal():
-    response = await AnimeJikanService.update_all_animes_from_mal()
-    return response.model_dump()
+@routerDashAnime.get("/update_all_to_mal/")
+async def update_all_from_mal(backTasks: BackgroundTasks):
+    backTasks.add_task(AnimeJikanService.run_update_all_animes_back)
+    return {"message": "Actualización masiva iniciada en background."}
 
 
 # Obtener los animes que tienen la informacion incompleta (no hn sido actualizados a su informacion con MAL)

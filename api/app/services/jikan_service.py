@@ -140,7 +140,7 @@ class JikanService:
             "titulo": mangadata.get("title"),
             "calificacion": mangadata.get("score"),
             "descripcion": mangadata.get("synopsis"),
-            "publicando": 1 if mangadata.get("airing") else 0,
+            "publicando": 1 if mangadata.get("publishing") else 0,
             "capitulos": mangadata.get("chapters"),
             "volumenes": mangadata.get("volumes"),
             "fechaComienzoPub": mangadata.get("published", {})

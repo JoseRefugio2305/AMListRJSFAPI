@@ -89,6 +89,16 @@ class AnimeJikanService:
                 detail="Error al intentar actualizar el anime",
             )
 
+    ##Funcion Wrapper para ejecutar la actualizacion de un anime desde MAL en segundo plano y no pare la ejecutcion
+    @staticmethod
+    async def run_update_anime_mal_back(animeId: ObjectIdStr):
+        await AnimeJikanService.update_anime_from_mal(animeId=animeId, is_all=False)
+
+    # Wrapper para ejecutar la actualizacion masiva de animes desde MAL y que esto no afecte a la ejecucion de otras peticiones
+    @staticmethod
+    async def run_update_all_animes_back():
+        await AnimeJikanService.update_all_animes_from_mal()
+
     # Actualizar un anime sin actualizar con la informacion de MAL
     @staticmethod
     async def update_anime_from_mal(
