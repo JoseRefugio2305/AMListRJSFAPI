@@ -179,6 +179,7 @@ class JikanService:
                     "nombre": auth.get("name"),
                     "id_MAL": auth.get("mal_id"),
                     "linkMAL": auth.get("url"),
+                    "tipo": auth.get("type"),
                 }
                 for auth in mangadata.get("authors")
             ],

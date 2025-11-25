@@ -164,10 +164,10 @@ class MangaJikanService:
             for autor in n_autores:
                 ra = await MangaService.create_author(
                     CreateAutorSchema(
-                        nombre=editorial.get("nombre"),
-                        id_MAL=editorial.get("id_MAL"),
-                        linkMAL=editorial.get("linkMAL"),
-                        tipo=editorial.get("tipo"),
+                        nombre=autor.get("nombre"),
+                        id_MAL=autor.get("id_MAL"),
+                        linkMAL=autor.get("linkMAL"),
+                        tipo=autor.get("tipo"),
                     )
                 )
 
