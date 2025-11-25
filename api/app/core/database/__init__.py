@@ -5,6 +5,7 @@ from .helpers.db_helpers import (
     filtro_emision,
     filtrado_info_incompleta,
     apply_paginacion_ordenacion,
+    filtrado_gsae,
 )
 from .helpers.manga_helpers import filtrado_busqueda_avanzada_manga, get_full_manga
 from .helpers.anime_helpers import filtrado_busqueda_avanzada_anime, get_full_anime
@@ -31,4 +32,5 @@ __all__ = [
     "apply_paginacion_ordenacion",
     "get_full_manga",
     "get_full_anime",
+    "filtrado_gsae",
 ]

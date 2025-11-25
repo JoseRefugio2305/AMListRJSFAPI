@@ -90,6 +90,12 @@ class CreateAutorSchema(AutoresMRelSchema):
     linkMAL: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
 
 
+# Schema de Autor de manga
+class AutorSchema(CreateAutorSchema):
+    id: ObjectIdStr
+    fechaAdicion: str
+
+
 # Relacion editorial de manga
 class EditorialMRelSchema(BaseModel):
     nombre: str
@@ -100,6 +106,12 @@ class EditorialMRelSchema(BaseModel):
 class CreateEditorialSchema(EditorialMRelSchema):
     tipo: str
     linkMAL: Annotated[HttpUrl, AfterValidator(httpurl_to_str)]
+
+
+# Esquema de editorial de manga
+class EditorialSchema(CreateEditorialSchema):
+    id: ObjectIdStr
+    fechaAdicion: str
 
 
 # Tipos de mangas (manga, NL, one-shot, etc.)

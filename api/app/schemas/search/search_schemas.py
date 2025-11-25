@@ -3,6 +3,8 @@ from typing import List, Annotated
 
 from app.schemas.anime import AnimeSchema, AnimeMALSearch, AnimeIncompleteSchema
 from app.schemas.manga import MangaSchema, MangaMALSearch, MangaIncompleteSchema
+from app.schemas.common.genres import GenreSchema
+from app.schemas.common.relations import StudiosSchema, AutorSchema, EditorialSchema
 from app.core.utils import str_trim_lower
 
 
@@ -60,3 +62,26 @@ class SearchMangaIncompleteSchema(BaseModel):
     totalMangas: int = 0
     page: int = 1
     totalPages: int = 1
+
+
+# Schema de resultado de busqueda de generos
+class SearchGenresSchema(BaseModel):
+    lista: List[GenreSchema]
+    total: int = 0
+    page: int = 1
+    totalPages: int = 1
+
+
+# Schema de resultado de busqueda de estudios de animacion
+class SearchStudiosSchema(SearchGenresSchema):
+    lista: List[StudiosSchema]
+
+
+# Schema de resultado de busqueda de autores de manga
+class SearchAutoresSchema(SearchGenresSchema):
+    lista: List[AutorSchema]
+
+
+# Schema de resultado de busqueda de editoriales de manga
+class SearchEditorialsSchema(SearchGenresSchema):
+    lista: List[EditorialSchema]

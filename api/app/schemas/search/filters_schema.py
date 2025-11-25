@@ -8,6 +8,7 @@ from .filters_enum import (
     FieldOrdEnum,
     UserTypeEnum,
     FieldOrdUsersEnum,
+    FieldOrdGSAEEnum,
 )
 
 from app.schemas.anime import StatusViewEnum, TipoAnimeEnum
@@ -51,3 +52,14 @@ class UserListFilterSchema(BaseModel):
     is_active: ActiveUserEnum = ActiveUserEnum.todos
     orderBy: OrderByEnum = OrderByEnum.asc
     orderField: FieldOrdUsersEnum = FieldOrdUsersEnum.name
+
+
+# Schema de filtros de busqueda de generos, estudios de animacion, editoriales y autores
+class FilterGSAESchema(BaseModel):
+    limit: int = Field(20, ge=1, le=20)
+    page: int = Field(1, ge=1)
+    txtSearch: Annotated[Optional[str], BeforeValidator(str_trim_lower)] = Field(
+        default="", max_length=20
+    )
+    orderBy: OrderByEnum = OrderByEnum.asc
+    orderField: FieldOrdGSAEEnum = FieldOrdGSAEEnum.id_MAL

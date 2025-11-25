@@ -15,6 +15,9 @@ from app.schemas.search import (
     SearchMangaIncompleteSchema,
     ReadyToMALEnum,
     FilterSchema,
+    FilterGSAESchema,
+    SearchEditorialsSchema,
+    SearchAutoresSchema,
 )
 
 from app.core.logging import get_logger
@@ -101,3 +104,17 @@ async def get_incomplete(
     incompleteMangas = await MangaService.get_incomplete_mangas(filters, ready_to_mal)
 
     return incompleteMangas.model_dump()
+
+
+# Obtener la lista de editoriales de manga
+@routerDashManga.post("/editorials_list/", response_model=SearchEditorialsSchema)
+async def get_editorials(payload: FilterGSAESchema):
+    response = await MangaService.editoriales_list(payload)
+    return response.model_dump()
+
+
+# Obtener la lista de autores de manga
+@routerDashManga.post("/authors_list/", response_model=SearchAutoresSchema)
+async def get_autores(payload: FilterGSAESchema):
+    response = await MangaService.autores_list(payload)
+    return response.model_dump()

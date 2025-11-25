@@ -1,4 +1,4 @@
-from .filters_schema import FilterSchema, UserListFilterSchema
+from .filters_schema import FilterSchema, UserListFilterSchema, FilterGSAESchema
 from .filters_enum import (
     TipoContenidoEnum,
     EmisionFilterEnum,
@@ -9,6 +9,7 @@ from .filters_enum import (
     OrderByEnum,
     UserTypeEnum,
     FieldOrdUsersEnum,
+    FieldOrdGSAEEnum,
 )
 from .search_schemas import (
     AnimeSearchSchema,
@@ -19,6 +20,10 @@ from .search_schemas import (
     SearchAnimeIncompleteSchema,
     ResponseSearchMangaMAL,
     SearchMangaIncompleteSchema,
+    SearchGenresSchema,
+    SearchAutoresSchema,
+    SearchEditorialsSchema,
+    SearchStudiosSchema,
 )
 
 __all__ = [
@@ -41,4 +46,10 @@ __all__ = [
     "OrderByEnum",
     "UserTypeEnum",
     "FieldOrdUsersEnum",
+    "SearchGenresSchema",
+    "SearchAutoresSchema",
+    "SearchEditorialsSchema",
+    "SearchStudiosSchema",
+    "FieldOrdGSAEEnum",
+    "FilterGSAESchema",
 ]

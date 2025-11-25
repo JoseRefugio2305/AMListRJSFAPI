@@ -16,14 +16,17 @@ from app.schemas.anime import (
     ResponseUpdCrtAnime,
     RespUpdMALAnimeSchema,
 )
-from app.schemas.common.relations import CreateStudioSchema
-from app.schemas.common.genres import CreateGenreSchema
+from app.schemas.common.relations import CreateStudioSchema, StudiosSchema
+from app.schemas.common.genres import CreateGenreSchema, GenreSchema
 from .anime_utils import dict_to_anime_schema, dict_to_incomplete_anime
 from app.schemas.search import (
     AnimeSearchSchema,
     FilterSchema,
     SearchAnimeIncompleteSchema,
     ReadyToMALEnum,
+    FilterGSAESchema,
+    SearchGenresSchema,
+    SearchStudiosSchema,
 )
 from app.schemas.auth import UserLogRespSchema
 from app.core.utils import (
@@ -39,6 +42,7 @@ from app.core.database import (
     filtrado_busqueda_avanzada_anime,
     apply_paginacion_ordenacion,
     get_full_anime,
+    filtrado_gsae,
 )
 
 from app.core.logging import get_logger
@@ -288,10 +292,6 @@ class AnimeService:
                 message="Genero Creado Correctamente", is_success=True
             )
         except:
-            # raise HTTPException(
-            #     status_code=status.HTTP_400_BAD_REQUEST,
-            #     detail="Error al intentar actualizar el anime",
-            # )
             return RespUpdMALAnimeSchema(
                 message="Ocurrio un error al intentar agregar el genero",
                 is_success=False,
@@ -375,4 +375,89 @@ class AnimeService:
             totalAnimes=totalAnimes,
             totalPages=math.ceil(totalAnimes / filters.limit),
             page=filters.page,
+        )
+
+    # Busqueda de generos
+    @staticmethod
+    async def genres_list(filters: FilterGSAESchema) -> SearchGenresSchema:
+        pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        logger.debug(pipeline)
+        generos = objects_id_list_to_str(
+            await GeneroModel.aggregate(
+                [
+                    *pipeline,
+                    *apply_paginacion_ordenacion(
+                        filters.limit,
+                        filters.page,
+                        filters.orderBy,
+                        filters.orderField,
+                        False,
+                    ),
+                ]
+            )
+        )
+        totalGeneros = await GeneroModel.aggregate(
+            [*pipeline, {"$count": "totalGeneros"}]
+        )
+        totalGeneros = totalGeneros[0]["totalGeneros"] if len(totalGeneros) > 0 else 0
+
+        list_generos = [
+            GenreSchema(
+                nombre=gen.get("nombre"),
+                id=gen.get("_id") or gen.get("id") or gen.get("Id"),
+                id_MAL=gen.get("id_MAL"),
+                nombre_mal=gen.get("nombre_mal"),
+                linkMAL=gen.get("linkMAL"),
+                fechaAdicion=gen.get("fechaAdicion"),
+            )
+            for gen in generos
+        ]
+
+        return SearchGenresSchema(
+            lista=list_generos,
+            total=totalGeneros,
+            page=filters.page,
+            totalPages=math.ceil(totalGeneros / filters.limit),
+        )
+
+    # Busqueda de estudios de animacion
+    @staticmethod
+    async def studios_list(filters: FilterGSAESchema) -> SearchStudiosSchema:
+        pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        logger.debug(pipeline)
+        studios = objects_id_list_to_str(
+            await StudioModel.aggregate(
+                [
+                    *pipeline,
+                    *apply_paginacion_ordenacion(
+                        filters.limit,
+                        filters.page,
+                        filters.orderBy,
+                        filters.orderField,
+                        False,
+                    ),
+                ]
+            )
+        )
+        totalStudios = await StudioModel.aggregate(
+            [*pipeline, {"$count": "totalStudios"}]
+        )
+        totalStudios = totalStudios[0]["totalStudios"] if len(totalStudios) > 0 else 0
+
+        list_Studios = [
+            StudiosSchema(
+                nombre=std.get("nombre"),
+                id=std.get("_id") or std.get("id") or std.get("Id"),
+                id_MAL=std.get("id_MAL"),
+                linkMAL=std.get("linkMAL"),
+                fechaAdicion=str(std.get("fechaAdicion")),
+            )
+            for std in studios
+        ]
+
+        return SearchStudiosSchema(
+            lista=list_Studios,
+            total=totalStudios,
+            page=filters.page,
+            totalPages=math.ceil(totalStudios / filters.limit),
         )

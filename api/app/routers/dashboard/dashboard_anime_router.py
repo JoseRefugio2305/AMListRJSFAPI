@@ -8,7 +8,6 @@ from fastapi import (
     BackgroundTasks,
 )
 
-
 from app.services.anime import AnimeService, AnimeJikanService, AnimeFileService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
@@ -26,6 +25,9 @@ from app.schemas.search import (
     SearchAnimeIncompleteSchema,
     FilterSchema,
     ReadyToMALEnum,
+    FilterGSAESchema,
+    SearchGenresSchema,
+    SearchStudiosSchema,
 )
 from app.core.logging import get_logger
 
@@ -123,7 +125,20 @@ async def get_incomplete(
 
 
 # Subir archivo para insertar multiples animes
-@routerDashAnime.post("/upload_file/")
+@routerDashAnime.post("/upload_file/", response_model=ResponseUpdAllMALSchema)
 async def upload_file(file: UploadFile = File(...)):
     response = await AnimeFileService.insert_from_file(file)
-    return response
+    return response.model_dump()
+
+
+# Busqueda y filtrado de generos
+@routerDashAnime.post("/genres_list/", response_model=SearchGenresSchema)
+async def get_genres(payload: FilterGSAESchema):
+    response = await AnimeService.genres_list(payload)
+    return response.model_dump()
+
+
+@routerDashAnime.post("/studios_list/", response_model=SearchStudiosSchema)
+async def get_studios(payload: FilterGSAESchema):
+    response = await AnimeService.studios_list(payload)
+    return response.model_dump()

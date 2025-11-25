@@ -63,3 +63,12 @@ class UserTypeEnum(IntEnum):
     base_user = RolEnum.base_user
     admin = RolEnum.admin
     todos = 2
+
+
+# Enum de campos por los que se puede ordenar la consulta de generos, estudios de animacion, editoriales y autores
+class FieldOrdGSAEEnum(StrEnum):
+    nombre = "nombre"
+    nombre_mal = "nombre_mal"
+    fechaAdicion = "fechaAdicion"
+    id_MAL = "id_MAL"
+    tipo = "tipo"

@@ -3,7 +3,6 @@ from bson.objectid import ObjectId
 
 from app.schemas.search import (
     EmisionFilterEnum,
-    FilterSchema,
     OrderByEnum,
     FieldOrdEnum,
 )
@@ -71,6 +70,7 @@ def lookup_user_favorites(
     ]
     return pipeline
 
+
 # Funcion para preparar filtro de busqueda por estado de emision/publicacion, o mostrar todos
 def filtro_emision(estado_em_pub: int, field: str = "emision") -> List[Dict[str, Any]]:
     if estado_em_pub != EmisionFilterEnum.todos:
@@ -81,6 +81,7 @@ def filtro_emision(estado_em_pub: int, field: str = "emision") -> List[Dict[str,
         ]
     else:
         return []
+
 
 # Funcion para ppreparar filtro de busqueda para el tipo de anime/manga
 def filtrado_tipos(tipos_am: List[int], is_anime: bool = True) -> List[Dict[str, Any]]:
@@ -99,6 +100,7 @@ def filtrado_tipos(tipos_am: List[int], is_anime: bool = True) -> List[Dict[str,
         orr_arr = [{"tipo": cond} for cond in tipos_am]
         return [{"$match": {"$or": [*orr_arr]}}] if len(orr_arr) > 0 else []
 
+
 # Filtrado para animes y mangas incompletos
 def filtrado_info_incompleta(is_to_update: bool = False) -> List[Dict[str, Any]]:
     and_query = [
@@ -106,6 +108,7 @@ def filtrado_info_incompleta(is_to_update: bool = False) -> List[Dict[str, Any]]
         {"linkMAL": {"$eq": None}},
     ]
     return [{"$match": {"$and": and_query}}]
+
 
 # Limitacion, paginado y ordenacion de la informacion
 def apply_paginacion_ordenacion(
@@ -127,3 +130,21 @@ def apply_paginacion_ordenacion(
     pipe_pag = [{"$skip": (pagina - 1) * limit}, {"$limit": limit}]
 
     return [ord_query, *pipe_pag]
+
+
+# Aplicar filtrado de generos, estudios de animacion, editoriales y autores
+def filtrado_gsae(txtSearch: str = "", is_genre: bool = False) -> List[Dict[str, Any]]:
+    cond = {}
+    if len(txtSearch) > 0:
+        cond = (
+            {
+                "$or": [
+                    {"nombre": {"$regex": txtSearch, "$options": "i"}},
+                    {"nombre_mal": {"$regex": txtSearch, "$options": "i"}},
+                ]
+            }
+            if is_genre
+            else {"nombre": {"$regex": txtSearch, "$options": "i"}}
+        )
+
+    return {"$match": cond}

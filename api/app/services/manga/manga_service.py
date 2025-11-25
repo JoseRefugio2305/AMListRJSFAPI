@@ -15,13 +15,21 @@ from app.schemas.manga import (
     MangaUpdateSchema,
     ResponseUpdCrtManga,
 )
-from app.schemas.common.relations import CreateAutorSchema, CreateEditorialSchema
+from app.schemas.common.relations import (
+    CreateAutorSchema,
+    CreateEditorialSchema,
+    AutorSchema,
+    EditorialSchema,
+)
 from app.schemas.anime import AniFavRespSchema, RespUpdMALAnimeSchema
 from app.schemas.search import (
     MangaSearchSchema,
     FilterSchema,
     ReadyToMALEnum,
     SearchMangaIncompleteSchema,
+    FilterGSAESchema,
+    SearchEditorialsSchema,
+    SearchAutoresSchema,
 )
 from app.schemas.auth import UserLogRespSchema
 from app.core.utils import (
@@ -37,6 +45,7 @@ from app.core.database import (
     filtrado_busqueda_avanzada_manga,
     apply_paginacion_ordenacion,
     get_full_manga,
+    filtrado_gsae,
 )
 
 from app.core.logging import get_logger
@@ -369,4 +378,92 @@ class MangaService:
             totalMangas=totalMangas,
             totalPages=math.ceil(totalMangas / filters.limit),
             page=filters.page,
+        )
+
+    # Busqueda de editoriales de manga
+    @staticmethod
+    async def editoriales_list(filters: FilterGSAESchema) -> SearchEditorialsSchema:
+        pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        logger.debug(pipeline)
+        editoriales = objects_id_list_to_str(
+            await EditorialModel.aggregate(
+                [
+                    *pipeline,
+                    *apply_paginacion_ordenacion(
+                        filters.limit,
+                        filters.page,
+                        filters.orderBy,
+                        filters.orderField,
+                        False,
+                    ),
+                ]
+            )
+        )
+        totalEditoriales = await EditorialModel.aggregate(
+            [*pipeline, {"$count": "totalEditoriales"}]
+        )
+        totalEditoriales = (
+            totalEditoriales[0]["totalEditoriales"] if len(totalEditoriales) > 0 else 0
+        )
+
+        list_Editorials = [
+            EditorialSchema(
+                nombre=edt.get("nombre"),
+                id=edt.get("_id") or edt.get("id") or edt.get("Id"),
+                id_MAL=edt.get("id_MAL"),
+                linkMAL=edt.get("linkMAL"),
+                tipo=edt.get("tipo"),
+                fechaAdicion=str(edt.get("fechaAdicion")),
+            )
+            for edt in editoriales
+        ]
+
+        return SearchEditorialsSchema(
+            lista=list_Editorials,
+            total=totalEditoriales,
+            page=filters.page,
+            totalPages=math.ceil(totalEditoriales / filters.limit),
+        )
+
+    # Busqueda de autores de manga
+    @staticmethod
+    async def autores_list(filters: FilterGSAESchema) -> SearchAutoresSchema:
+        pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        logger.debug(pipeline)
+        autores = objects_id_list_to_str(
+            await AuthorModel.aggregate(
+                [
+                    *pipeline,
+                    *apply_paginacion_ordenacion(
+                        filters.limit,
+                        filters.page,
+                        filters.orderBy,
+                        filters.orderField,
+                        False,
+                    ),
+                ]
+            )
+        )
+        totalAutores = await AuthorModel.aggregate(
+            [*pipeline, {"$count": "totalAutores"}]
+        )
+        totalAutores = totalAutores[0]["totalAutores"] if len(totalAutores) > 0 else 0
+
+        list_Autores = [
+            AutorSchema(
+                nombre=auth.get("nombre"),
+                id=auth.get("_id") or auth.get("id") or auth.get("Id"),
+                id_MAL=auth.get("id_MAL"),
+                linkMAL=auth.get("linkMAL"),
+                tipo=auth.get("tipo"),
+                fechaAdicion=str(auth.get("fechaAdicion")),
+            )
+            for auth in autores
+        ]
+
+        return SearchAutoresSchema(
+            lista=list_Autores,
+            total=totalAutores,
+            page=filters.page,
+            totalPages=math.ceil(totalAutores / filters.limit),
         )
