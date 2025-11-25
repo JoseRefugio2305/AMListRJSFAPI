@@ -10,8 +10,13 @@ def filtrado_busqueda_avanzada_manga(filtros: FilterSchema) -> List[Dict[str, An
         (
             {
                 "$or": [
-                    {"tit_search": {"$regex": filtros.tituloBusq}},
-                    {"titulos_alt_search.tit_alt": {"$regex": filtros.tituloBusq}},
+                    {"tit_search": {"$regex": filtros.tituloBusq, "$options": "i"}},
+                    {
+                        "titulos_alt_search.tit_alt": {
+                            "$regex": filtros.tituloBusq,
+                            "$options": "i",
+                        }
+                    },
                 ]
             }
             if len(filtros.tituloBusq) > 0

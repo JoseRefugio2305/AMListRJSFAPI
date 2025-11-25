@@ -9,8 +9,13 @@ def filtrado_busqueda_avanzada_anime(filtros: FilterSchema) -> List[Dict[str, An
         (  # Evaluamos si esta haciendo buqueda por titulo, hacemos comparaciones con regex en titulo y titulos alternativos
             {
                 "$or": [
-                    {"tit_search": {"$regex": filtros.tituloBusq}},
-                    {"titulos_alt_search.tit_alt": {"$regex": filtros.tituloBusq}},
+                    {"tit_search": {"$regex": filtros.tituloBusq, "$options": "i"}},
+                    {
+                        "titulos_alt_search.tit_alt": {
+                            "$regex": filtros.tituloBusq,
+                            "$options": "i",
+                        }
+                    },
                 ]
             }
             if len(filtros.tituloBusq) > 0
