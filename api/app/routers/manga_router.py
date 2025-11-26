@@ -6,7 +6,7 @@ from app.schemas.search import FilterSchema, EmisionFilterEnum, MangaSearchSchem
 from app.schemas.auth import UserLogRespSchema
 from app.schemas.manga import MangaSchema, MangaFavPayloadSchema
 from app.schemas.anime import AniFavRespSchema
-from app.services.manga import MangaService
+from app.services.manga import MangaService, MangaCRUDService
 
 logger = get_logger(__name__)
 
@@ -49,5 +49,5 @@ async def manga_details(
 async def change_status_fav(
     payload: MangaFavPayloadSchema, user: UserLogRespSchema = Depends(get_current_user)
 ):
-    response = await MangaService.change_status_favs(payload, user)
+    response = await MangaCRUDService.change_status_favs(payload, user)
     return response.model_dump()

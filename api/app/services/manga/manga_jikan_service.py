@@ -23,7 +23,7 @@ from app.schemas.common.genres import CreateGenreSchema
 from app.core.utils import objects_id_list_to_str, ObjectIdStr
 from app.core.database import filtrado_info_incompleta
 from app.services.jikan_service import JikanService
-from .manga_service import MangaService
+from .manga_crud_sevice import MangaCRUDService
 from app.services.anime import AnimeService
 
 from app.core.logging import get_logger
@@ -138,7 +138,7 @@ class MangaJikanService:
             # Preparamos la informacion para la actualizacion
             mangaMAL = MangaUpdateSchema.model_validate(mangaMAL)
             mangaMAL.key_manga = key_manga
-            mangaUpd = await MangaService.update_manga(
+            mangaUpd = await MangaCRUDService.update_manga(
                 payload=mangaMAL, manga_id=mangaId
             )
             # Ahora hay que insertar generos, editoriales o autores de manga  nuevos que tenga el manga recien actualizado
@@ -152,7 +152,7 @@ class MangaJikanService:
                     )
                 )
             for editorial in n_editoriales:
-                re = await MangaService.create_editorial(
+                re = await MangaCRUDService.create_editorial(
                     CreateEditorialSchema(
                         nombre=editorial.get("nombre"),
                         id_MAL=editorial.get("id_MAL"),
@@ -162,7 +162,7 @@ class MangaJikanService:
                 )
 
             for autor in n_autores:
-                ra = await MangaService.create_author(
+                ra = await MangaCRUDService.create_author(
                     CreateAutorSchema(
                         nombre=autor.get("nombre"),
                         id_MAL=autor.get("id_MAL"),

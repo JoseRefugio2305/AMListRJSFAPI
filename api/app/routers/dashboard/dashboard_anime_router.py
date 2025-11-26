@@ -8,7 +8,12 @@ from fastapi import (
     BackgroundTasks,
 )
 
-from app.services.anime import AnimeService, AnimeJikanService, AnimeFileService
+from app.services.anime import (
+    AnimeService,
+    AnimeJikanService,
+    AnimeFileService,
+    AnimeCRUDService,
+)
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
 from app.schemas.anime import (
@@ -49,7 +54,7 @@ async def create(
     payload: AnimeCreateSchema,
 ):
     logger.debug(payload)
-    response = await AnimeService.create_anime(payload)
+    response = await AnimeCRUDService.create_anime(payload)
     return response.model_dump()
 
 
@@ -64,7 +69,7 @@ async def update(
         raise HTTPException(
             status_code=400, detail="No se proporcionaron datos para actualizar"
         )
-    response = await AnimeService.update_anime(anime_id, payload)
+    response = await AnimeCRUDService.update_anime(anime_id, payload)
     return response.model_dump()
 
 
@@ -73,7 +78,7 @@ async def update(
 async def delete(
     anime_id: ObjectIdStr,
 ):
-    response = await AnimeService.delete_anime(anime_id)
+    response = await AnimeCRUDService.delete_anime(anime_id)
     return response.model_dump()
 
 

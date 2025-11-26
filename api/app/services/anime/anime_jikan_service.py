@@ -24,7 +24,7 @@ from app.core.utils import (
     ObjectIdStr,
 )
 from app.services.jikan_service import JikanService
-from .anime_service import AnimeService
+from .anime_crud_service import AnimeCRUDService
 from app.core.database import filtrado_info_incompleta
 
 from app.core.logging import get_logger
@@ -139,12 +139,12 @@ class AnimeJikanService:
             # Preparamos la informacion para la actualizacion
             animeMAL = AnimeUpdateSchema.model_validate(animeMAL)
             animeMAL.key_anime = key_anime
-            animeUpd = await AnimeService.update_anime(
+            animeUpd = await AnimeCRUDService.update_anime(
                 payload=animeMAL, anime_id=animeId
             )
             # Ahora hay que insertar generos o estudios de animacion nuevos que tenga el anime recien actualizado
             for genero in n_generos:
-                rg = await AnimeService.create_genre(
+                rg = await AnimeCRUDService.create_genre(
                     CreateGenreSchema(
                         nombre=genero.get("nombre"),
                         id_MAL=genero.get("id_MAL"),
@@ -153,7 +153,7 @@ class AnimeJikanService:
                     )
                 )
             for studio in n_studios:
-                re = await AnimeService.create_studio(
+                re = await AnimeCRUDService.create_studio(
                     CreateStudioSchema(
                         nombre=studio.get("nombre"),
                         id_MAL=studio.get("id_MAL"),

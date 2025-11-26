@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 
-from app.services.manga import MangaService, MangaJikanService
+from app.services.manga import MangaService, MangaJikanService, MangaCRUDService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
 from app.schemas.anime import (
@@ -37,7 +37,7 @@ routerDashManga = APIRouter(
     status_code=status.HTTP_201_CREATED,
 )
 async def create(payload: MangaCreateSchema):
-    response = await MangaService.create_manga(payload)
+    response = await MangaCRUDService.create_manga(payload)
     return response.model_dump()
 
 
@@ -52,7 +52,7 @@ async def update(
         raise HTTPException(
             status_code=400, detail="No se proporcionaron datos para actualizar"
         )
-    response = await MangaService.update_manga(payload=payload, manga_id=manga_id)
+    response = await MangaCRUDService.update_manga(payload=payload, manga_id=manga_id)
     return response.model_dump()
 
 
@@ -60,7 +60,7 @@ async def update(
 @routerDashManga.delete("/delete/{manga_id}", response_model=ResponseUpdCrtManga)
 async def delete(manga_id: ObjectIdStr):
 
-    response = await MangaService.delete_manga(manga_id)
+    response = await MangaCRUDService.delete_manga(manga_id)
 
     return response.model_dump()
 

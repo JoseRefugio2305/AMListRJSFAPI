@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from app.core.security import get_current_user, optional_current_user
-from app.services.anime import AnimeService
+from app.services.anime import AnimeService, AnimeCRUDService
 from app.schemas.search import FilterSchema, EmisionFilterEnum, AnimeSearchSchema
 from app.schemas.anime import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
 from app.schemas.auth import UserLogRespSchema
@@ -49,5 +49,5 @@ async def anime_details(
 async def change_status_fav(
     payload: AniFavPayloadSchema, user: UserLogRespSchema = Depends(get_current_user)
 ):
-    data = await AnimeService.change_status_favs(payload, user)
+    data = await AnimeCRUDService.change_status_favs(payload, user)
     return data.model_dump()
