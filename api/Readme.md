@@ -4,10 +4,6 @@ Esta es una API para el almacenamiento y listado de anime y manga. Desarrollada 
 
 Permite a un usuario sin autenticación la consulta de anime y manga, y de tener autenticación permite el agregar a favoritos anime y manga, y realizar operaciones de edición de perfil. Si tiene la autorización necesaria de administrador, permite además la creación, actualización (con información específica o a través de información obtenida desde My Anime List) y eliminación de anime y manga.
 
-## Getting Started
-
-Las siguientes instrucciones son para la instalación y ejecución del API.
-
 ## Estructura del proyecto
 
 ```bash
@@ -127,12 +123,17 @@ api/
     └── main.py
 ```
 
-## Prerrequisitos
+## Getting Started
+
+Las siguientes instrucciones son para la instalación y ejecución del API.
+
+
+### Prerrequisitos
 
 -  Python 3.13+
 -  MongoDB (Local o con Atlas)
 
-## Instalación
+### Instalación
 
 1. **Crear y activar el entorno virtual de Python**
 
@@ -162,11 +163,11 @@ api/
 
    Reemplaza el valor de las variables con las que usaras en el proyecto.
 
-### Sobre la base de datos
+#### Sobre la base de datos
 
 Si no se tiene una base de datos, esta será creada por mongo al intentar insertar o leer información. También se puede llevar a cabo la restauración de la base de datos a partir de un respaldo previo basándote en el siguiente tutorial: [Exportar e importar de MongoDB - Database tools - mongodump y mongorestore](https://youtu.be/hg8OKEhjwUk?si=Dk9Jh0-S6BYdSb0w)
 
-### Sobre Jikan Api
+#### Sobre Jikan Api
 Para este proyecto se hizo uso de la API NO Oficial de My Anime List, **_[Jikan API]( https://jikan.moe/)_**, en específico su integración con Python **_[jikan4snek]( https://github.com/ScathachGrip/jikan4snek)_**.
 Con la cual se hace la actualización de los animes y mangas con data obtenida desde esta página. 
 
