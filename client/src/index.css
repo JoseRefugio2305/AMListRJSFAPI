@@ -1,0 +1,7 @@
+@import "tailwindcss";
+@plugin "flowbite-react/plugin/tailwindcss";
+@source "../.flowbite-react/class-list.json";
+
+
+/*Linea necesaria para activar el uso del dark mode, y que el cambio con switch sea posible, si no se pone esta linea la pagina tomara por defecto el tema que el usuario tenga en su navagador o equipo de computo*/
+@custom-variant dark (&:where(.dark, .dark *));

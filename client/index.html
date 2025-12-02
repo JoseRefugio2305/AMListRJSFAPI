@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>client</title>
+      <script>
+         //Codigo necesario para aplicar el tema preferido del usuario cuando entre en la pagina, tomando en cuenta si ya tenia uno seleccionado en la pagina o si no toma el preferido del sistema
+         (function () {
+            try {
+               const stored = localStorage.getItem("color-theme"); //Intentamos ver si uya lo tiene seleccionado
+               const prefersDark =
+                  window.matchMedia &&
+                  window.matchMedia("(prefers-color-scheme: dark)").matches; //Preferencia del sistema
+               if (stored === "dark" || (!stored && prefersDark)) {
+                  //Si tiene dark en la aplicacion o si no lo tiene en la app pero si en el sistema
+                  document.documentElement.classList.add("dark");
+               } else {
+                  //Lo quitamos si tiene seleccionado light o su preferencia es light
+                  document.documentElement.classList.remove("dark");
+               }
+            } catch (e) {
+               // ignore
+            }
+         })();
+      </script>
+   </head>
+   <body>
+      <div id="root" class="bg-white dark:bg-gray-800"></div>
+      <script type="module" src="/src/main.tsx"></script>
+   </body>
+</html>
