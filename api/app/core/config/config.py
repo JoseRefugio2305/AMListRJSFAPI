@@ -1,5 +1,7 @@
 from pydantic_settings import BaseSettings
 from pydantic import Field
+from pydantic.types import Json
+from typing import List
 
 
 class Settings(BaseSettings):
@@ -10,8 +12,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = Field(
         10080, env="ACCESS_TOKEN_EXPIRE_MINUTES"
     )  # 7 dias en minutos
-    #Nivel de logs
-    LOG_LEVEL:str=Field("INFO", env="LOG_LEVEL")
+    # Nivel de logs
+    LOG_LEVEL: str = Field("INFO", env="LOG_LEVEL")
+    # Urls de Origen para CORS
+    ORIGINS_CORS: Json[List[str]] = Field(["http://localhost:5173/"], env="ORIGINS_CORS")
 
     # Cargamos desde el archivo .env
     class Config:

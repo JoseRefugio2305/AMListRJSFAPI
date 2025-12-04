@@ -159,6 +159,7 @@ Las siguientes instrucciones son para la instalación y ejecución del API.
    JWT_ALGORITHM=jwt_algorithm
    ACCESS_TOKEN_EXPIRE_MINUTES=10080
    LOG_LEVEL = DEBUG
+   ORIGINS_CORS='["Direccion URL"]'
    ```
 
    Reemplaza el valor de las variables con las que usaras en el proyecto.

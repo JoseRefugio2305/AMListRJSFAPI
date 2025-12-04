@@ -8,7 +8,7 @@ from pydantic import (
 )
 from enum import IntEnum
 from typing import Optional, Annotated
-from app.core.utils import ObjectIdStr, str_trim_lower
+from app.core.utils import ObjectIdStr, str_trim_lower, UsernameType
 import re
 
 PASSWORD_REGEX = r"^(?=.{8,16}$)(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#_\-%])[A-Za-z\d!@#_\-%]{8,16}$"
@@ -23,7 +23,7 @@ class RolEnum(IntEnum):
 
 # Schema del payload para el registro y log de usuario
 class UserRegLogSchema(BaseModel):
-    name: str
+    name: Optional[UsernameType] = Field("")
     email: Annotated[EmailStr, BeforeValidator(str_trim_lower)]
     password: str = Field(..., min_length=8)
 
@@ -38,7 +38,7 @@ class UserRegLogSchema(BaseModel):
 
 # Schema para registro de ususario en BDD
 class UserRegSchema(BaseModel):
-    name: str
+    name: UsernameType
     email: Annotated[EmailStr, BeforeValidator(str_trim_lower)]
     password: str = Field(..., min_length=8)
     rol: RolEnum = RolEnum.base_user
@@ -51,7 +51,7 @@ class UserRegSchema(BaseModel):
 # Schema para la respuesta despues del registro o logeo
 class UserLogRespSchema(BaseModel):
     id: ObjectIdStr
-    name: str
+    name: UsernameType
     email: EmailStr
     rol: RolEnum = RolEnum.base_user
     is_active: bool = True

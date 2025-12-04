@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.database import connect_mongo, close_mongo
+from app.core.config import settings
 from app.routers import (
     auth_router,
     anime_router,
@@ -45,6 +47,16 @@ app = FastAPI(
 @app.get("/")
 async def root():
     return {"status": "ok", "message": "Anime & Manga API corriendo"}
+
+
+# CORS POLICY
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=settings.ORIGINS_CORS,
+    allow_credentials=True,  #Permitimos cookies y headers de autorizacion
+    allow_methods=["*"],  # Permitimos metodos HTTP (GET, POST, PUT, DELETE, etc.)
+    allow_headers=["*"],  # Permitimos todos los headers 
+)
 
 
 # Registro de rutas
