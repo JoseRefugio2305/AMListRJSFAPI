@@ -20,7 +20,7 @@ export async function SignIn(data: UserLogReg): Promise<ResponseLogRes> {
                name: ""
           }
      })
-     console.log(response)
+     // console.log(response)
      return response
 }
 //Registro
@@ -41,6 +41,6 @@ export async function SignUp(data: UserLogReg): Promise<ResponseLogRes> {
                name: ""
           }
      })
-     console.log(response)
+     // console.log(response)
      return response
 }
