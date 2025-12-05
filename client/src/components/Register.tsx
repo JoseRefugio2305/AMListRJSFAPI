@@ -73,7 +73,7 @@ export function Register() {
                placeholder="Contraseña"
             />
          </div>
-         <Button type="submit" disabled={loading}>
+         <Button type="submit" disabled={loading} color="purple">
             {loading ? (
                <>
                   <Spinner

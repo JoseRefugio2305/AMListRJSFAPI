@@ -15,7 +15,7 @@ export function Login() {
       const formData = new FormData(event.currentTarget);
       const email = String(formData.get("email") ?? "");
       const password = String(formData.get("password") ?? "");
-      login({ name: "", email, password }, true)
+      login({ email, password }, true)
          .then((response) => {
             showToast({
                severity: response.is_success ? "success" : "error",
@@ -54,7 +54,7 @@ export function Login() {
             </div>
             <TextInput id="password" name="password" type="password" required />
          </div>
-         <Button type="submit" disabled={loading}>
+         <Button type="submit" disabled={loading} color="purple">
             {loading ? (
                <>
                   <Spinner

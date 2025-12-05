@@ -1,6 +1,5 @@
 import {
    Avatar,
-   Button,
    Dropdown,
    DropdownDivider,
    DropdownHeader,
@@ -10,14 +9,46 @@ import {
    NavbarCollapse,
    NavbarToggle,
 } from "flowbite-react";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import viteLogo from "/vite.svg";
 import { ButtonToggleTheme } from "./ButtonToggleTheme";
 import { House, UserPlus } from "lucide-react";
 import { authStore } from "../store/authStore";
 
+function AvatarSettings() {
+   const { username, logout, prof_pic } = authStore();
+   const navigate = useNavigate();
+   return (
+      <div className="flex md:order-2 dark:text-white">
+         <Dropdown
+            arrowIcon={false}
+            inline
+            label={
+               <div className="flex gap-1 justify-center items-center">
+                  <Avatar
+                     alt={`Foto de perfil de ${username}`}
+                     img={prof_pic ?? "/avatars/not_found.png"}
+                     rounded
+                  />
+                  <span className="hidden sm:flex">{username}</span>
+               </div>
+            }
+         >
+            <DropdownHeader>
+               <span className="block text-sm">{username}</span>
+            </DropdownHeader>
+            <DropdownDivider />
+            <DropdownItem onClick={() => logout(navigate)}>
+               Cerrar Sesión
+            </DropdownItem>
+         </Dropdown>
+      </div>
+   );
+}
+
 export function Header() {
-   const { username, logout } = authStore();
+   const username = authStore((s) => s.username);
+
    return (
       <header>
          <Navbar fluid className="shadow-md z-10">
@@ -31,32 +62,8 @@ export function Header() {
                   Flowbite React
                </span>
             </NavbarBrand>
-            <div className="flex md:order-2">
-               <Dropdown
-                  arrowIcon={false}
-                  inline
-                  label={
-                     <Avatar
-                        alt="User settings"
-                        img="https://flowbite.com/docs/images/people/profile-picture-5.jpg"
-                        rounded
-                     />
-                  }
-               >
-                  <DropdownHeader>
-                     <span className="block text-sm">Bonnie Green</span>
-                     <span className="block truncate text-sm font-medium">
-                        name@flowbite.com
-                     </span>
-                  </DropdownHeader>
-                  <DropdownItem>Dashboard</DropdownItem>
-                  <DropdownItem>Settings</DropdownItem>
-                  <DropdownItem>Earnings</DropdownItem>
-                  <DropdownDivider />
-                  <DropdownItem>Sign out</DropdownItem>
-               </Dropdown>
-               <NavbarToggle />
-            </div>
+            {username && <AvatarSettings />}
+            <NavbarToggle />
             <NavbarCollapse>
                <NavLink
                   className={({ isActive }) =>
@@ -66,7 +73,7 @@ export function Header() {
                >
                   <House /> Home
                </NavLink>
-               {!username ? (
+               {!username && (
                   <NavLink
                      className={({ isActive }) =>
                         isActive ? "nav-link-active nav-link" : "nav-link"
@@ -75,8 +82,6 @@ export function Header() {
                   >
                      <UserPlus /> Iniciar Sesión / Registrarse
                   </NavLink>
-               ) : (
-                  <Button onClick={() => logout()}>Cerrar Sesión</Button>
                )}
                <ButtonToggleTheme />
             </NavbarCollapse>
