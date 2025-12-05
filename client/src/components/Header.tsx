@@ -10,7 +10,7 @@ import {
    NavbarToggle,
 } from "flowbite-react";
 import { NavLink, useNavigate } from "react-router";
-import viteLogo from "/vite.svg";
+import amlLogo from "/logo.png";
 import { ButtonToggleTheme } from "./ButtonToggleTheme";
 import { House, UserPlus } from "lucide-react";
 import { authStore } from "../store/authStore";
@@ -54,12 +54,12 @@ export function Header() {
          <Navbar fluid className="shadow-md z-10">
             <NavbarBrand href="/">
                <img
-                  src={viteLogo}
-                  className="mr-3 h-6 sm:h-9"
-                  alt="Flowbite React Logo"
+                  src={amlLogo}
+                  className="mr-3 h-10 sm:h-15 md:h-25"
+                  alt="AniMangaList Logo"
                />
                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                  Flowbite React
+                  AniMangaList
                </span>
             </NavbarBrand>
             {username && <AvatarSettings />}
