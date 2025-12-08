@@ -25,8 +25,8 @@ export const authStore = create<AuthState>((set) => ({
           if (response.statusCode === 200 || response.statusCode === 201) {//Si el registro o login fueron exitosos
                const prof_pic = response.profile_pic !== 0 ? `/avatars/${response.profile_pic}.png` : "/avatars/not_found.png";
                //Guardamos los datos de token y username
-               sessionStorage.setItem("token_jwt_url", response.access_token)
-               sessionStorage.setItem("username", response.name)
+               sessionStorage.setItem("token_jwt_url", response.access_token ?? "")
+               sessionStorage.setItem("username", response.name ?? "")
                sessionStorage.setItem("prof_pic", prof_pic)
                sessionStorage.setItem("rol", String(response.rol))
                //Actualizamos el estado

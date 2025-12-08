@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @plugin "flowbite-react/plugin/tailwindcss";
 @source "../.flowbite-react/class-list.json";
+@import "react-lazy-load-image-component/src/effects/blur.css";
 
 /*Linea necesaria para activar el uso del dark mode, y que el cambio con switch sea posible, si no se pone esta linea la pagina tomara por defecto el tema que el usuario tenga en su navagador o equipo de computo*/
 @custom-variant dark (&:where(.dark, .dark *));
@@ -11,4 +12,28 @@
 
 .nav-link-active {
    @apply text-purple-700 dark:text-purple-400 underline;
+}
+
+.btn-link {
+   @apply bg-purple-600  rounded-md hover:bg-purple-700  p-1 md:p-2 text-center text-white;
+}
+
+.card-am {
+   @apply h-[350px] shadow-2xl rounded-2xl mx-4 my-5 p-0 pb-5 relative;
+}
+
+.img-card {
+   @apply h-full rounded-2xl absolute inset-0 w-full object-cover;
+}
+
+.link-card {
+   @apply absolute inset-0 flex items-end justify-center rounded-2xl hover:underline hover:text-purple-500;
+}
+
+.emision-day {
+   @apply absolute inset-0 flex items-start justify-center w-full  h-5 font-bold text-white bg-green-500 rounded-t-2xl;
+}
+
+.title-card {
+   @apply text-xl font-bold tracking-tight w-full h-[100px] text-white text-center rounded-b-2xl;
 }
