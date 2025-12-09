@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import { getAnimes } from "../services/animeServices";
-import type { Anime } from "../types/animeTypes";
 import { Carousel } from "primereact/carousel";
-import { AnimeCard } from "./AnimeCard";
 import { CarouselSkeleton } from "./CarouselSkeleton";
 import { Link } from "react-router";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
+import type { Manga } from "../types/mangaTypes";
+import { getMangas } from "../services/mangaServices";
+import { MangaCard } from "./MangaCard";
 
-export function CarouselAnime() {
-   const [animes, setAnimes] = useState<[Anime] | []>([]);
-   const [total, setTotalAnimes] = useState<number>(0);
+export function CarouselManga() {
+   const [mangas, setMangas] = useState<[Manga] | []>([]);
+   const [total, setTotalMangas] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
 
    useEffect(() => {
-      getAnimes("/anime/emision/", { limit: 20, page: 1, emision: 1 })
+      getMangas("/manga/publicando/", { limit: 20, page: 1, emision: 1 })
          .then((resp) => {
-            setAnimes(resp.listaAnimes ?? []);
-            setTotalAnimes(resp.totalAnimes ?? 0);
+            setMangas(resp.listaMangas ?? []);
+            setTotalMangas(resp.totalMangas ?? 0);
          })
          .catch((error) => {
             console.error(error);
@@ -58,7 +58,7 @@ export function CarouselAnime() {
          ) : (
             <>
                <div className="flex flex-row gap-3">
-                  <h2 className="text-xl font-bold">Animes en Emisión</h2>
+                  <h2 className="text-xl font-bold">Mangas en Publicación</h2>
                   <Link
                      to="/search/emision" //TODO: Construir pagina de busqueda/exploracion y que reciba parametros de busqueda en ruta
                      className="flex flex-row btn-link"
@@ -68,10 +68,10 @@ export function CarouselAnime() {
                </div>
                <Carousel
                   responsiveOptions={responsiveOptions}
-                  value={animes}
+                  value={mangas}
                   numVisible={5}
                   numScroll={5}
-                  itemTemplate={AnimeCard}
+                  itemTemplate={MangaCard}
                   autoplayInterval={total > 5 ? 10000 : 0}
                   showIndicators={true}
                />

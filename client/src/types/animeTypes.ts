@@ -36,10 +36,16 @@ export interface Anime {
      link_p: string
      numRatings: number
      relaciones?: {
+          titulo: string
+          id_MAL: number
+          type_rel?: string
           key_anime: number
           animeImages: AnimeImages
      }
      adaptaciones?: {
+          titulo: string
+          id_MAL: number
+          type_rel?: string
           key_manga: number
           mangaImages: MangaImages
      }
@@ -52,5 +58,5 @@ export interface Anime {
           tipo: string
      }
      isFav?: boolean
-     statusView: number
+     statusView?: number
 }

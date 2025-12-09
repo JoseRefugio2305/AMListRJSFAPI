@@ -61,6 +61,7 @@ export function FavButton({
    return (
       <Button
          onClick={handleFav}
+         pill
          outline={!fav_status}
          color="red"
          className={`z-10 mb-5 ${className}`}

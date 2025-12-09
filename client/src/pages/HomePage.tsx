@@ -1,6 +1,7 @@
 import { Button } from "flowbite-react";
 import { Link } from "react-router";
 import { CarouselAnime } from "../components/CarouselAnime";
+import { CarouselManga } from "../components/CarouselManga";
 
 export default function HomaPage() {
    return (
@@ -24,6 +25,9 @@ export default function HomaPage() {
          </section>
          <section>
             <CarouselAnime />
+         </section>
+         <section>
+            <CarouselManga />
          </section>
       </main>
    );
