@@ -1,8 +1,8 @@
 import { Button } from "flowbite-react";
 import { Heart, HeartPlus } from "lucide-react";
-import { authStore } from "../store/authStore";
-import { toastStore } from "../store/toastStore";
-import { changeFavStatus } from "../services/favServices";
+import { changeFavStatus } from "../../services/favServices";
+import { authStore } from "../../store/authStore";
+import { toastStore } from "../../store/toastStore";
 
 interface FavButtonProps {
    is_anime: boolean;

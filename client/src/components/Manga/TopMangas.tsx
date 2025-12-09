@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { FieldOrdEnum } from "../types/filterTypes";
-import { LazyLoadImage } from "./LazyLoadImage";
-import { cutText } from "../utils/common";
+import { FieldOrdEnum } from "../../types/filterTypes";
+import { LazyLoadImage } from "../Common/LazyLoadImage";
+import { cutText } from "../../utils/common";
 import { Link } from "react-router";
-import { TopSkeleton } from "./TopSkeleton";
-import type { Manga } from "../types/mangaTypes";
-import { getMangas } from "../services/mangaServices";
+import { TopSkeleton } from "../Skeletons/TopSkeleton";
+import type { Manga } from "../../types/mangaTypes";
+import { getMangas } from "../../services/mangaServices";
 
 export function TopMangas() {
    const [mangas, setMangas] = useState<[Manga] | []>([]);

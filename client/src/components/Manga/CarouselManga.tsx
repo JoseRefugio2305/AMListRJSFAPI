@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { Carousel } from "primereact/carousel";
-import { CarouselSkeleton } from "./CarouselSkeleton";
 import { Link } from "react-router";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
-import type { Manga } from "../types/mangaTypes";
-import { getMangas } from "../services/mangaServices";
+import type { Manga } from "../../types/mangaTypes";
+import { getMangas } from "../../services/mangaServices";
+import { CarouselSkeleton } from "../Skeletons/CarouselSkeleton";
 import { MangaCard } from "./MangaCard";
 
 export function CarouselManga() {

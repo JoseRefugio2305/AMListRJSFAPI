@@ -1,6 +1,6 @@
 import { Toast } from "primereact/toast";
 import { useEffect, useRef } from "react";
-import { toastStore } from "../store/toastStore";
+import { toastStore } from "../../store/toastStore";
 
 export function ToastNotif() {
    const toast = useRef<Toast>(null);

@@ -1,9 +1,9 @@
 import { Card, TabItem, Tabs, type TabsRef } from "flowbite-react";
-import { Login } from "../components/Login";
-import { Register } from "../components/Register";
 import { authStore } from "../store/authStore";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
+import { Login } from "../components/Auth/Login";
+import { Register } from "../components/Auth/Register";
 
 export default function AuthPage() {
    const username = authStore((s) => s.username);

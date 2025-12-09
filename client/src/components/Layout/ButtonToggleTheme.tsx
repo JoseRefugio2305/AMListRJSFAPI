@@ -1,6 +1,6 @@
 import { Label, ToggleSwitch } from "flowbite-react";
-import { themeStore } from "../store/themeStore";
 import { Moon, Sun } from "lucide-react";
+import { themeStore } from "../../store/themeStore";
 
 export function ButtonToggleTheme() {
    const { theme, toggleTheme } = themeStore();

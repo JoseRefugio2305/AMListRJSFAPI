@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getAnimes } from "../services/animeServices";
-import type { Anime } from "../types/animeTypes";
-import { Carousel } from "primereact/carousel";
-import { AnimeCard } from "./AnimeCard";
-import { CarouselSkeleton } from "./CarouselSkeleton";
 import { Link } from "react-router";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
+import type { Anime } from "../../types/animeTypes";
+import { getAnimes } from "../../services/animeServices";
+import { CarouselSkeleton } from "../Skeletons/CarouselSkeleton";
+import { Carousel } from "primereact/carousel";
+import { AnimeCard } from "./AnimeCard";
 
 export function CarouselAnime() {
    const [animes, setAnimes] = useState<[Anime] | []>([]);

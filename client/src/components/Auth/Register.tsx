@@ -1,7 +1,7 @@
 import { Button, Label, Spinner, TextInput } from "flowbite-react";
-import { authStore } from "../store/authStore";
 import { useState, type FormEvent } from "react";
-import { toastStore } from "../store/toastStore";
+import { authStore } from "../../store/authStore";
+import { toastStore } from "../../store/toastStore";
 
 export function Register() {
    const { login } = authStore();

@@ -1,10 +1,10 @@
 import { lazy, Suspense } from "react";
 import "./App.css";
 
-import { Header } from "./components/Header.tsx";
+import { Header } from "./components/Layout/Header.tsx";
 import { Route, Routes } from "react-router";
-import { Footer } from "./components/Footer.tsx";
-import { ToastNotif } from "./components/ToastNotif.tsx";
+import { Footer } from "./components/Layout/Footer.tsx";
+import { ToastNotif } from "./components/Layout/ToastNotif.tsx";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));

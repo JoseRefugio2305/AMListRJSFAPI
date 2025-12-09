@@ -1,10 +1,10 @@
 import { Button } from "flowbite-react";
 import { Link } from "react-router";
-import { CarouselAnime } from "../components/CarouselAnime";
-import { CarouselManga } from "../components/CarouselManga";
 import { authStore } from "../store/authStore";
-import { TopAnimes } from "../components/TopAnimes";
-import { TopMangas } from "../components/TopMangas";
+import { TopAnimes } from "../components/Anime/TopAnimes";
+import { TopMangas } from "../components/Manga/TopMangas";
+import { CarouselAnime } from "../components/Anime/CarouselAnime";
+import { CarouselManga } from "../components/Manga/CarouselManga";
 
 export default function HomaPage() {
    const username = authStore((s) => s.username);

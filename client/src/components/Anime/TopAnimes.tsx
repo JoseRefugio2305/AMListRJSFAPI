@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { getAnimes } from "../services/animeServices";
-import { FieldOrdEnum } from "../types/filterTypes";
-import type { Anime } from "../types/animeTypes";
-import { LazyLoadImage } from "./LazyLoadImage";
-import { cutText } from "../utils/common";
+import { getAnimes } from "../../services/animeServices";
+import { FieldOrdEnum } from "../../types/filterTypes";
+import type { Anime } from "../../types/animeTypes";
+import { LazyLoadImage } from "../Common/LazyLoadImage";
+import { cutText } from "../../utils/common";
 import { Link } from "react-router";
-import { TopSkeleton } from "./TopSkeleton";
+import { TopSkeleton } from "../Skeletons/TopSkeleton";
 
 export function TopAnimes() {
    const [animes, setAnimes] = useState<[Anime] | []>([]);

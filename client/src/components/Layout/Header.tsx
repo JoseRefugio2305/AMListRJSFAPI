@@ -13,7 +13,7 @@ import { NavLink, useNavigate } from "react-router";
 import amlLogo from "/logo.png";
 import { ButtonToggleTheme } from "./ButtonToggleTheme";
 import { House, UserPlus } from "lucide-react";
-import { authStore } from "../store/authStore";
+import { authStore } from "../../store/authStore";
 
 function AvatarSettings() {
    const { username, logout, prof_pic } = authStore();
