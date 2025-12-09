@@ -21,7 +21,7 @@ enum TipoContenidoEnum {
      todos = 3,
 }
 
-enum FieldOrdEnum {
+export enum FieldOrdEnum {
      key = "key",
      id_mal = "id_MAL",
      titulo = "titulo",
@@ -51,5 +51,5 @@ export interface FilterPayload {
      generos?: [number]
      tipoContenido?: TipoContenidoEnum
      orderBy?: OrderByEnum
-     orderByField?: FieldOrdEnum
+     orderField?: FieldOrdEnum
 }
