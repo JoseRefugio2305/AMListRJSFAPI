@@ -1,16 +1,19 @@
 export default function NotFoundPage() {
    return (
-      <main
-         style={{
-            display: "grid",
-            justifyContent: "center",
-            gap: 10,
-            padding: 10,
-            height: "90vh",
-         }}
-      >
-         <h1>404 - Pagina no encontrada</h1>
-         <p>Lo sentimos, la pagina que buscas no existe.</p>
+      <main className="min-h-screen flex items-center justify-center bg-transparent">
+         <div className="max-w-5xl w-full flex flex-col items-center px-5">
+            <h1 className="text-3xl font-bold underline text-center">
+               404 - Página  no encontrada
+            </h1>
+            <img
+               alt="Not Found 404"
+               src="/404_not_found.png"
+               className="w-[30%] mx-auto"
+            />
+            <p className="text-xl font-bold text-center">
+               Lo sentimos, la página que buscas no existe.
+            </p>
+         </div>
       </main>
    );
 }
