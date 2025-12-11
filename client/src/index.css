@@ -6,11 +6,11 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 .nav-link {
-   @apply dark:text-white text-xl flex align-middle;
+   @apply dark:text-white text-xl flex align-middle hover:text-purple-600;
 }
 
 .nav-link-active {
-   @apply text-purple-700 dark:text-purple-400 underline;
+   @apply text-purple-700 dark:text-purple-400 underline hover:text-purple-600;
 }
 
 .btn-link {
@@ -30,7 +30,7 @@
 }
 
 .emision-day {
-   @apply absolute inset-0 flex items-start justify-center w-full  h-5 font-bold text-white bg-green-500 rounded-t-2xl;
+   @apply absolute inset-0 flex items-start justify-center w-full  h-5 font-bold text-white rounded-t-2xl;
 }
 
 .title-card {

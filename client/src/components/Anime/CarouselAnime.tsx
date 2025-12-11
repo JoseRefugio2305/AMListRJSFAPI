@@ -73,7 +73,7 @@ export function CarouselAnime() {
                   numScroll={5}
                   itemTemplate={AnimeCard}
                   autoplayInterval={total > 5 ? 10000 : 0}
-                  showIndicators={true}
+                  showIndicators={false}
                />
             </>
          )}

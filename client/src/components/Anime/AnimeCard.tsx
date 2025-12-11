@@ -1,5 +1,10 @@
-import type { Anime } from "../../types/animeTypes";
-import { cutText, getDayEmision } from "../../utils/common";
+import { type Anime } from "../../types/animeTypes";
+import {
+   cutText,
+   getAnimeStrType,
+   getColorTipoAnimeManga,
+   getDayEmision,
+} from "../../utils/common";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { Link } from "react-router";
 import { useState } from "react";
@@ -28,11 +33,16 @@ export const AnimeCard = (anime: Anime) => {
                   alt={cutText(anime.titulo, 35)}
                   className="img-card"
                />
-               {anime.emision && (
-                  <h5 className="emision-day">
-                     {getDayEmision(anime.fechaEmision)}
-                  </h5>
-               )}
+               <h5
+                  className={`emision-day ${getColorTipoAnimeManga(
+                     anime.tipo,
+                     anime.emision
+                  )}`}
+               >
+                  {anime.emision === 1
+                     ? getDayEmision(anime.fechaEmision)
+                     : getAnimeStrType(anime.tipo)}
+               </h5>
                <Link
                   to="/login" //TODO: Crear pagina de detalles de anime
                   className="link-card"

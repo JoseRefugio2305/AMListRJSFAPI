@@ -1,12 +1,12 @@
 import type { MangaImages } from "./mangaTypes"
 
 export enum TipoAnimeEnum {
-     anime = 1,
-     ova = 2,
-     pelicula = 3,
-     especial = 4,
-     desconocido = 5,
-     donghua = 6,
+     Anime = 1,
+     OVA = 2,
+     Pelicula = 3,
+     Especial = 4,
+     Desconocido = 5,
+     Donghua = 6,
 }
 
 export interface AnimeImages {

@@ -73,7 +73,6 @@ export function CarouselManga() {
                   numScroll={5}
                   itemTemplate={MangaCard}
                   autoplayInterval={total > 5 ? 10000 : 0}
-                  showIndicators={true}
                />
             </>
          )}
