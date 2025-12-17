@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, HttpUrl, AfterValidator, AliasChoices
-from typing import Optional, Annotated
+from typing import Optional, Annotated, List
 from .images import AnimeImagesSchema, MangaImagesSchema
 from app.core.utils import httpurl_to_str, ObjectIdStr
 
@@ -8,13 +8,24 @@ from app.core.utils import httpurl_to_str, ObjectIdStr
 class AnimeRelationsSchema(BaseModel):
     id_MAL: int
     titulo: str
-    type_rel: Optional[str] = None
 
 
 # Esquema para relaciones completas del anime
 class AnimeRelFullSchema(AnimeRelationsSchema):
     key_anime: int = Field(..., ge=1)
     animeImages: AnimeImagesSchema
+
+
+# Relacion completa de animes con otros animes
+class AnimeRelTypeFullSchema(BaseModel):
+    type_rel: str
+    animes: Optional[List[AnimeRelFullSchema]]
+
+
+# Relacion incompleta de anime con otro anime
+class AnimeRelTypeIncompleteSchema(BaseModel):
+    type_rel: str
+    animes: Optional[List[AnimeRelationsSchema]]
 
 
 # Esquema para las adaptaciones
@@ -39,7 +50,6 @@ class AdaptacionFullSchema(AdaptacionSchema):
 class MangaRelationsSchema(BaseModel):
     titulo: str = Field(validation_alias=AliasChoices("titulo", "nombre"))
     id_MAL: int
-    type_rel: Optional[str] = None
 
 
 # Schema para relacion completa cuando se consulte un anime especifico
@@ -47,6 +57,17 @@ class MangaRelFullSchema(MangaRelationsSchema):
     key_manga: int = Field(..., ge=1)
     mangaImages: MangaImagesSchema
 
+
+# Relacion completa de mangas con otros mangas
+class MangaRelTypeFullSchema(BaseModel):
+    type_rel: str
+    mangas: Optional[List[MangaRelFullSchema]]
+
+
+# Relacion incompleta de manga con otro manga
+class MangaRelTypeIncompleteSchema(BaseModel):
+    type_rel: str
+    mangas: Optional[List[MangaRelationsSchema]]
 
 # Relacion de estudios en animes
 class StudiosARelSchema(BaseModel):

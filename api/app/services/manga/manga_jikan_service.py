@@ -24,7 +24,7 @@ from app.core.utils import objects_id_list_to_str, ObjectIdStr
 from app.core.database import filtrado_info_incompleta
 from app.services.jikan_service import JikanService
 from .manga_crud_sevice import MangaCRUDService
-from app.services.anime import AnimeService
+from app.services.anime import AnimeCRUDService
 
 from app.core.logging import get_logger
 
@@ -143,7 +143,7 @@ class MangaJikanService:
             )
             # Ahora hay que insertar generos, editoriales o autores de manga  nuevos que tenga el manga recien actualizado
             for genero in n_generos:
-                rg = await AnimeService.create_genre(
+                rg = await AnimeCRUDService.create_genre(
                     CreateGenreSchema(
                         nombre=genero.get("nombre"),
                         id_MAL=genero.get("id_MAL"),

@@ -111,9 +111,9 @@ def get_full_manga() -> List[Dict[str, Any]]:
         {
             "$lookup": {
                 "from": "mangas",
-                "localField": "relaciones.id_MAL",
+                "localField": "relaciones.mangas.id_MAL",
                 "foreignField": "id_MAL",
-                "as": "relaciones",
+                "as": "related_mangas_full",
                 "pipeline": [
                     {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
                     {
@@ -128,4 +128,82 @@ def get_full_manga() -> List[Dict[str, Any]]:
                 ],
             }
         },
+        {
+            "$set": {
+                "relaciones": {
+                    "$map": {
+                        "input": {"$ifNull": ["$relaciones", []]},
+                        "as": "rel",
+                        "in": {
+                            "type_rel": "$$rel.type_rel",
+                            "mangas": {
+                                "$filter": {
+                                    "input": {
+                                        "$map": {
+                                            "input": "$$rel.mangas",
+                                            "as": "a",
+                                            "in": {
+                                                "$let": {
+                                                    "vars": {
+                                                        "full": {
+                                                            "$arrayElemAt": [
+                                                                {
+                                                                    "$filter": {
+                                                                        "input": "$related_mangas_full",
+                                                                        "as": "full",
+                                                                        "cond": {
+                                                                            "$eq": [
+                                                                                "$$full.id_MAL",
+                                                                                "$$a.id_MAL",
+                                                                            ]
+                                                                        },
+                                                                    }
+                                                                },
+                                                                0,
+                                                            ]
+                                                        }
+                                                    },
+                                                    "in": {
+                                                        "$cond": [
+                                                            {
+                                                                "$and": [
+                                                                    {
+                                                                        "$ne": [
+                                                                            "$$full",
+                                                                            None,
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "$ne": [
+                                                                            {
+                                                                                "$type": "$$full.key_manga"
+                                                                            },
+                                                                            "missing",
+                                                                        ]
+                                                                    },
+                                                                ]
+                                                            },
+                                                            {
+                                                                "$mergeObjects": [
+                                                                    "$$a",
+                                                                    "$$full",
+                                                                ]
+                                                            },
+                                                            None,
+                                                        ]
+                                                    },
+                                                }
+                                            },
+                                        }
+                                    },
+                                    "as": "manga",
+                                    "cond": {"$ne": ["$$manga", None]},
+                                }
+                            },
+                        },
+                    }
+                }
+            }
+        },
+        {"$unset": "related_mangas_full"},
     ]

@@ -85,14 +85,20 @@ class JikanService:
 
         for rel in animedata.get("relations"):
             if rel.get("relation") != "Adaptation":
+                ani = []
                 for entry in rel.get("entry"):
-                    dict_anime["relaciones"].append(
+                    ani.append(
                         {
                             "id_MAL": entry.get("mal_id"),
                             "titulo": entry.get("name"),
-                            "type_rel": rel.get("relation"),
                         }
                     )
+                dict_anime["relaciones"].append(
+                    {
+                        "animes": ani,
+                        "type_rel": rel.get("relation"),
+                    }
+                )
             else:
                 for adp in rel.get("entry"):
                     dict_anime["adaptaciones"].append(
@@ -187,14 +193,20 @@ class JikanService:
 
         for rel in mangadata.get("relations"):
             if rel.get("relation") != "Adaptation":
+                mang = []
                 for entry in rel.get("entry"):
-                    dict_manga["relaciones"].append(
+                    mang.append(
                         {
                             "id_MAL": entry.get("mal_id"),
                             "titulo": entry.get("name"),
-                            "type_rel": rel.get("relation"),
                         }
                     )
+                dict_manga["relaciones"].append(
+                    {
+                        "mangas": mang,
+                        "type_rel": rel.get("relation"),
+                    }
+                )
             else:
                 for adp in rel.get("entry"):
                     dict_manga["adaptaciones"].append(

@@ -6,7 +6,8 @@ from app.schemas.common.relations import (
     StudiosARelSchema,
     AltTitlesSchema,
     AnimeAdapFullSchema,
-    AnimeRelFullSchema,
+    AnimeRelTypeFullSchema,
+    AnimeRelTypeIncompleteSchema,
 )
 from app.schemas.common.images import AnimeImagesSchema
 from app.schemas.common.genres import GenreARelSchema
@@ -57,7 +58,7 @@ class AnimeSchema(AnimeCreateSchema):
     linkMAL: HttpUrl
     link_p: str  # En Este esquema se usa el link_p como string para evitar errores de conversion a HttpUrl
     numRatings: int = Field(..., ge=0)
-    relaciones: Optional[List[AnimeRelFullSchema]] = None
+    relaciones: Optional[List[AnimeRelTypeFullSchema]] = None
     adaptaciones: Optional[List[AnimeAdapFullSchema]] = None
     studios: Optional[List[StudiosARelSchema]] = None
     titulos_alt: Optional[List[AltTitlesSchema]] = None
@@ -83,7 +84,7 @@ class AnimeUpdateSchema(AnimeCreateSchema):
     generos: Optional[List[GenreARelSchema]] = None
     linkMAL: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     numRatings: Optional[int] = Field(default=None, ge=0)
-    relaciones: Optional[List[AnimeRelationsSchema]] = None
+    relaciones: Optional[List[AnimeRelTypeIncompleteSchema]] = None
     adaptaciones: Optional[List[AnimeRelationsSchema]] = None
     studios: Optional[List[StudiosARelSchema]] = None
     titulos_alt: Optional[List[AltTitlesSchema]] = None

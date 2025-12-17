@@ -80,9 +80,9 @@ def get_full_anime() -> List[Dict[str, Any]]:
         {
             "$lookup": {
                 "from": "animes",
-                "localField": "relaciones.id_MAL",
+                "localField": "relaciones.animes.id_MAL",
                 "foreignField": "id_MAL",
-                "as": "relaciones",
+                "as": "related_animes_full",
                 "pipeline": [
                     {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
                     {
@@ -95,6 +95,83 @@ def get_full_anime() -> List[Dict[str, Any]]:
                         }
                     },
                 ],
+            }
+        },
+        {
+            "$set": {
+                "relaciones": {
+                    "$map": {
+                        "input": {"$ifNull": ["$relaciones", []]},
+                        "as": "rel",
+                        "in": {
+                            "type_rel": "$$rel.type_rel",
+                            "animes": {
+                                "$filter": {
+                                    "input": {
+                                        "$map": {
+                                            "input": "$$rel.animes",
+                                            "as": "a",
+                                            "in": {
+                                                "$let": {
+                                                    "vars": {
+                                                        "full": {
+                                                            "$arrayElemAt": [
+                                                                {
+                                                                    "$filter": {
+                                                                        "input": "$related_animes_full",
+                                                                        "as": "full",
+                                                                        "cond": {
+                                                                            "$eq": [
+                                                                                "$$full.id_MAL",
+                                                                                "$$a.id_MAL",
+                                                                            ]
+                                                                        },
+                                                                    }
+                                                                },
+                                                                0,
+                                                            ]
+                                                        }
+                                                    },
+                                                    "in": {
+                                                        "$cond": [
+                                                            {
+                                                                "$and": [
+                                                                    {
+                                                                        "$ne": [
+                                                                            "$$full",
+                                                                            None,
+                                                                        ]
+                                                                    },
+                                                                    {
+                                                                        "$ne": [
+                                                                            {
+                                                                                "$type": "$$full.key_anime"
+                                                                            },
+                                                                            "missing",
+                                                                        ]
+                                                                    },
+                                                                ]
+                                                            },
+                                                            {
+                                                                "$mergeObjects": [
+                                                                    "$$a",
+                                                                    "$$full",
+                                                                ]
+                                                            },
+                                                            None,
+                                                        ]
+                                                    },
+                                                }
+                                            },
+                                        }
+                                    },
+                                    "as": "anime",
+                                    "cond": {"$ne": ["$$anime", None]},
+                                }
+                            },
+                        },
+                    }
+                }
             }
         },
         {
@@ -117,4 +194,5 @@ def get_full_anime() -> List[Dict[str, Any]]:
                 ],
             }
         },
+        {"$unset": "related_animes_full"},
     ]

@@ -1,14 +1,14 @@
-from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AliasChoices, AfterValidator
+from pydantic import BaseModel, Field, HttpUrl, ConfigDict, AfterValidator
 from typing import Optional, List, Annotated
 from .manga_enums import TipoMangaEnum
 from app.schemas.common.relations import (
-    MangaRelationsSchema,
-    MangaRelFullSchema,
     AltTitlesSchema,
     EditorialMRelSchema,
     AutoresMRelSchema,
     AdaptacionFullSchema,
     AdaptacionSchema,
+    MangaRelTypeFullSchema,
+    MangaRelTypeIncompleteSchema,
 )
 from app.schemas.common.images import MangaImagesSchema
 from app.schemas.common.genres import GenreARelSchema
@@ -48,7 +48,7 @@ class MangaSchema(MangaCreateSchema):
     id_MAL: int
     linkMAL: HttpUrl
     numRatings: int = Field(..., ge=0)
-    relaciones: Optional[List[MangaRelFullSchema]] = None
+    relaciones: Optional[List[MangaRelTypeFullSchema]] = None
     editoriales: Optional[List[EditorialMRelSchema]] = None
     autores: Optional[List[AutoresMRelSchema]] = None
     adaptaciones: Optional[List[AdaptacionFullSchema]] = None
@@ -77,7 +77,7 @@ class MangaUpdateSchema(MangaCreateSchema):
     generos: Optional[List[GenreARelSchema]] = None
     linkMAL: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     numRatings: Optional[int] = Field(default=None, ge=0)
-    relaciones: Optional[List[MangaRelationsSchema]] = None
+    relaciones: Optional[List[MangaRelTypeIncompleteSchema]] = None
     editoriales: Optional[List[EditorialMRelSchema]] = None
     autores: Optional[List[AutoresMRelSchema]] = None
     adaptaciones: Optional[List[AdaptacionSchema]] = None
