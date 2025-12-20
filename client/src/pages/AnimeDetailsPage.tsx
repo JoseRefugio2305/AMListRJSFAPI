@@ -11,6 +11,7 @@ import { LinkPill } from "../components/Common/Details/LinkPill";
 import { Description } from "../components/Common/Details/Description";
 import { TitulosAlt } from "../components/Common/Details/TitulosAlt";
 import { MoreInfoAnime } from "../components/Anime/Details/MoreInfo";
+import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
 
 export default function AnimeDetailsPage() {
    const navigate = useNavigate();
@@ -52,6 +53,13 @@ export default function AnimeDetailsPage() {
          ) : (
             animeDetails && (
                <div className="flex flex-col gap-3">
+                  <Breadcrumbs
+                     items={[
+                        { label: "Home", to: "/" },
+                        { label: "Animes", to: "/anime" },
+                        { label: animeDetails.titulo },
+                     ]}
+                  />
                   <h1 className="text-3xl font-bold underline  mx-auto px-5">
                      {animeDetails.titulo}
                   </h1>

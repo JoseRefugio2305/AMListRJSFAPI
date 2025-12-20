@@ -5,12 +5,14 @@ import { TopAnimes } from "../components/Anime/TopAnimes";
 import { TopMangas } from "../components/Manga/TopMangas";
 import { CarouselAnime } from "../components/Anime/CarouselAnime";
 import { CarouselManga } from "../components/Manga/CarouselManga";
+import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
 
 export default function HomaPage() {
    const username = authStore((s) => s.username);
 
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 pb-14 mt-5 gap-8">
+         <Breadcrumbs items={[{ label: "Home/" }]} />
          {/* TODO: Crear un apartado de busqueda rapida por tipo de contenido y titulo */}
          <section className="w-auto grid gap-5 shadow-2xl md:rounded-2xl rounded-none dark:bg-gray-700 p-6">
             <h1 className="text-2xl font-bold md:text-4xl text-center">

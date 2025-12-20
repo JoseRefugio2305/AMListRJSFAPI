@@ -6,6 +6,7 @@ import type { Anime } from "../types/animeTypes";
 import { PaginationSkeleton } from "../components/Skeletons/PaginationSekeleton";
 import { AnimePagination } from "../components/Anime/AnimePagination";
 import { useSearchParams } from "react-router";
+import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
 
 export default function AnimePage() {
    const [searchParams, setSearchParams] = useSearchParams();
@@ -41,6 +42,9 @@ export default function AnimePage() {
 
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 px-5 pb-14 mt-5 gap-8 min-h-screen">
+         <Breadcrumbs
+            items={[{ label: "Home", to: "/" }, { label: "Animes" }]}
+         />
          <h1 className="text-5xl font-bold flex flex-row gap-5 underline">
             <TvMinimalPlay size={45} /> Animes
          </h1>
