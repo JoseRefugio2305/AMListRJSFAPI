@@ -43,8 +43,8 @@ export function TopMangas() {
                      <p className="text-7xl font-bold ml-[30%]">{idx + 1}</p>
                   </div>
                   <LazyLoadImage
-                    //  src={manga.mangaImages.img}
-                      src="default_image.jpg"
+                     //  src={manga.mangaImages.img}
+                     src="default_image.jpg"
                      alt={cutText(manga.titulo, 35)}
                      className="h-25 w-20 rounded-xl"
                   />
@@ -54,7 +54,7 @@ export function TopMangas() {
                         className="hover:underline hover:text-purple-600"
                      >
                         <h5 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white hover:text-purple-600">
-                           {cutText(manga.titulo, 50)}
+                           {cutText(manga.titulo, 30)}
                         </h5>
                      </Link>
                      <p className="font-normal text-gray-700 dark:text-gray-400">

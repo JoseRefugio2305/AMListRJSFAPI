@@ -56,7 +56,7 @@ export function TopAnimes() {
                         className="hover:underline hover:text-purple-600"
                      >
                         <h5 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white hover:text-purple-600">
-                           {cutText(anime.titulo, 50)}
+                           {cutText(anime.titulo, 30)}
                         </h5>
                      </Link>
                      <p className="font-normal text-gray-700 dark:text-gray-400">
