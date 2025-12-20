@@ -4,6 +4,7 @@ import {
    getAnimeStrType,
    getColorTipoAnimeManga,
    getDayEmision,
+   getTitleForLink,
 } from "../../utils/common";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { Link } from "react-router";
@@ -44,7 +45,9 @@ export const AnimeCard = (anime: Anime) => {
                      : getAnimeStrType(anime.tipo)}
                </h5>
                <Link
-                  to="/login" //TODO: Crear pagina de detalles de anime
+                  to={`/anime/${getTitleForLink(anime.titulo)}/${
+                     anime.key_anime
+                  }`}
                   className="link-card"
                >
                   <h5 className="title-card bg-black/50  bg-opacity-50">
@@ -62,7 +65,9 @@ export const AnimeCard = (anime: Anime) => {
                   setFav={setFav}
                />
                <Link
-                  to="/login" //TODO: Crear pagina de detalles de anime
+                  to={`/anime/${getTitleForLink(anime.titulo)}/${
+                     anime.key_anime
+                  }`}
                   className="link-card"
                >
                   <h5 className="title-card">{cutText(anime.titulo, 35)}</h5>

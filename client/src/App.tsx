@@ -9,10 +9,11 @@ import { usePrimeReactTheme } from "./hooks/usePrimeReactTheme.ts";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const AnimePage = lazy(() => import("./pages/AnimePage.tsx"));
+const AnimeDetailsPage = lazy(() => import("./pages/AnimeDetailsPage.tsx"));
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));
 
 function App() {
-   usePrimeReactTheme()
+   usePrimeReactTheme();
    return (
       <>
          <Header />
@@ -33,6 +34,10 @@ function App() {
                <Route path="/" element={<HomePage />} />
                <Route path="/login" element={<AuthPage />} />
                <Route path="/anime" element={<AnimePage />} />
+               <Route
+                  path="/anime/:titulo/:key_anime"
+                  element={<AnimeDetailsPage />}
+               />
                <Route path="*" element={<NotFoundPage />} />
             </Routes>
          </Suspense>

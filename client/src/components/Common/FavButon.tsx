@@ -1,8 +1,9 @@
-import { Button } from "flowbite-react";
+import { Button, Spinner } from "flowbite-react";
 import { Heart, HeartPlus } from "lucide-react";
 import { changeFavStatus } from "../../services/favServices";
 import { authStore } from "../../store/authStore";
 import { toastStore } from "../../store/toastStore";
+import { useState } from "react";
 
 interface FavButtonProps {
    is_anime: boolean;
@@ -22,10 +23,12 @@ export function FavButton({
    const username = authStore((s) => s.username);
    const showToast = toastStore((s) => s.showToast);
    const ruta = is_anime ? "/anime/" : "/manga/";
+   const [loading, setLoaging] = useState<boolean>(false);
 
    const handleFav = () => {
-      if (username) {
-         changeFavStatus(ruta + "changeFavStatus/", {
+      if (username && !loading) {
+         setLoaging(true);
+         changeFavStatus(ruta + "changeFavStatus", {
             animeId: is_anime ? fav_id : undefined,
             mangaId: !is_anime ? fav_id : undefined,
             statusView: 5,
@@ -40,8 +43,10 @@ export function FavButton({
                if (resp.is_success) {
                   setFav(!fav_status);
                }
+               setLoaging(false);
             })
             .catch((error) => {
+               setLoaging(false);
                console.error(error);
                showToast({
                   severity: "error",
@@ -65,8 +70,15 @@ export function FavButton({
          outline={!fav_status}
          color="red"
          className={`z-10 mb-5 ${className}`}
+         disabled={loading}
       >
-         {fav_status ? <Heart /> : <HeartPlus />}
+         {loading ? (
+            <Spinner color="failure" aria-label="Loading fav status" />
+         ) : fav_status ? (
+            <Heart />
+         ) : (
+            <HeartPlus />
+         )}
       </Button>
    );
 }

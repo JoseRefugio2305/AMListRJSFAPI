@@ -3,7 +3,7 @@ import { getAnimes } from "../../services/animeServices";
 import { FieldOrdEnum } from "../../types/filterTypes";
 import type { Anime } from "../../types/animeTypes";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
-import { cutText } from "../../utils/common";
+import { cutText, getTitleForLink } from "../../utils/common";
 import { Link } from "react-router";
 import { TopSkeleton } from "../Skeletons/TopSkeleton";
 
@@ -50,7 +50,9 @@ export function TopAnimes() {
                   />
                   <div>
                      <Link
-                        to="/login" //TODO: Crear pagina de detalles de anime
+                        to={`/anime/${getTitleForLink(anime.titulo)}/${
+                           anime.key_anime
+                        }`}
                         className="hover:underline hover:text-purple-600"
                      >
                         <h5 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white hover:text-purple-600">

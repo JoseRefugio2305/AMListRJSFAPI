@@ -1,4 +1,12 @@
-import type { MangaImages } from "./mangaTypes"
+import type { MangaRelAdp } from "./mangaTypes"
+
+export enum StatusViewEnum {
+     Viendo = 1,  // Leyendo en manga
+     Pendiente = 2,
+     Considerando = 3,
+     Abandonado = 4,
+     Ninguno = 5
+}
 
 export enum TipoAnimeEnum {
      Anime = 1,
@@ -15,6 +23,19 @@ export interface AnimeImages {
      img_l: string
 }
 
+export interface AnimeRelAdp {
+     titulo: string
+     id_MAL: number
+     key_anime: number
+     animeImages: AnimeImages
+}
+
+
+export interface AnimeFullRelation {
+     type_rel: string,
+     animes: [AnimeRelAdp] | []
+}
+
 export interface Anime {
      id: string
      key_anime: number
@@ -27,36 +48,35 @@ export interface Anime {
      episodios: number
      fechaAdicion: string
      fechaEmision: string
-     generos?: {
-          id_MAL: number
-          nombre: string
-     }
+
      id_MAL: number
      linkMAL: string
      link_p: string
      numRatings: number
-     relaciones?: {
-          titulo: string
+
+     isFav: boolean
+}
+
+export interface AnimeComplete extends Anime {
+     generos: [{
           id_MAL: number
-          type_rel?: string
-          key_anime: number
-          animeImages: AnimeImages
-     }
-     adaptaciones?: {
-          titulo: string
-          id_MAL: number
-          type_rel?: string
-          key_manga: number
-          mangaImages: MangaImages
-     }
-     studios?: {
+          nombre: string
+     }] | []
+     relaciones: [AnimeFullRelation] | []
+     adaptaciones: [MangaRelAdp] | []
+     studios: [{
           nombre: string
           id_MAL: number
-     }
-     titulos_alt?: {
-          titulo_alt: string
+     }] | []
+     titulos_alt: [{
+          tit_alt: string
           tipo: string
-     }
-     isFav?: boolean
-     statusView?: number
+     }] | []
+     statusView: StatusViewEnum | null
+}
+
+export interface AnimeResult {
+     is_success: boolean
+     msg: string
+     anime?: AnimeComplete
 }

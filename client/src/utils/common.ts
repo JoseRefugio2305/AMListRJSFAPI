@@ -1,4 +1,4 @@
-import { TipoAnimeEnum } from "../types/animeTypes";
+import { StatusViewEnum, TipoAnimeEnum } from "../types/animeTypes";
 import { TipoMangaEnum } from "../types/mangaTypes";
 
 export function cutText(text: string, length_text: number = 35): string {
@@ -52,4 +52,24 @@ export function getColorTipoAnimeManga(tipo: TipoAnimeEnum | TipoMangaEnum, is_e
      }
 
      return colorbg;
-};
+}
+
+export function getStatusViewStr(statusView: StatusViewEnum, is_anime: boolean): string {
+     if (!is_anime && statusView === StatusViewEnum.Viendo) {
+          return "Leyendo";
+     }
+     const str_status: string = StatusViewEnum[statusView];
+     return str_status;
+}
+
+export function getTitleForLink(title: string): string {
+
+
+     return title
+          .normalize('NFKD') // descompone acentos en base + diacríticos, esta normalizacion decompone por ejemplo, í en i´
+          .replace(/[\u0300-\u036f]/g, '') // quita diacríticos
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}-]+/gu, '-') // conserva letras, números y guiones; cambia resto a '-'
+          .replace(/^-+|-+$/g, '') // quita guiones al inicio/fin
+          .replace(/-{2,}/g, '-'); // colapsa guiones múltiples
+}

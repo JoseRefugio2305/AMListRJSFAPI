@@ -15,6 +15,17 @@ export interface MangaImages {
      img_l: string
 }
 
+export interface MangaRelAdp {
+     titulo: string
+     id_MAL: number
+     key_manga: number
+     mangaImages: MangaImages
+}
+
+// export interface MangaFullRelation{
+
+// }
+
 export interface Manga {
      id: string
      key_manga: number
