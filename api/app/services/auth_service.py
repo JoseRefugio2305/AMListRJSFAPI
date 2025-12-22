@@ -46,7 +46,7 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
         password=hashedPass,
         rol=RolEnum.base_user,
         is_active=True,
-        profile_pic=None,
+        profile_pic=1,
         created_date=nowTS,
         show_statistics=0,
     )

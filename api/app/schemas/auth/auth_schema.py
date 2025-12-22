@@ -43,7 +43,7 @@ class UserRegSchema(BaseModel):
     password: str = Field(..., min_length=8)
     rol: RolEnum = RolEnum.base_user
     is_active: bool = True
-    profile_pic: Optional[int] = None
+    profile_pic: Optional[int] = 1
     created_date: Optional[str] = None
     show_statistics: Optional[int] = 0
 
@@ -55,7 +55,7 @@ class UserLogRespSchema(BaseModel):
     email: EmailStr
     rol: RolEnum = RolEnum.base_user
     is_active: bool = True
-    profile_pic: Optional[int] = None
+    profile_pic: Optional[int] = 1
     access_token: str
     created_date: Optional[str] = None
     show_statistics: Optional[int] = 0
