@@ -1,3 +1,4 @@
+import type { FavRespSchema } from "../schemas/favoritesSchema"
 import type { StatusViewEnum } from "./filterTypes"
 
 export interface FavPayload {
@@ -10,6 +11,6 @@ export interface FavPayload {
 export interface FavResponse {
      is_success: boolean
      msg: string
-     active?: boolean
-     statusView?: StatusViewEnum
+     active?: FavRespSchema["active"]
+     statusView?: FavRespSchema["statusView"]
 }

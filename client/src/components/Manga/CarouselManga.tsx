@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { Carousel } from "primereact/carousel";
 import { Link } from "react-router";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
-import type { Manga } from "../../types/mangaTypes";
 import { getMangas } from "../../services/mangaServices";
 import { CarouselSkeleton } from "../Skeletons/CarouselSkeleton";
 import { MangaCard } from "./MangaCard";
+import type { MangaSchema } from "../../schemas/mangaSchemas";
 
 export function CarouselManga() {
-   const [mangas, setMangas] = useState<[Manga] | []>([]);
+   const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [total, setTotalMangas] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
 

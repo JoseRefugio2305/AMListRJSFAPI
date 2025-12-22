@@ -4,11 +4,11 @@ import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { cutText } from "../../utils/common";
 import { Link } from "react-router";
 import { TopSkeleton } from "../Skeletons/TopSkeleton";
-import type { Manga } from "../../types/mangaTypes";
 import { getMangas } from "../../services/mangaServices";
+import type { MangaSchema } from "../../schemas/mangaSchemas";
 
 export function TopMangas() {
-   const [mangas, setMangas] = useState<[Manga] | []>([]);
+   const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
    useEffect(() => {
@@ -36,7 +36,7 @@ export function TopMangas() {
          ) : (
             mangas.map((manga, idx) => (
                <div
-                  className="flex flex-row shadow-2xl gap-4 hover:scale-98 rounded-xl"
+                  className="flex flex-row shadow-2xl gap-4 hover:scale-98 rounded-xl mb-1"
                   key={manga.id}
                >
                   <div className="flex justify-center items-center w-[10%]">

@@ -1,14 +1,8 @@
 import { Accordion, AccordionTab } from "primereact/accordion";
+import type { AnimeCompleteSchema } from "../../../schemas/animeSchemas";
 
 interface TitulosAltProps {
-   titulos_alt:
-      | [
-           {
-              tit_alt: string;
-              tipo: string;
-           }
-        ]
-      | [];
+   titulos_alt: AnimeCompleteSchema["titulos_alt"];
 }
 export function TitulosAlt({ titulos_alt }: TitulosAltProps) {
    return (

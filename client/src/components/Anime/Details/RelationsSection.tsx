@@ -1,9 +1,12 @@
 import { useMemo } from "react";
-import type { AnimeFullRelation, AnimeRelAdp } from "../../../types/animeTypes";
 import { AdpRelLink } from "../../Common/Details/AdpRelLink";
+import type {
+   AnimeCompleteSchema,
+   AnimeRelAdpSchema,
+} from "../../../schemas/animeSchemas";
 
 interface AnimeRelationsSection {
-   relations: [AnimeFullRelation] | [];
+   relations: AnimeCompleteSchema["relaciones"];
 }
 
 export function AnimeRelationsSection({ relations }: AnimeRelationsSection) {
@@ -15,7 +18,7 @@ export function AnimeRelationsSection({ relations }: AnimeRelationsSection) {
 
    if (!hasAny) return null;
 
-   const getLinks = (type_rel: string, animes: [AnimeRelAdp] | []) => {
+   const getLinks = (type_rel: string, animes: AnimeRelAdpSchema[]) => {
       return animes.map((ani) => (
          <AdpRelLink
             key={ani.id_MAL}

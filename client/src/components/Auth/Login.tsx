@@ -2,6 +2,7 @@ import { Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState, type FormEvent } from "react";
 import { authStore } from "../../store/authStore";
 import { toastStore } from "../../store/toastStore";
+import { AuthZ } from "../../schemas/authSchemas";
 
 export function Login() {
    const { login } = authStore();
@@ -15,23 +16,34 @@ export function Login() {
       const formData = new FormData(event.currentTarget);
       const email = String(formData.get("email") ?? "");
       const password = String(formData.get("password") ?? "");
-      login({ email, password }, true)
-         .then((response) => {
-            showToast({
-               severity: response.is_success ? "success" : "error",
-               summary: response.is_success ? "Exito" : "Error",
-               detail: response.message,
-            });
-         })
-         .catch((error) => {
-            console.log(error);
-            showToast({
-               severity: "error",
-               summary: "Error",
-               detail: "Ocurrio un error al procesar la petición.",
-            });
-         })
-         .finally(() => setLoading(false));
+
+      const parsed = AuthZ.safeParse({ email, password });
+      if (!parsed.success) {
+         showToast({
+            severity: "error",
+            summary: "Error",
+            detail: parsed.error.issues[0].message,
+         });
+         setLoading(false);
+      } else {
+         login({ email, password, name: "" }, true)
+            .then((response) => {
+               showToast({
+                  severity: response.is_success ? "success" : "error",
+                  summary: response.is_success ? "Exito" : "Error",
+                  detail: response.message,
+               });
+            })
+            .catch((error) => {
+               console.log(error);
+               showToast({
+                  severity: "error",
+                  summary: "Error",
+                  detail: "Ocurrio un error al procesar la petición.",
+               });
+            })
+            .finally(() => setLoading(false));
+      }
    };
 
    return (

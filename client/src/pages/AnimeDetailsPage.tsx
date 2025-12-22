@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { getAnimeDetails } from "../services/animeServices";
-import type { AnimeComplete } from "../types/animeTypes";
 import { DetailsSkeleton } from "../components/Skeletons/DetailsSkeleton";
 import { LazyLoadImage } from "../components/Common/LazyLoadImage";
 import { cutText } from "../utils/common";
@@ -12,11 +11,12 @@ import { Description } from "../components/Common/Details/Description";
 import { TitulosAlt } from "../components/Common/Details/TitulosAlt";
 import { MoreInfoAnime } from "../components/Anime/Details/MoreInfo";
 import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
+import type { AnimeCompleteSchema } from "../schemas/animeSchemas";
 
 export default function AnimeDetailsPage() {
    const navigate = useNavigate();
    const { key_anime } = useParams();
-   const [animeDetails, setAnimeDetails] = useState<AnimeComplete>();
+   const [animeDetails, setAnimeDetails] = useState<AnimeCompleteSchema>();
    const [loading, setLoading] = useState<boolean>(true);
    const [fav_status, setFav] = useState<boolean>(false);
    const [statusView, setStatusView] = useState<number>(5);

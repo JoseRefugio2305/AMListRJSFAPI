@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { SignIn, SignUp } from "../services/authServices";
-import type { ResponseLogRes, UserLogReg } from "../types/authTypes";
+import type { ResponseLogRes } from "../types/authTypes";
+import type { AuthSchema } from "../schemas/authSchemas";
 
 type AuthType = true | false//true Login, false register
 
@@ -9,7 +10,7 @@ interface AuthState {
      username: string | null;
      prof_pic: string | null;
      rol: number | null;
-     login: (data: UserLogReg, is_login: AuthType) => Promise<{
+     login: (data: AuthSchema, is_login: AuthType) => Promise<{
           message: string, is_success: boolean
      }>;
      logout: (navigate?: (path: string) => void) => void
@@ -20,7 +21,7 @@ export const authStore = create<AuthState>((set) => ({
      username: getUsername(),
      prof_pic: getProfPic(),
      rol: getRol(),
-     login: async (data: UserLogReg, is_login: AuthType) => {
+     login: async (data: AuthSchema, is_login: AuthType) => {
           const response: ResponseLogRes = is_login ? await SignIn(data) : await SignUp(data);//Hacemos la peticion de inicio se sesion
           if (response.statusCode === 200 || response.statusCode === 201) {//Si el registro o login fueron exitosos
                const prof_pic = response.profile_pic !== 0 ? `/avatars/${response.profile_pic}.png` : "/avatars/not_found.png";

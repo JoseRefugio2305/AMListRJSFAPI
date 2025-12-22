@@ -1,20 +1,19 @@
-import type { Anime } from "./animeTypes"
-import type { Manga } from "./mangaTypes"
+import type { AnimeSearchResultSchema, MangaSearchResultSchema } from "../schemas/searchSchemas"
 
 export interface AnimeSearchResult {
      is_success: boolean
      msg: string
-     listaAnimes?: [Anime]
-     totalAnimes?: number
-     pageA?: number
-     totalPagesA?: number
+     listaAnimes?: AnimeSearchResultSchema["listaAnimes"]
+     totalAnimes?: AnimeSearchResultSchema["totalAnimes"]
+     pageA?: AnimeSearchResultSchema["pageA"]
+     totalPagesA?: AnimeSearchResultSchema["totalPagesA"]
 }
 
 export interface MangaSearchResult {
      is_success: boolean
      msg: string
-     listaMangas?: [Manga]
-     totalMangas?: number
-     pageM?: number
-     totalPagesM?: number
+     listaMangas?: MangaSearchResultSchema["listaMangas"]
+     totalMangas?: MangaSearchResultSchema["totalMangas"]
+     pageM?: MangaSearchResultSchema["pageM"]
+     totalPagesM?: MangaSearchResultSchema["totalPagesM"]
 }

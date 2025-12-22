@@ -1,19 +1,23 @@
 import axiosInstance from "../hooks/useAxios";
-import type { ResponseLogRes, UserLogReg } from "../types/authTypes";
+import { RegLogResZ, type AuthSchema } from "../schemas/authSchemas";
+import type { ResponseLogRes } from "../types/authTypes";
 import { getMessageError } from "../utils/parse_error";
 
 //Inicio de sesion
-export async function SignIn(data: UserLogReg): Promise<ResponseLogRes> {
+export async function SignIn(data: AuthSchema): Promise<ResponseLogRes> {
      const response: ResponseLogRes = await axiosInstance.post("/auth/login", { email: data.email, password: data.password }
      ).then((r) => {
+          const parsed = RegLogResZ.safeParse(r.data)
+
+          if (!parsed.success) {
+               console.error("Datos invalidos desde el servidor.")
+               return { statusCode: 500, message: "Datos invalidos desde el servidor." };
+          }
           return {
                statusCode: r.status,
                message: "Login Exitoso",
-               access_token: r.data.access_token,
-               name: r.data.name,
-               profile_pic: r.data.profile_pic ? r.data.profile_pic : 0,
-               rol: r.data.rol
-          }
+               ...parsed.data,
+          };
      }).catch((error) => {
           return {
                statusCode: error.response.status,
@@ -24,25 +28,25 @@ export async function SignIn(data: UserLogReg): Promise<ResponseLogRes> {
      return response
 }
 //Registro
-export async function SignUp(data: UserLogReg): Promise<ResponseLogRes> {
+export async function SignUp(data: AuthSchema): Promise<ResponseLogRes> {
      const response: ResponseLogRes = await axiosInstance.post("/auth/register", { name: data.name, email: data.email, password: data.password }
      ).then((r) => {
+          const parsed = RegLogResZ.safeParse(r.data)
+
+          if (!parsed.success) {
+               console.log(parsed.error)
+               console.error("Datos invalidos desde el servidor.")
+               return { statusCode: 500, message: "Datos invalidos desde el servidor." };
+          }
           return {
                statusCode: r.status,
-               message: "Registro Exitoso",
-               access_token: r.data.access_token,
-               name: r.data.name,
-               profile_pic: r.data.profile_pic ? r.data.profile_pic : 1,
-               rol: r.data.rol
-          }
+               message: "Login Exitoso",
+               ...parsed.data,
+          };
      }).catch((error) => {
           return {
                statusCode: error.response.status,
                message: getMessageError(error),
-               access_token: "",
-               name: "",
-               profile_pic: 0,
-               rol: 0
           }
      })
      // console.log(response)

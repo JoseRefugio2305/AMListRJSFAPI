@@ -2,10 +2,10 @@ import { cutText, getDayEmision } from "../../utils/common";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { Link } from "react-router";
 import { useState } from "react";
-import type { Manga } from "../../types/mangaTypes";
 import { FavButton } from "../Common/FavButon";
+import type { MangaSchema } from "../../schemas/mangaSchemas";
 
-export const MangaCard = (manga: Manga) => {
+export const MangaCard = (manga: MangaSchema) => {
    const [fav_status, setFav] = useState<boolean>(manga.isFav ?? false);
 
    return (

@@ -2,11 +2,11 @@ import { TvMinimalPlay } from "lucide-react";
 import { CarouselAnime } from "../components/Anime/CarouselAnime";
 import { useEffect, useState } from "react";
 import { getAnimes } from "../services/animeServices";
-import type { Anime } from "../types/animeTypes";
 import { PaginationSkeleton } from "../components/Skeletons/PaginationSekeleton";
 import { AnimePagination } from "../components/Anime/AnimePagination";
 import { useSearchParams } from "react-router";
 import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
+import type { AnimeSchema } from "../schemas/animeSchemas";
 
 export default function AnimePage() {
    const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +16,7 @@ export default function AnimePage() {
       return Number.isNaN(p) || p <= 0 ? 0 : (p - 1) * 20;
    });
    const [total, setTotalAnimes] = useState<number>(0);
-   const [animes, setAnimes] = useState<[Anime] | []>([]);
+   const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
    const fetchAnimes = () => {

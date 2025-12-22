@@ -1,4 +1,3 @@
-import { type Anime } from "../../types/animeTypes";
 import {
    cutText,
    getAnimeStrType,
@@ -10,8 +9,9 @@ import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { Link } from "react-router";
 import { useState } from "react";
 import { FavButton } from "../Common/FavButon";
+import type { AnimeSchema } from "../../schemas/animeSchemas";
 
-export const AnimeCard = (anime: Anime) => {
+export const AnimeCard = (anime: AnimeSchema) => {
    const [fav_status, setFav] = useState<boolean>(anime.isFav ?? false);
 
    return (
@@ -81,25 +81,5 @@ export const AnimeCard = (anime: Anime) => {
             </div>
          </div>
       </div>
-      // <div
-      //    onClick={() => navigate("/login")} //TODO: Crear pagina de detalles de anime
-      //    className="card-am"
-      // >
-      //    <LazyLoadImage
-      //       height={315}
-      //       // src={anime.animeImages.img}
-      //       src="/148347.jpg"
-      //       alt={anime.titulo}
-      //       className="img-card"
-      //    />
-      //    <Link
-      //       to="/login" //TODO: Crear pagina de detalles de anime
-      //       className="link-card"
-      //    >
-      //       <h5 className="title-card bg-black/50  bg-opacity-50">
-      //          {cutText(anime.titulo, 35)}
-      //       </h5>
-      //    </Link>
-      // </div>
    );
 };

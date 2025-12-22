@@ -1,14 +1,14 @@
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import { AnimeCard } from "./AnimeCard";
-import type { Anime } from "../../types/animeTypes";
 import { NotResultsFound } from "../Common/NotResultsFound";
+import type { AnimeSchema } from "../../schemas/animeSchemas";
 
 interface AnimePaginationProps {
    page: number;
    total: number;
    setLoading: (load: boolean) => void;
    setPage: (first: number) => void;
-   animes: [Anime] | [];
+   animes: AnimeSchema[];
 }
 
 export function AnimePagination({
@@ -34,7 +34,7 @@ export function AnimePagination({
                   onPageChange={handlePageChange}
                />
                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-                  {animes.map((anime: Anime) => (
+                  {animes.map((anime: AnimeSchema) => (
                      <AnimeCard {...anime} key={anime.id} />
                   ))}
                </div>

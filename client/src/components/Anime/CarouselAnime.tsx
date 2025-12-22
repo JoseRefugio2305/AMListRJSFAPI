@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
-import type { Anime } from "../../types/animeTypes";
 import { getAnimes } from "../../services/animeServices";
 import { CarouselSkeleton } from "../Skeletons/CarouselSkeleton";
 import { Carousel } from "primereact/carousel";
 import { AnimeCard } from "./AnimeCard";
+import type { AnimeSchema } from "../../schemas/animeSchemas";
 
 export function CarouselAnime() {
-   const [animes, setAnimes] = useState<[Anime] | []>([]);
+   const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [total, setTotalAnimes] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
 
