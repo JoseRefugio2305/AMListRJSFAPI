@@ -48,10 +48,9 @@ export function MoreInfoManga({
       //TODO: Color de emision de detalles
       <>
          <h5
-            className={`rounded-sm py-2 text-lg justify-center flex text-white  font-semibold ${getColorTipoAnimeManga(
-               tipo,
-               1
-            )}`}
+            className={`rounded-sm py-2 text-lg justify-center flex text-white  font-semibold ${
+               publicando === 1 ? "bg-green-500" : "bg-red-500"
+            }`}
          >
             {publicando === 1 ? "En Publicación" : "Finalizado"}
          </h5>

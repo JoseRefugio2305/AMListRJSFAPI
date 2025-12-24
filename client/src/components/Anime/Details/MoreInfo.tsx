@@ -17,10 +17,10 @@ interface MoreInfoProps {
    link_p: string;
    linkMAL: string;
    episodios: number;
-    fav_status: boolean;
+   fav_status: boolean;
    setFav: React.Dispatch<React.SetStateAction<boolean>>;
    statusView: StatusViewEnum;
-      setStatusView: React.Dispatch<React.SetStateAction<number>>;
+   setStatusView: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export function MoreInfoAnime({
@@ -32,16 +32,19 @@ export function MoreInfoAnime({
    numRatings,
    linkMAL,
    link_p,
-   episodios,fav_status,setFav,statusView,setStatusView
+   episodios,
+   fav_status,
+   setFav,
+   statusView,
+   setStatusView,
 }: MoreInfoProps) {
    const username = authStore((s) => s.username);
    return (
       <>
          <h5
-            className={`rounded-sm py-2 text-lg justify-center flex text-white  font-semibold ${getColorTipoAnimeManga(
-               tipo,
-               1
-            )}`}
+            className={`rounded-sm py-2 text-lg justify-center flex text-white  font-semibold ${
+               emision === 1 ? "bg-green-500" : "bg-red-500"
+            }`}
          >
             {emision === 1 ? "En Emisión" : "Finalizado"}
          </h5>
@@ -77,7 +80,7 @@ export function MoreInfoAnime({
             <b>Fecha de Emisión:</b> {fechaEmision}
          </p>
          <p className="text-md">
-            <b>Episodios:</b> {episodios}
+            <b>Episodios:</b> {episodios === 0 ? "Desconocidos" : episodios}
          </p>
          <Rating size="lg">
             <RatingStar filled={Math.floor(calificacion / 2) >= 1} />

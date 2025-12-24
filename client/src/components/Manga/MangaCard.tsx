@@ -73,10 +73,11 @@ export const MangaCard = (manga: MangaSchema) => {
                   <h5 className="title-card">{cutText(manga.titulo, 35)}</h5>
                </Link>
 
-               <p className="text-white">{cutText(manga.descripcion, 50)}</p>
+               <p className="text-white">{cutText(manga.descripcion, 35)}</p>
                <br />
                <p className="text-white">
-                  <b>Capitulos:</b> {manga.capitulos}
+                  <b>Capitulos:</b>{" "}
+                  {manga.capitulos === 0 ? "Desc." : manga.capitulos}
                </p>
             </div>
          </div>

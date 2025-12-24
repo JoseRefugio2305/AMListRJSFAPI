@@ -73,10 +73,11 @@ export const AnimeCard = (anime: AnimeSchema) => {
                   <h5 className="title-card">{cutText(anime.titulo, 35)}</h5>
                </Link>
 
-               <p className="text-white">{cutText(anime.descripcion, 50)}</p>
+               <p className="text-white">{cutText(anime.descripcion, 35)}</p>
                <br />
                <p className="text-white">
-                  <b>Episodios:</b> {anime.episodios}
+                  <b>Episodios:</b>{" "}
+                  {anime.episodios === 0 ? "Desc." : anime.episodios}
                </p>
             </div>
          </div>
