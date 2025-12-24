@@ -76,7 +76,7 @@ export function StatusViewDropDown({
          <Dropdown
             label={
                !loading ? (
-                  `Estado: ${getStatusViewStr(statusView, true)}`
+                  `Estado: ${getStatusViewStr(statusView, is_anime)}`
                ) : (
                   <Spinner color="purple" aria-label="Loading status view" />
                )
@@ -89,7 +89,7 @@ export function StatusViewDropDown({
                onClick={() => handleStatusChange(1)}
                className="w-full text-left text-white hover:bg-purple-700 focus:bg-purple-500 dark:hover:bg-purple-700 dark:focus:bg-purple-500"
             >
-               Viendo
+               {is_anime?"Viendo":"Leyendo"}
             </DropdownItem>
             <DropdownDivider />
             <DropdownItem

@@ -26,25 +26,36 @@ export function getAnimeStrType(tipo: TipoAnimeEnum): string {
      return tipo_anime
 }
 
+export function getMangaStrType(tipo: TipoMangaEnum): string {
+     switch (tipo) {
+          case TipoMangaEnum.NL:
+               return "Novela Ligera";
+          case TipoMangaEnum.One_Shot:
+               return "One Shot";
+          default:
+               return TipoMangaEnum[tipo];
+     }
+}
+
 export function getColorTipoAnimeManga(tipo: TipoAnimeEnum | TipoMangaEnum, is_emision: number) {
      if (is_emision === 1) {
           return "bg-green-500";
      }
      let colorbg: string = "bg-blue-500";
      switch (tipo) {
-          case TipoAnimeEnum.Anime || TipoMangaEnum.manga:
+          case TipoAnimeEnum.Anime || TipoMangaEnum.Manga:
                colorbg = "bg-pink-500";
                break;
-          case TipoAnimeEnum.OVA || TipoMangaEnum.nl:
+          case TipoAnimeEnum.OVA || TipoMangaEnum.NL:
                colorbg = "bg-fuchsia-500";
                break;
-          case TipoAnimeEnum.Pelicula || TipoMangaEnum.manhwa:
+          case TipoAnimeEnum.Pelicula || TipoMangaEnum.Manhwa:
                colorbg = "bg-orange-500";
                break;
-          case TipoAnimeEnum.Donghua || TipoMangaEnum.one_shot:
+          case TipoAnimeEnum.Donghua || TipoMangaEnum.One_Shot:
                colorbg = "bg-red-500";
                break;
-          case TipoAnimeEnum.Especial || TipoMangaEnum.manhua:
+          case TipoAnimeEnum.Especial || TipoMangaEnum.Manhua:
                colorbg = "bg-violet-500";
                break;
           default:

@@ -1,4 +1,10 @@
-import { cutText, getDayEmision } from "../../utils/common";
+import {
+   cutText,
+   getColorTipoAnimeManga,
+   getDayEmision,
+   getMangaStrType,
+   getTitleForLink,
+} from "../../utils/common";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { Link } from "react-router";
 import { useState } from "react";
@@ -28,13 +34,20 @@ export const MangaCard = (manga: MangaSchema) => {
                   alt={cutText(manga.titulo, 35)}
                   className="img-card"
                />
-               {manga.publicando && (
-                  <h5 className="emision-day">
-                     {getDayEmision(manga.fechaComienzoPub)}
-                  </h5>
-               )}
+               <h5
+                  className={`emision-day ${getColorTipoAnimeManga(
+                     manga.tipo,
+                     manga.publicando
+                  )}`}
+               >
+                  {manga.publicando === 1
+                     ? getDayEmision(manga.fechaComienzoPub)
+                     : getMangaStrType(manga.tipo)}
+               </h5>
                <Link
-                  to="/login" //TODO: Crear pagina de detalles de manga
+                  to={`/manga/${getTitleForLink(manga.titulo)}/${
+                     manga.key_manga
+                  }`}
                   className="link-card"
                >
                   <h5 className="title-card bg-black/50  bg-opacity-50">
@@ -52,7 +65,9 @@ export const MangaCard = (manga: MangaSchema) => {
                   setFav={setFav}
                />
                <Link
-                  to="/login" //TODO: Crear pagina de detalles de manga
+                  to={`/manga/${getTitleForLink(manga.titulo)}/${
+                     manga.key_manga
+                  }`}
                   className="link-card"
                >
                   <h5 className="title-card">{cutText(manga.titulo, 35)}</h5>

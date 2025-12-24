@@ -10,6 +10,8 @@ const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const AnimePage = lazy(() => import("./pages/AnimePage.tsx"));
 const AnimeDetailsPage = lazy(() => import("./pages/AnimeDetailsPage.tsx"));
+const MangaPage = lazy(() => import("./pages/MangaPage.tsx"));
+const MangaDetailsPage = lazy(() => import("./pages/MangaDetailsPage.tsx"));
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));
 
 function App() {
@@ -37,6 +39,11 @@ function App() {
                <Route
                   path="/anime/:titulo/:key_anime"
                   element={<AnimeDetailsPage />}
+               />
+               <Route path="/manga" element={<MangaPage />} />
+               <Route
+                  path="/manga/:titulo/:key_manga"
+                  element={<MangaDetailsPage />}
                />
                <Route path="*" element={<NotFoundPage />} />
             </Routes>
