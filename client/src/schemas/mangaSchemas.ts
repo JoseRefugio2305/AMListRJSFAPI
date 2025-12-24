@@ -1,20 +1,12 @@
 import * as z from "zod";
 import { TipoMangaEnum } from "../types/mangaTypes";
+import { MangaRelAdpZ, MangaImagesSharedZ, MangaFullRelationZ, AnimeRelAdpZ, StatusViewZ } from "./relationsSchemas";
 
 export const TipoMangaZ = z.enum(TipoMangaEnum);
 
-export const MangaImagesZ = z.object({
-     img_sm: z.string(),
-     img: z.string(),
-     img_l: z.string(),
-});
+export const MangaImagesZ = MangaImagesSharedZ;
 
-export const MangaRelAdpZ = z.object({
-     titulo: z.string(),
-     id_MAL: z.number(),
-     key_manga: z.number(),
-     mangaImages: MangaImagesZ,
-});
+export { MangaRelAdpZ, MangaFullRelationZ, AnimeRelAdpZ };
 
 export const MangaZ = z.object({
      id: z.string(),
@@ -37,6 +29,17 @@ export const MangaZ = z.object({
      isFav: z.boolean().optional().default(false),
 });
 
+export const MangaCompleteZ =MangaZ.extend({
+     generos: z.array(z.object({ id_MAL: z.number(), nombre: z.string() })).default([]),
+     relaciones: z.array(MangaFullRelationZ).default([]),
+     adaptaciones: z.array(AnimeRelAdpZ).default([]),
+     editoriales: z.array(z.object({ nombre: z.string(), id_MAL: z.number() })).default([]),
+     autores: z.array(z.object({ nombre: z.string(), id_MAL: z.number() })).default([]),
+     titulos_alt: z.array(z.object({ tit_alt: z.string(), tipo: z.string() })).default([]),
+     statusView: StatusViewZ.nullable().optional(),
+})
+
 
 //Exports de tipos
 export type MangaSchema = z.infer<typeof MangaZ>
+export type MangaCompleteSchema = z.infer<typeof MangaCompleteZ>
