@@ -17,6 +17,8 @@ export const MangaSearchResultZ = z.object({
      totalPagesM: z.number().optional(),
 });
 
+export const AdvancedSearchResultZ = AnimeSearchResultZ.and(MangaSearchResultZ);
+
 //Exports de tipos
 export type AnimeSearchResultSchema = z.infer<typeof AnimeSearchResultZ>
 
