@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FieldOrdEnum } from "../../types/filterTypes";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
-import { cutText } from "../../utils/common";
+import { cutText, getTitleForLink } from "../../utils/common";
 import { Link } from "react-router";
 import { TopSkeleton } from "../Skeletons/TopSkeleton";
 import { getMangas } from "../../services/mangaServices";
@@ -50,7 +50,9 @@ export function TopMangas() {
                   />
                   <div>
                      <Link
-                        to="/login" //TODO: Crear pagina de detalles de manga
+                        to={`/manga/${getTitleForLink(manga.titulo)}/${
+                           manga.key_manga
+                        }`}
                         className="hover:underline hover:text-purple-600"
                      >
                         <h5 className="text-sm font-bold tracking-tight text-gray-900 dark:text-white hover:text-purple-600">
