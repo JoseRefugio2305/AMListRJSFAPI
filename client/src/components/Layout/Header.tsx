@@ -12,7 +12,7 @@ import {
 import { NavLink, useNavigate } from "react-router";
 import amlLogo from "/logo.png";
 import { ButtonToggleTheme } from "./ButtonToggleTheme";
-import { Brush, House, TvMinimalPlay, UserPlus } from "lucide-react";
+import { Brush, House, Telescope, TvMinimalPlay, UserPlus } from "lucide-react";
 import { authStore } from "../../store/authStore";
 
 function AvatarSettings() {
@@ -81,7 +81,6 @@ export function Header() {
                >
                   <TvMinimalPlay /> Animes
                </NavLink>
-               {/* TODO: pagina de mangas */}
                <NavLink
                   className={({ isActive }) =>
                      isActive ? "nav-link-active nav-link" : "nav-link"
@@ -89,6 +88,14 @@ export function Header() {
                   to="/manga"
                >
                   <Brush /> Mangas
+               </NavLink>
+               <NavLink
+                  className={({ isActive }) =>
+                     isActive ? "nav-link-active nav-link" : "nav-link"
+                  }
+                  to="/explore"
+               >
+                  <Telescope /> Explorar
                </NavLink>
                {!username && (
                   <NavLink
