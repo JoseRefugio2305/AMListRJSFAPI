@@ -8,8 +8,10 @@ from app.schemas.search import (
     SearchAllSchema,
     AnimeSearchSchema,
     MangaSearchSchema,
+    FiltersListAdvancedSearch,
 )
 from app.schemas.auth import UserLogRespSchema
+from app.services.search_service import SearchService
 from app.services.manga import MangaService
 from app.services.anime import AnimeService
 
@@ -52,3 +54,10 @@ async def do_search(
         pageM=resultsMangas.pageM,
         totalPagesM=resultsMangas.totalPagesM,
     )
+
+
+# Obtener los generos, autores, estudios de animacion y editoriales de manga para los filtros en la busqueda
+@routerSearch.get("/get_filters/", response_model=FiltersListAdvancedSearch)
+async def get_filters():
+    data = await SearchService.get_filters()
+    return data.model_dump()

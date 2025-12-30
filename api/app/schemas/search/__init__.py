@@ -1,4 +1,9 @@
-from .filters_schema import FilterSchema, UserListFilterSchema, FilterGSAESchema
+from .filters_schema import (
+    FilterSchema,
+    UserListFilterSchema,
+    FilterGSAESchema,
+    FiltersListAdvancedSearch,
+)
 from .filters_enum import (
     TipoContenidoEnum,
     EmisionFilterEnum,
@@ -52,4 +57,5 @@ __all__ = [
     "SearchStudiosSchema",
     "FieldOrdGSAEEnum",
     "FilterGSAESchema",
+    "FiltersListAdvancedSearch",
 ]

@@ -26,8 +26,12 @@ class BaseODMModel:
         return await cls._collection().find_one(filter or {})
 
     @classmethod
-    async def find(cls, filter: dict, limit: int = 10):
-        cursor = cls._collection().find(filter or {}).limit(limit)
+    async def find(cls, filter: dict, limit: int | None = None):
+        cursor = (
+            cls._collection().find(filter or {}).limit(limit)
+            if limit
+            else cls._collection().find(filter or {})
+        )
 
         return await cursor.to_list(length=None)
 

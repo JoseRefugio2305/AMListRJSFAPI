@@ -15,6 +15,12 @@ from app.schemas.anime import StatusViewEnum, TipoAnimeEnum
 from app.schemas.manga import (
     TipoMangaEnum,
 )
+from app.schemas.common.genres import GenreARelSchema
+from app.schemas.common.relations import (
+    StudiosARelSchema,
+    EditorialMRelSchema,
+    AutoresMRelSchema,
+)
 from app.core.utils import str_trim_lower
 
 
@@ -63,3 +69,11 @@ class FilterGSAESchema(BaseModel):
     )
     orderBy: OrderByEnum = OrderByEnum.asc
     orderField: FieldOrdGSAEEnum = FieldOrdGSAEEnum.id_MAL
+
+
+# Schema para obtener los generos, autores, estudios de animacion y editoriales de manga para los filtros en la busqueda
+class FiltersListAdvancedSearch(BaseModel):
+    genresList: List[GenreARelSchema] = []
+    studiosList: List[StudiosARelSchema] = []
+    autoresList: List[AutoresMRelSchema] = []
+    editorialesList: List[EditorialMRelSchema] = []
