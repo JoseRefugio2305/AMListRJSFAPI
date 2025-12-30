@@ -60,7 +60,7 @@ export function CarouselAnime() {
                <div className="flex flex-row gap-3">
                   <h2 className="text-xl font-bold">Animes en Emisión</h2>
                   <Link
-                     to="/search/emision" //TODO: Construir pagina de busqueda/exploracion y que reciba parametros de busqueda en ruta
+                     to="/explore/animes?emision=1"
                      className="flex flex-row btn-link"
                   >
                      Ver mas <SquareArrowOutUpRightIcon />

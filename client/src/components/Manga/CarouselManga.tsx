@@ -60,7 +60,7 @@ export function CarouselManga() {
                <div className="flex flex-row gap-3">
                   <h2 className="text-xl font-bold">Mangas en Publicación</h2>
                   <Link
-                     to="/search/emision" //TODO: Construir pagina de busqueda/exploracion y que reciba parametros de busqueda en ruta
+                     to="/explore/mangas?emision=1"
                      className="flex flex-row btn-link"
                   >
                      Ver mas <SquareArrowOutUpRightIcon />
