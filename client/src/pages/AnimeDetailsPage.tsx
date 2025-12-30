@@ -106,7 +106,7 @@ export default function AnimeDetailsPage() {
                                  animeDetails.studios.map((std) => (
                                     <LinkPill
                                        key={std.id_MAL}
-                                       link="/search" //TODO: Filtros en pagina de search
+                                       link={`/explore/animes?studios=${std.id_MAL}`}
                                        textLink={std.nombre}
                                     />
                                  ))
@@ -153,7 +153,7 @@ export default function AnimeDetailsPage() {
                                  animeDetails.generos.map((gen) => (
                                     <LinkPill
                                        key={gen.id_MAL}
-                                       link="/search" //TODO: Filtros en search
+                                       link={`/explore/animes?genres=${gen.id_MAL}`}
                                        textLink={gen.nombre}
                                     />
                                  ))
