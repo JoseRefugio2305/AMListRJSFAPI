@@ -108,7 +108,7 @@ export default function MangaDetailsPage() {
                                  mangaDetails.editoriales.map((edt) => (
                                     <LinkPill
                                        key={edt.id_MAL}
-                                       link="/search" //TODO: Filtros en pagina de search
+                                       link={`/explore/mangas?editorials=${edt.id_MAL}`}
                                        textLink={edt.nombre}
                                     />
                                  ))
@@ -130,7 +130,7 @@ export default function MangaDetailsPage() {
                                  mangaDetails.autores.map((aut) => (
                                     <LinkPill
                                        key={aut.id_MAL}
-                                       link="/search" //TODO: Filtros en pagina de search
+                                       link={`/explore/mangas?authors=${aut.id_MAL}`}
                                        textLink={aut.nombre}
                                     />
                                  ))
@@ -177,7 +177,7 @@ export default function MangaDetailsPage() {
                                  mangaDetails.generos.map((gen) => (
                                     <LinkPill
                                        key={gen.id_MAL}
-                                       link="/search" //TODO: Filtros en search
+                                       link={`/explore/mangas?genres=${gen.id_MAL}`}
                                        textLink={gen.nombre}
                                     />
                                  ))
