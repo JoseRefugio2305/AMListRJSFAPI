@@ -1,4 +1,5 @@
 import type { AnimeCompleteSchema } from "../schemas/animeSchemas";
+import type { OptionsSelectInterface } from "./filterTypes";
 
 
 export enum StatusViewEnum {
@@ -19,6 +20,14 @@ export enum TipoAnimeEnum {
      Desconocido = 5,
      Donghua = 6,
 }
+
+export const optionsTipoAnime: OptionsSelectInterface[] = [
+     { code: TipoAnimeEnum.Anime, name: "Anime" },
+     { code: TipoAnimeEnum.Donghua, name: "Donghua" },
+     { code: TipoAnimeEnum.Especial, name: "Especial" },
+     { code: TipoAnimeEnum.Pelicula, name: "Pelicula" },
+     { code: TipoAnimeEnum.OVA, name: "OVA" },
+]
 
 export interface AnimeResult {
      is_success: boolean

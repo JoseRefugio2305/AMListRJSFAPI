@@ -1,4 +1,5 @@
 import type { MangaCompleteSchema } from "../schemas/mangaSchemas"
+import type { OptionsSelectInterface } from "./filterTypes"
 
 
 export enum TipoMangaEnum {
@@ -10,6 +11,13 @@ export enum TipoMangaEnum {
      Desconocido = 6,
 }
 
+export const optionsTipoManga: OptionsSelectInterface[] = [
+     { code: TipoMangaEnum.Manga, name: "Manga" },
+     { code: TipoMangaEnum.NL, name: "Novela Ligera" },
+     { code: TipoMangaEnum.Manhwa, name: "Manhwa" },
+     { code: TipoMangaEnum.Manhua, name: "Manhua" },
+     { code: TipoMangaEnum.One_Shot, name: "One Shot" },
+]
 
 export interface MangaResult {
      is_success: boolean

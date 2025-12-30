@@ -17,3 +17,16 @@ export interface MangaSearchResult {
      pageM?: MangaSearchResultSchema["pageM"]
      totalPagesM?: MangaSearchResultSchema["totalPagesM"]
 }
+
+export interface AdvancedSearchResult {
+     is_success: boolean
+     msg: string
+     listaAnimes?: AnimeSearchResultSchema["listaAnimes"]
+     totalAnimes?: AnimeSearchResultSchema["totalAnimes"]
+     pageA?: AnimeSearchResultSchema["pageA"]
+     totalPagesA?: AnimeSearchResultSchema["totalPagesA"]
+     listaMangas?: MangaSearchResultSchema["listaMangas"]
+     totalMangas?: MangaSearchResultSchema["totalMangas"]
+     pageM?: MangaSearchResultSchema["pageM"]
+     totalPagesM?: MangaSearchResultSchema["totalPagesM"]
+}
