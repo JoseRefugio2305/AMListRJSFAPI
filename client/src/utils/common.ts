@@ -1,4 +1,5 @@
 import { StatusViewEnum, TipoAnimeEnum } from "../types/animeTypes";
+import { TipoContenidoEnum } from "../types/filterTypes";
 import { TipoMangaEnum } from "../types/mangaTypes";
 
 export function cutText(text: string, length_text: number = 35): string {
@@ -83,4 +84,12 @@ export function getTitleForLink(title: string): string {
           .replace(/[^\p{L}\p{N}-]+/gu, '-') // conserva letras, números y guiones; cambia resto a '-'
           .replace(/^-+|-+$/g, '') // quita guiones al inicio/fin
           .replace(/-{2,}/g, '-'); // colapsa guiones múltiples
+}
+
+export function getTipoContenido(estudiosL: number, editorialesL: number, autoresL: number, tiposAnimeL: number, tiposMangaL: number): TipoContenidoEnum {
+
+     if ((tiposAnimeL > 0 || estudiosL > 0) && (tiposMangaL === 0 && editorialesL === 0 && autoresL === 0)) return TipoContenidoEnum.anime
+     if ((tiposMangaL > 0 || editorialesL > 0 || autoresL > 0) && (tiposAnimeL === 0 && estudiosL === 0)) return TipoContenidoEnum.manga
+
+     return TipoContenidoEnum.todos
 }
