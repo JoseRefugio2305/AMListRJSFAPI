@@ -45,7 +45,6 @@ export function MoreInfoManga({
 }: MoreInfoProps) {
    const username = authStore((s) => s.username);
    return (
-      //TODO: Color de emision de detalles
       <>
          <h5
             className={`rounded-sm py-2 text-lg justify-center flex text-white  font-semibold ${
