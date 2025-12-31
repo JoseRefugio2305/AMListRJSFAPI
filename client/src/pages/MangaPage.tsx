@@ -1,4 +1,4 @@
-import { Brush} from "lucide-react";
+import { Brush } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PaginationSkeleton } from "../components/Skeletons/PaginationSekeleton";
 import { useSearchParams } from "react-router";
@@ -46,10 +46,10 @@ export default function MangaPage() {
             items={[{ label: "Home", to: "/" }, { label: "Mangas" }]}
          />
          <h1 className="text-5xl font-bold flex flex-row gap-5 underline">
-            <Brush  size={45} /> Mangas
+            <Brush size={45} /> Mangas
          </h1>
          <section>
-            <CarouselManga />
+            <CarouselManga isPublicacion={true} onlyFavs={false} />
          </section>
          <section className="w-full">
             {loading ? (

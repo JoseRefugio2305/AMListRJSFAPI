@@ -7,13 +7,24 @@ import { CarouselSkeleton } from "../Skeletons/CarouselSkeleton";
 import { MangaCard } from "./MangaCard";
 import type { MangaSchema } from "../../schemas/mangaSchemas";
 
-export function CarouselManga() {
+interface CarouselMangaProps {
+   isPublicacion: boolean;
+   onlyFavs: boolean;
+}
+
+export function CarouselManga({ isPublicacion, onlyFavs }: CarouselMangaProps) {
    const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [total, setTotalMangas] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
+   const rutaPeticion = isPublicacion ? "manga/publicando/" : "manga/";
 
    useEffect(() => {
-      getMangas("/manga/publicando/", { limit: 20, page: 1, emision: 1 })
+      getMangas(rutaPeticion, {
+         limit: 20,
+         page: 1,
+         emision: isPublicacion ? 1 : 3,
+         onlyFavs,
+      })
          .then((resp) => {
             setMangas(resp.listaMangas ?? []);
             setTotalMangas(resp.totalMangas ?? 0);
@@ -58,22 +69,53 @@ export function CarouselManga() {
          ) : (
             <>
                <div className="flex flex-row gap-3">
-                  <h2 className="text-xl font-bold">Mangas en Publicación</h2>
+                  <h2 className="text-xl font-bold">
+                     Mangas{" "}
+                     {isPublicacion
+                        ? "en Publicación"
+                        : onlyFavs
+                        ? "en Favoritos"
+                        : ""}
+                  </h2>
                   <Link
-                     to="/explore/mangas?emision=1"
+                     to="/explore/mangas?emision=1" //TODO: link en caso de publicacion, favoritos o normales
                      className="flex flex-row btn-link"
                   >
-                     Ver mas <SquareArrowOutUpRightIcon />
+                     Ver más <SquareArrowOutUpRightIcon />
                   </Link>
                </div>
-               <Carousel
-                  responsiveOptions={responsiveOptions}
-                  value={mangas}
-                  numVisible={5}
-                  numScroll={5}
-                  itemTemplate={MangaCard}
-                  autoplayInterval={total > 5 ? 10000 : 0}
-               />
+               {mangas.length > 0 ? (
+                  <Carousel
+                     responsiveOptions={responsiveOptions}
+                     value={mangas}
+                     numVisible={5}
+                     numScroll={5}
+                     itemTemplate={MangaCard}
+                     autoplayInterval={total > 5 ? 10000 : 0}
+                     showIndicators={false}
+                  />
+               ) : (
+                  <div className="w-full">
+                     <img
+                        alt="Not Found 404"
+                        src="/not_results_found.png"
+                        className="w-[15%] mx-auto"
+                     />
+                     <p className="text-sm font-semibold text-center">
+                        {onlyFavs
+                           ? "Aún no has agregado mangas a favoritos. Puedes explorar por mangas en búsqueda de nuevas experiencias."
+                           : isPublicacion
+                           ? "Actualmente no hay mangas en publicación. Puedes explorar por mangas finalizados en búsqueda de nuevas experiencias."
+                           : "Lo sentimos.No hay mangas que concuerden con la búsqueda. Puedes explorar por mangas en búsqueda de nuevas experiencias."}
+                     </p>
+                     <Link
+                        to="/explore/mangas"
+                        className="flex flex-row  btn-link w-fit mx-auto"
+                     >
+                        Ver más <SquareArrowOutUpRightIcon />
+                     </Link>
+                  </div>
+               )}
             </>
          )}
       </div>

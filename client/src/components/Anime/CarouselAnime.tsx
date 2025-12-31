@@ -7,13 +7,24 @@ import { Carousel } from "primereact/carousel";
 import { AnimeCard } from "./AnimeCard";
 import type { AnimeSchema } from "../../schemas/animeSchemas";
 
-export function CarouselAnime() {
+interface CarouselAnimeProps {
+   isEmision: boolean;
+   onlyFavs: boolean;
+}
+
+export function CarouselAnime({ isEmision, onlyFavs }: CarouselAnimeProps) {
    const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [total, setTotalAnimes] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
+   const rutaPeticion = isEmision ? "anime/emision/" : "anime/";
 
    useEffect(() => {
-      getAnimes("/anime/emision/", { limit: 20, page: 1, emision: 1 })
+      getAnimes(rutaPeticion, {
+         limit: 20,
+         page: 1,
+         emision: isEmision ? 1 : 3,
+         onlyFavs,
+      })
          .then((resp) => {
             setAnimes(resp.listaAnimes ?? []);
             setTotalAnimes(resp.totalAnimes ?? 0);
@@ -58,23 +69,49 @@ export function CarouselAnime() {
          ) : (
             <>
                <div className="flex flex-row gap-3">
-                  <h2 className="text-xl font-bold">Animes en Emisión</h2>
+                  <h2 className="text-xl font-bold">
+                     Animes{" "}
+                     {isEmision ? "en Emisión" : onlyFavs ? "en Favoritos" : ""}
+                  </h2>
                   <Link
-                     to="/explore/animes?emision=1"
+                     to="/explore/animes?emision=1" //TODO: link en caso de emision, favoritos o normales
                      className="flex flex-row btn-link"
                   >
-                     Ver mas <SquareArrowOutUpRightIcon />
+                     Ver más <SquareArrowOutUpRightIcon />
                   </Link>
                </div>
-               <Carousel
-                  responsiveOptions={responsiveOptions}
-                  value={animes}
-                  numVisible={5}
-                  numScroll={5}
-                  itemTemplate={AnimeCard}
-                  autoplayInterval={total > 5 ? 10000 : 0}
-                  showIndicators={false}
-               />
+               {animes.length > 0 ? (
+                  <Carousel
+                     responsiveOptions={responsiveOptions}
+                     value={animes}
+                     numVisible={5}
+                     numScroll={5}
+                     itemTemplate={AnimeCard}
+                     autoplayInterval={total > 5 ? 10000 : 0}
+                     showIndicators={false}
+                  />
+               ) : (
+                  <div className="w-full">
+                     <img
+                        alt="Not Found 404"
+                        src="/not_results_found.png"
+                        className="w-[15%] mx-auto"
+                     />
+                     <p className="text-sm font-semibold text-center">
+                        {onlyFavs
+                           ? "Aún no has agregado animes a favoritos. Puedes explorar por animes en búsqueda de nuevas experiencias."
+                           : isEmision
+                           ? "Actualmente no hay animes en emisión. Puedes explorar por animes finalizados en búsqueda de nuevas experiencias."
+                           : "Lo sentimos.No hay animes que concuerden con la búsqueda. Puedes explorar por animes en búsqueda de nuevas experiencias."}
+                     </p>
+                     <Link
+                        to="/explore/animes"
+                        className="flex flex-row  btn-link w-fit mx-auto"
+                     >
+                        Ver más <SquareArrowOutUpRightIcon />
+                     </Link>
+                  </div>
+               )}
             </>
          )}
       </div>

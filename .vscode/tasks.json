@@ -5,21 +5,21 @@
       "label": "backendFastAPI",
       "type": "shell",
       "command": [
-        ".\\myenv\\Scripts\\activate",       // activa el entorno virtual (Linux/Mac)
+        ".\\myenv\\Scripts\\activate",
         "&&",
-        "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"        // inicia fastapi
+        "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
       ],
       "options": {
-        "cwd": "api"                   // carpeta donde vive fastapi
+        "cwd": "api"
       },
       "problemMatcher": []
     },
     {
       "label": "frontendReactVite",
       "type": "shell",
-      "command": "pnpm run dev",               // inicia React
+      "command": "pnpm run dev",
       "options": {
-        "cwd": "client"                  // carpeta del frontend
+        "cwd": "client"
       },
       "problemMatcher": []
     },
@@ -32,7 +32,8 @@
       "runOptions": {
         "runOn": "default",
         "reevaluateOnRerun": true
-      }
+      },
+      "problemMatcher": []
     }
   ]
 }
