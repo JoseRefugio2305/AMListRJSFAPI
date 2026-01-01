@@ -18,7 +18,7 @@ def statsTipo(
             True,
         )
         if only_Favs
-        else [{}]
+        else []
     )
     return [
         {"$match": {"linkMAL": {"$not": {"$eq": None}}}},
@@ -34,15 +34,12 @@ def statsTipo(
             }
         },
         {"$unwind": f"$tipo_{field}"},
-        {
-            "$replaceRoot": {
-                "newRoot": {"$mergeObjects": ["$$ROOT", f"$tipo_{field}"]}
-            }
-        },
+        {"$replaceRoot": {"newRoot": {"$mergeObjects": ["$$ROOT", f"$tipo_{field}"]}}},
         {"$unset": f"tipo_{field}"},
         {"$project": {"_id": 0, "code": "$_id", "conteo": 1, "nombre": 1}},
         {"$sort": {"code": 1}},
     ]
+
 
 # Estadisticas por genero
 def statsGenero(
@@ -56,7 +53,7 @@ def statsGenero(
             True,
         )
         if only_Favs
-        else [{}]
+        else []
     )
     pipeFavsM = (
         lookup_user_favorites(
@@ -66,7 +63,7 @@ def statsGenero(
             True,
         )
         if only_Favs
-        else [{}]
+        else []
     )
     return [
         {
@@ -110,6 +107,7 @@ def statsGenero(
         {"$sort": {"id_MAL": 1}},
     ]
 
+
 # Estadisticas de top estudios de animacion
 def topEstudios(
     only_Favs: bool = False, userId: Optional[str] = None
@@ -122,7 +120,7 @@ def topEstudios(
             True,
         )
         if only_Favs
-        else [{}]
+        else []
     )
     return [
         {
@@ -155,43 +153,46 @@ def topEstudios(
     ]
 
 
-#Top editoriales
-def topEditoriales(only_Favs: bool = False, userId: Optional[str] = None
+# Top editoriales
+def topEditoriales(
+    only_Favs: bool = False, userId: Optional[str] = None
 ) -> List[Dict[str, Any]]:
-    pipelineFavs=(
+    pipelineFavs = (
         lookup_user_favorites(
-                            userId,
-                            "manga",
-                            "utmanfavs",
-                            True,
-                        ) if only_Favs else [{}]
+            userId,
+            "manga",
+            "utmanfavs",
+            True,
+        )
+        if only_Favs
+        else []
     )
     return [
-            {
-                "$lookup": {
-                    "from": "mangas",
-                    "localField": "id_MAL",
-                    "foreignField": "editoriales.id_MAL",
-                    "as": "mangas_b_edt",
-                    "pipeline": [
-                        *pipelineFavs,
-                        {
-                            "$project": {
-                                "_id": 0,
-                                "titulo": 1,
-                            }
-                        },
-                    ],
-                }
-            },
-            {
-                "$project": {
-                    "_id": 0,
-                    "id_MAL": 1,
-                    "nombre": 1,
-                    "conteomangas": {"$size": "$mangas_b_edt"},
-                }
-            },
-            {"$sort": {"conteomangas": -1}},
-            {"$limit": 10},
-        ]
+        {
+            "$lookup": {
+                "from": "mangas",
+                "localField": "id_MAL",
+                "foreignField": "editoriales.id_MAL",
+                "as": "mangas_b_edt",
+                "pipeline": [
+                    *pipelineFavs,
+                    {
+                        "$project": {
+                            "_id": 0,
+                            "titulo": 1,
+                        }
+                    },
+                ],
+            }
+        },
+        {
+            "$project": {
+                "_id": 0,
+                "id_MAL": 1,
+                "nombre": 1,
+                "conteomangas": {"$size": "$mangas_b_edt"},
+            }
+        },
+        {"$sort": {"conteomangas": -1}},
+        {"$limit": 10},
+    ]
