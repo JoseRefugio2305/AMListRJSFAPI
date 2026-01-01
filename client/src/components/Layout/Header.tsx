@@ -38,6 +38,9 @@ function AvatarSettings() {
                <span className="block text-sm">{username}</span>
             </DropdownHeader>
             <DropdownDivider />
+            <DropdownItem onClick={() => navigate(`user/${username}/lists`)}>
+               Mis Listas
+            </DropdownItem>
             <DropdownItem onClick={() => logout(navigate)}>
                Cerrar Sesión
             </DropdownItem>

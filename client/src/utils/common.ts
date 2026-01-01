@@ -38,6 +38,10 @@ export function getMangaStrType(tipo: TipoMangaEnum): string {
      }
 }
 
+export function getStatusViewName(status: StatusViewEnum): string {
+     return StatusViewEnum[status]
+}
+
 export function getColorTipoAnimeManga(tipo: TipoAnimeEnum | TipoMangaEnum, is_emision: number) {
      if (is_emision === 1) {
           return "bg-green-500";
