@@ -49,7 +49,12 @@ export default function MangaPage() {
             <Brush size={45} /> Mangas
          </h1>
          <section>
-            <CarouselManga isPublicacion={true} onlyFavs={false} />
+            <CarouselManga
+               isPublicacion={true}
+               onlyFavs={false}
+               username={""}
+               isOwnProfile={false}
+            />
          </section>
          <section className="w-full">
             {loading ? (

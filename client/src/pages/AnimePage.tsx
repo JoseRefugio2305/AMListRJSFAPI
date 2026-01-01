@@ -49,7 +49,12 @@ export default function AnimePage() {
             <TvMinimalPlay size={45} /> Animes
          </h1>
          <section>
-            <CarouselAnime isEmision={true} onlyFavs={false} />
+            <CarouselAnime
+               isEmision={true}
+               onlyFavs={false}
+               username={""}
+               isOwnProfile={false}
+            />
          </section>
          <section className="w-full">
             {loading ? (

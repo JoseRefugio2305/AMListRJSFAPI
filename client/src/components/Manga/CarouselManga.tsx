@@ -10,13 +10,24 @@ import type { MangaSchema } from "../../schemas/mangaSchemas";
 interface CarouselMangaProps {
    isPublicacion: boolean;
    onlyFavs: boolean;
+   username: string;
+   isOwnProfile: boolean;
 }
 
-export function CarouselManga({ isPublicacion, onlyFavs }: CarouselMangaProps) {
+export function CarouselManga({
+   isPublicacion,
+   onlyFavs,
+   username,
+   isOwnProfile,
+}: CarouselMangaProps) {
    const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [total, setTotalMangas] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
-   const rutaPeticion = isPublicacion ? "manga/publicando/" : "manga/";
+   const rutaPeticion = isPublicacion
+      ? "manga/publicando/"
+      : onlyFavs
+      ? `user/manga_list/${username.toLowerCase()}`
+      : "manga/";
 
    useEffect(() => {
       getMangas(rutaPeticion, {
@@ -85,15 +96,23 @@ export function CarouselManga({ isPublicacion, onlyFavs }: CarouselMangaProps) {
                   </Link>
                </div>
                {mangas.length > 0 ? (
-                  <Carousel
-                     responsiveOptions={responsiveOptions}
-                     value={mangas}
-                     numVisible={5}
-                     numScroll={5}
-                     itemTemplate={MangaCard}
-                     autoplayInterval={total > 5 ? 10000 : 0}
-                     showIndicators={false}
-                  />
+                  mangas.length > 2 ? (
+                     <Carousel
+                        responsiveOptions={responsiveOptions}
+                        value={mangas}
+                        numVisible={5}
+                        numScroll={5}
+                        itemTemplate={MangaCard}
+                        autoplayInterval={total > 5 ? 10000 : 0}
+                        showIndicators={false}
+                     />
+                  ) : (
+                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+                        {mangas.map((manga) => (
+                           <MangaCard key={manga.key_manga} {...manga} />
+                        ))}
+                     </div>
+                  )
                ) : (
                   <div className="w-full">
                      <img
@@ -103,7 +122,11 @@ export function CarouselManga({ isPublicacion, onlyFavs }: CarouselMangaProps) {
                      />
                      <p className="text-sm font-semibold text-center">
                         {onlyFavs
-                           ? "Aún no has agregado mangas a favoritos. Puedes explorar por mangas en búsqueda de nuevas experiencias."
+                           ? `${
+                                isOwnProfile
+                                   ? "Aún no has"
+                                   : "El usuario aún no ha"
+                             } agregado mangas a favoritos. Puedes explorar por mangas en búsqueda de nuevas experiencias.`
                            : isPublicacion
                            ? "Actualmente no hay mangas en publicación. Puedes explorar por mangas finalizados en búsqueda de nuevas experiencias."
                            : "Lo sentimos.No hay mangas que concuerden con la búsqueda. Puedes explorar por mangas en búsqueda de nuevas experiencias."}

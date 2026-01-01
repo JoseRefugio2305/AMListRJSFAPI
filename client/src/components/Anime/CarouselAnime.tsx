@@ -10,13 +10,24 @@ import type { AnimeSchema } from "../../schemas/animeSchemas";
 interface CarouselAnimeProps {
    isEmision: boolean;
    onlyFavs: boolean;
+   username: string;
+   isOwnProfile: boolean;
 }
 
-export function CarouselAnime({ isEmision, onlyFavs }: CarouselAnimeProps) {
+export function CarouselAnime({
+   isEmision,
+   onlyFavs,
+   username,
+   isOwnProfile,
+}: CarouselAnimeProps) {
    const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [total, setTotalAnimes] = useState<number>(0);
    const [loading, setLoading] = useState<boolean>(true);
-   const rutaPeticion = isEmision ? "anime/emision/" : "anime/";
+   const rutaPeticion = isEmision
+      ? "anime/emision/"
+      : onlyFavs
+      ? `user/anime_list/${username.toLowerCase()}`
+      : "anime/";
 
    useEffect(() => {
       getAnimes(rutaPeticion, {
@@ -81,15 +92,23 @@ export function CarouselAnime({ isEmision, onlyFavs }: CarouselAnimeProps) {
                   </Link>
                </div>
                {animes.length > 0 ? (
-                  <Carousel
-                     responsiveOptions={responsiveOptions}
-                     value={animes}
-                     numVisible={5}
-                     numScroll={5}
-                     itemTemplate={AnimeCard}
-                     autoplayInterval={total > 5 ? 10000 : 0}
-                     showIndicators={false}
-                  />
+                  animes.length > 2 ? (
+                     <Carousel
+                        responsiveOptions={responsiveOptions}
+                        value={animes}
+                        numVisible={5}
+                        numScroll={5}
+                        itemTemplate={AnimeCard}
+                        autoplayInterval={total > 5 ? 10000 : 0}
+                        showIndicators={false}
+                     />
+                  ) : (
+                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+                        {animes.map((anime) => (
+                           <AnimeCard key={anime.key_anime} {...anime} />
+                        ))}
+                     </div>
+                  )
                ) : (
                   <div className="w-full">
                      <img
@@ -99,7 +118,11 @@ export function CarouselAnime({ isEmision, onlyFavs }: CarouselAnimeProps) {
                      />
                      <p className="text-sm font-semibold text-center">
                         {onlyFavs
-                           ? "Aún no has agregado animes a favoritos. Puedes explorar por animes en búsqueda de nuevas experiencias."
+                           ? `${
+                                isOwnProfile
+                                   ? "Aún no has"
+                                   : "El usuario aún no ha"
+                             } agregado animes a favoritos. Puedes explorar por animes en búsqueda de nuevas experiencias.`
                            : isEmision
                            ? "Actualmente no hay animes en emisión. Puedes explorar por animes finalizados en búsqueda de nuevas experiencias."
                            : "Lo sentimos.No hay animes que concuerden con la búsqueda. Puedes explorar por animes en búsqueda de nuevas experiencias."}

@@ -18,10 +18,20 @@ export default function HomaPage() {
          </section>
 
          <section>
-            <CarouselAnime isEmision={true} onlyFavs={false} />
+            <CarouselAnime
+               isEmision={true}
+               onlyFavs={false}
+               username={""}
+               isOwnProfile={false}
+            />
          </section>
          <section>
-            <CarouselManga isPublicacion={true} onlyFavs={false} />
+            <CarouselManga
+               isPublicacion={true}
+               onlyFavs={false}
+               username={""}
+               isOwnProfile={false}
+            />
          </section>
          <section className="flex flex-row w-full flex-wrap">
             <TopAnimes />
