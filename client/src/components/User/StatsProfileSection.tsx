@@ -1,12 +1,12 @@
 import { SquareArrowOutUpRightIcon } from "lucide-react";
 import { Link } from "react-router";
-import { StatsSViewFavs } from "./StatsSViewFavs";
 import { useEffect, useState } from "react";
 import type { FavsCountSchema } from "../../schemas/statsSchemas";
 import { authStore } from "../../store/authStore";
 import { getFavsStats } from "../../services/statsServices";
 import { TypeStatsEnum } from "../../types/statsTypes";
 import { ProfileStatsSkeleton } from "../Skeletons/ProfileStatsSkeleton";
+import { ChartsTypeAM } from "../Charts/ChartsTypeAM";
 
 interface StatsProfSecProps {
    name: string;
@@ -53,76 +53,7 @@ export function StatsProfileSection({ name }: StatsProfSecProps) {
             </Link>
          </div>
 
-         <div className="flex flex-col w-full p-5">
-            <div className="w-full">
-               {userStats?.totalAnimes && userStats?.totalAnimes > 0 ? (
-                  <>
-                     <h3 className="text-xl font-semibold text-center">
-                        Estadísticas de Animes
-                     </h3>
-                     <p className="text-md font-semibold">
-                        Animes en favoritos: {userStats.totalAnimes}
-                     </p>
-                     <StatsSViewFavs
-                        dataStats={userStats?.conteos_statusA ?? []}
-                        areAnimes={true}
-                     />
-                  </>
-               ) : (
-                  <>
-                     <img
-                        alt="Not Found 404"
-                        src="/not_results_found.png"
-                        className="w-[15%] mx-auto"
-                     />
-                     <p className="text-sm font-semibold text-center">
-                        Aún no se han agregado animes a favoritos. Puedes
-                        explorar por animes en búsqueda de nuevas experiencias.
-                     </p>
-                     <Link
-                        to="/explore/animes"
-                        className="flex flex-row  btn-link w-fit mx-auto"
-                     >
-                        Explorar <SquareArrowOutUpRightIcon />
-                     </Link>
-                  </>
-               )}
-            </div>
-            <div className="w-full">
-               {userStats?.totalMangas && userStats?.totalMangas > 0 ? (
-                  <>
-                     <h3 className="text-xl font-semibold text-center">
-                        Estadísticas de Mangas
-                     </h3>
-                     <p className="text-md font-semibold">
-                        Mangas en favoritos: {userStats.totalMangas}
-                     </p>
-                     <StatsSViewFavs
-                        dataStats={userStats?.conteos_statusM ?? []}
-                        areAnimes={false}
-                     />
-                  </>
-               ) : (
-                  <>
-                     <img
-                        alt="Not Found 404"
-                        src="/not_results_found.png"
-                        className="w-[15%] mx-auto"
-                     />
-                     <p className="text-sm font-semibold text-center">
-                        Aún no se han agregado mangas a favoritos. Puedes
-                        explorar por mangas en búsqueda de nuevas experiencias.
-                     </p>
-                     <Link
-                        to="/explore/mangas"
-                        className="flex flex-row  btn-link w-fit mx-auto"
-                     >
-                        Explorar <SquareArrowOutUpRightIcon />
-                     </Link>
-                  </>
-               )}
-            </div>
-         </div>
+         <ChartsTypeAM dataStats={userStats} />
       </>
    );
 }

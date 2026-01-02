@@ -90,7 +90,7 @@ export function StatsSViewFavs({ dataStats, areAnimes }: StatsSViewFavsProps) {
    }, [theme]);
 
    return (
-      <div>
+      <div className="w-full flex justify-center items-center">
          <div id="chart">
             <ReactApexChart
                options={state.options}
