@@ -1,65 +1,105 @@
-import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
 import type { StatusViewCountSchema } from "../../schemas/statsSchemas";
 import { getStatusViewName } from "../../utils/common";
-import { parseStringNumber } from "../../utils/parse";
+import { useEffect, useState } from "react";
+import ReactApexChart from "react-apexcharts";
+import type { ApexOptions } from "apexcharts";
+import { themeStore } from "../../store/themeStore";
 
 interface StatsSViewFavsProps {
    dataStats: StatusViewCountSchema[];
+   areAnimes: boolean;
 }
 
-export function StatsSViewFavs({ dataStats }: StatsSViewFavsProps) {
-   const COLORS = ["#00A600", "#BAC918", "#E000D2", "#FF4242", "#FCA500"];
+interface StateChart {
+   series: number[];
+   options: ApexOptions;
+}
 
-   const getLabel = (name: string) => {
-      return getStatusViewName(parseStringNumber(name));
-   };
+export function StatsSViewFavs({ dataStats, areAnimes }: StatsSViewFavsProps) {
+   const theme = themeStore((s) => s.theme);
+
+   const [state, setState] = useState<StateChart>({
+      series: dataStats.map((stat) => stat.conteo),
+      options: {
+         labels: dataStats.map((stat) =>
+            getStatusViewName(stat.statusView, areAnimes)
+         ),
+         legend: {
+            labels: {
+               colors: theme === "dark" ? "#FFFFFF" : "#111827",
+            },
+            formatter: function (legendName, opts) {
+               return [
+                  legendName,
+                  " - ",
+                  opts.w.globals.series[opts.seriesIndex],
+               ].join("");
+            },
+         },
+         plotOptions: {
+            pie: {
+               startAngle: -90,
+               endAngle: 90,
+               offsetY: 10,
+            },
+         },
+         grid: {
+            padding: {
+               bottom: -150,
+            },
+         },
+         responsive: [
+            {
+               breakpoint: 480,
+               options: {
+                  chart: {
+                     width: 300,
+                  },
+                  legend: {
+                     position: "bottom",
+                  },
+                  grid: {
+                     padding: {
+                        bottom: -100,
+                     },
+                  },
+               },
+            },
+         ],
+         fill: {
+            colors: ["#00A600", "#BAC918", "#E000D2", "#FF4242", "#FCA500"],
+         },
+      },
+   });
+
+   useEffect(() => {
+      const changeColorLabels = () => {
+         const legendColor = theme === "dark" ? "#FFFFFF" : "#111827";
+         setState((prev) => ({
+            ...prev,
+            options: {
+               ...prev.options,
+               legend: {
+                  ...(prev.options as ApexOptions).legend,
+                  labels: { colors: legendColor },
+               },
+            },
+         }));
+      };
+      changeColorLabels();
+   }, [theme]);
 
    return (
-      <PieChart
-         className="mx-auto"
-         style={{
-            width: "100%",
-            maxWidth: "500px",
-            maxHeight: "30vh",
-            aspectRatio: 2,
-         }}
-         responsive
-      >
-         <Pie
-            dataKey="conteo"
-            nameKey="statusView"
-            startAngle={180}
-            endAngle={0}
-            data={dataStats}
-            cx="50%"
-            cy="100%"
-            outerRadius="120%"
-            fill="#8884d8"
-            labelLine
-            label={(e) => `${((e.percent ?? 1) * 100).toFixed(0)}%`}
-            isAnimationActive={true}
-         >
-            {dataStats.map((entry) => (
-               <Cell
-                  key={`cell-${entry.statusView}`}
-                  fill={COLORS[entry.statusView - 1]}
-               />
-            ))}
-            <Tooltip
-               content={(e) => (
-                  <div className="w-full h-fit p-3 border rounded-sm bg-gray-300 dark:bg-gray-700">{`${getLabel(
-                     e.payload[0]?.name
-                  )}: ${e.payload[0]?.value}`}</div>
-               )}
+      <div>
+         <div id="chart">
+            <ReactApexChart
+               options={state.options}
+               series={state.series}
+               type="pie"
+               width={500}
             />
-            <Legend
-               formatter={(value) => (
-                  <span className="text-sm font-bold">
-                     {`${getLabel(value)}`}
-                  </span>
-               )}
-            />
-         </Pie>
-      </PieChart>
+         </div>
+         <div id="html-dist"></div>
+      </div>
    );
 }

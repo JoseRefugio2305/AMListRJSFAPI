@@ -38,8 +38,9 @@ export function getMangaStrType(tipo: TipoMangaEnum): string {
      }
 }
 
-export function getStatusViewName(status: StatusViewEnum): string {
-     return StatusViewEnum[status]
+export function getStatusViewName(status: StatusViewEnum, isAnime: boolean = true): string {
+     if (status === StatusViewEnum.Viendo && !isAnime) return "Leyendo";
+     return StatusViewEnum[status];
 }
 
 export function getColorTipoAnimeManga(tipo: TipoAnimeEnum | TipoMangaEnum, is_emision: number) {

@@ -65,6 +65,7 @@ export function StatsProfileSection({ name }: StatsProfSecProps) {
                      </p>
                      <StatsSViewFavs
                         dataStats={userStats?.conteos_statusA ?? []}
+                        areAnimes={true}
                      />
                   </>
                ) : (
@@ -98,6 +99,7 @@ export function StatsProfileSection({ name }: StatsProfSecProps) {
                      </p>
                      <StatsSViewFavs
                         dataStats={userStats?.conteos_statusM ?? []}
+                        areAnimes={false}
                      />
                   </>
                ) : (
