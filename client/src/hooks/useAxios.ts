@@ -35,6 +35,8 @@ axiosInstance.interceptors.response.use(
                     window.location.href = "/login";
                }
 
+          } else if (error.response.status === 404) {
+               window.location.href = "/404-not-found";
           } else if (error.response && error.response.status === 500) {//Si hubo un error del servidor
                error.response.data.message = "Error al procesar la petición"
           }
