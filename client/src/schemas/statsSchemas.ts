@@ -23,7 +23,7 @@ export const TopStudiosZ = z.object({
 export const TopEditorialsZ = z.object({
      id_MAL: z.number().default(0),
      nombre: z.string().default(""),
-     conteoanimes: z.number().default(0)
+     conteomangas: z.number().default(0)
 })
 
 export const StatsZ = z.object({
