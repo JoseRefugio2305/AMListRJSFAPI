@@ -1,6 +1,5 @@
-import { Link } from "react-router";
 import type { FavsCountSchema } from "../../schemas/statsSchemas";
-import { SquareArrowOutUpRightIcon } from "lucide-react";
+import { MessageNoContenido } from "../Common/User/MessageNoContenido";
 import { StatsSViewFavs } from "../User/StatsSViewFavs";
 
 interface ChartsStatusFavAMProps {
@@ -25,23 +24,7 @@ export function ChartsStatusFavAM({ dataStats }: ChartsStatusFavAMProps) {
                   />
                </>
             ) : (
-               <>
-                  <img
-                     alt="Not Found 404"
-                     src="/not_results_found.png"
-                     className="w-[15%] mx-auto"
-                  />
-                  <p className="text-sm font-semibold text-center">
-                     Aún no se han agregado animes a favoritos. Puedes explorar
-                     por animes en búsqueda de nuevas experiencias.
-                  </p>
-                  <Link
-                     to="/explore/animes"
-                     className="flex flex-row  btn-link w-fit mx-auto"
-                  >
-                     Explorar <SquareArrowOutUpRightIcon />
-                  </Link>
-               </>
+               <MessageNoContenido typeCont={1} />
             )}
          </div>
          <div className="w-full">
@@ -59,23 +42,7 @@ export function ChartsStatusFavAM({ dataStats }: ChartsStatusFavAMProps) {
                   />
                </>
             ) : (
-               <>
-                  <img
-                     alt="Not Found 404"
-                     src="/not_results_found.png"
-                     className="w-[15%] mx-auto"
-                  />
-                  <p className="text-sm font-semibold text-center">
-                     Aún no se han agregado mangas a favoritos. Puedes explorar
-                     por mangas en búsqueda de nuevas experiencias.
-                  </p>
-                  <Link
-                     to="/explore/mangas"
-                     className="flex flex-row  btn-link w-fit mx-auto"
-                  >
-                     Explorar <SquareArrowOutUpRightIcon />
-                  </Link>
-               </>
+               <MessageNoContenido typeCont={2} />
             )}
          </div>
       </div>
