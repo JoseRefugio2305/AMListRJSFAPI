@@ -45,7 +45,9 @@ export function StatsProfileSection({ name }: StatsProfSecProps) {
          <div className="flex flex-row gap-3">
             <h2 className="text-2xl font-bold">Estadísticas</h2>
             <Link
-               to="/explore/mangas?emision=1" //TODO: contruir pagina de estadisticas
+               to={`/user/${
+                  isOwnProfile ? username : name.toLowerCase()
+               }/stats`}
                className="flex flex-row btn-link text-sm font-semibold"
             >
                Ver estadísticas completas{" "}
