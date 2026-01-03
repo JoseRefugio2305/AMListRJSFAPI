@@ -6,7 +6,7 @@ import { authStore } from "../../store/authStore";
 import { getFavsStats } from "../../services/statsServices";
 import { TypeStatsEnum } from "../../types/statsTypes";
 import { ProfileStatsSkeleton } from "../Skeletons/ProfileStatsSkeleton";
-import { ChartsTypeAM } from "../Charts/ChartsTypeAM";
+import { ChartsStatusFavAM } from "../Charts/ChartsStatusFavAM";
 
 interface StatsProfSecProps {
    name: string;
@@ -53,7 +53,7 @@ export function StatsProfileSection({ name }: StatsProfSecProps) {
             </Link>
          </div>
 
-         <ChartsTypeAM dataStats={userStats} />
+         <ChartsStatusFavAM dataStats={userStats} />
       </>
    );
 }
