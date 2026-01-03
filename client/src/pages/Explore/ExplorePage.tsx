@@ -74,7 +74,11 @@ export default function ExplorePage() {
                      )}
                      <Link
                         className="hover:underline hover:bg-purple-700 hover:text-white font-bold text-lg m-2  bg-purple-500 rounded-full p-2 flex w-full text-white justify-center items-center"
-                        to={getURLParamsAM(TipoContenidoEnum.anime)}
+                        to={getURLParamsAM(
+                           TipoContenidoEnum.anime,
+                           filtersParam,
+                           page
+                        )}
                      >
                         Más Animes <SquareArrowOutUpRightIcon size={24} />
                      </Link>
@@ -105,7 +109,11 @@ export default function ExplorePage() {
                      )}
                      <Link
                         className="hover:underline hover:bg-purple-700 hover:text-white font-bold text-lg m-2  bg-purple-500 rounded-full p-2 flex w-full text-white justify-center items-center"
-                        to={getURLParamsAM(TipoContenidoEnum.manga)}
+                        to={getURLParamsAM(
+                           TipoContenidoEnum.manga,
+                           filtersParam,
+                           page
+                        )}
                      >
                         Más Mangas <SquareArrowOutUpRightIcon size={24} />
                      </Link>

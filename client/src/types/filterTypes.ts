@@ -5,6 +5,11 @@ export interface OptionsSelectInterface {
      code: number,
      name: string
 }
+
+export interface OptionsSelectStrInterface {
+     code: string,
+     name: string
+}
 export enum EmisionEnum {
      finalizado = 0,
      emision = 1,
@@ -46,10 +51,26 @@ export enum FieldOrdEnum {
      capitulos = "capitulos"
 }
 
-enum OrderByEnum {
+export const optionsFieldOrd: OptionsSelectStrInterface[] = [
+     { code: FieldOrdEnum.key, name: "Key" },
+     { code: FieldOrdEnum.id_mal, name: "ID MAL" },
+     { code: FieldOrdEnum.titulo, name: "Título" },
+     { code: FieldOrdEnum.calificacion, name: "Calificación" },
+     { code: FieldOrdEnum.episodios, name: "Episodios" },
+     { code: FieldOrdEnum.capitulos, name: "Capítulos" }
+]
+
+export enum OrderByEnum {
      asc = 1,
      desc = -1
 }
+
+export const optionsOrderBy: OptionsSelectStrInterface[] = [
+     { code: "asc", name: "Ascendente" },
+     { code: "desc", name: "Descendente" },
+]
+
+export type OrderByType = "asc" | "desc"
 
 export interface FilterPayload {
      limit: number
@@ -79,5 +100,7 @@ export interface FilterParamsInterface {
      tiposAnime: number[];
      tiposManga: number[];
      tipoContenido: number;
+     orderBy: OrderByType;
+     orderField: FieldOrdEnum;
 
 }

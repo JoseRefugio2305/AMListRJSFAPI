@@ -4,9 +4,12 @@ import { useId, useState, type FormEvent } from "react";
 import { Search } from "lucide-react";
 import { FiltersSearchForm } from "./FiltersSearchForm";
 import {
+   FieldOrdEnum,
    TipoContenidoEnum,
    type FilterParamsInterface,
    type OptionsSelectInterface,
+   type OptionsSelectStrInterface,
+   type OrderByType,
 } from "../../types/filterTypes";
 
 interface SearchFormProps {
@@ -35,12 +38,14 @@ export function SearchForm({
    const [selEmision, setSelEmision] = useState<OptionsSelectInterface | null>(
       null
    );
-   // const [selTipoCont, setTipoCont] = useState<OptionsSelectInterface[]>([]);
+   const [selFieldOrd, setSelFieldOrd] =
+      useState<OptionsSelectStrInterface | null>(null);
+   const [selOrderBy, setSelOrderBy] =
+      useState<OptionsSelectStrInterface | null>(null);
    const [titSearch, setTitSearch] = useState<string>(
       filtersParam.tit_search.trim()
    );
    const idTitSearchInput = useId();
-  
 
    const handleSubmit = (event: FormEvent) => {
       event.preventDefault();
@@ -71,6 +76,17 @@ export function SearchForm({
             ? selTiposManga.map((tm) => tm.code)
             : [];
       const emision: number = selEmision?.code ?? 3;
+      const orderby: OrderByType = selOrderBy?.code
+         ? selOrderBy.code === "desc"
+            ? "desc"
+            : "asc"
+         : "asc";
+      const orderfield: FieldOrdEnum = (() => {
+         const key = (selFieldOrd?.code || "key").trim();
+         return Object.prototype.hasOwnProperty.call(FieldOrdEnum, key)
+            ? FieldOrdEnum[key as keyof typeof FieldOrdEnum]
+            : FieldOrdEnum.key;
+      })();
 
       setFiltersParam({
          tit_search: titSearch,
@@ -82,6 +98,8 @@ export function SearchForm({
          tiposManga: arrTiposManga,
          emision: emision,
          tipoContenido: tipoContenido,
+         orderBy: orderby,
+         orderField: orderfield,
       });
       setPage(0);
    };
@@ -92,6 +110,8 @@ export function SearchForm({
       setSelEditoriales([]);
       setSelStudios([]);
       setSelEmision(null);
+      setSelFieldOrd(null);
+      setSelOrderBy(null);
       setSelTiposAnime([]);
       setSelTiposManga([]);
       setTitSearch("");
@@ -142,6 +162,10 @@ export function SearchForm({
             setSelTiposManga={setSelTiposManga}
             selEmision={selEmision}
             setSelEmision={setSelEmision}
+            selFieldOrd={selFieldOrd}
+            setSelFieldOrd={setSelFieldOrd}
+            selOrderBy={selOrderBy}
+            setSelOrderBy={setSelOrderBy}
             tipoContenido={tipoContenido}
          />
       </form>

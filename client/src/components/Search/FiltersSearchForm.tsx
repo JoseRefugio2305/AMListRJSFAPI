@@ -1,5 +1,4 @@
 import { Accordion, AccordionTab } from "primereact/accordion";
-import { MultiSelect } from "primereact/multiselect";
 import type {
    FilterObjSchema,
    FiltersAdvancedSearchSchema,
@@ -9,13 +8,17 @@ import { getFilters } from "../../services/searchServices";
 import { Spinner } from "flowbite-react";
 import {
    optionsEmision,
+   optionsFieldOrd,
+   optionsOrderBy,
    TipoContenidoEnum,
    type FilterParamsInterface,
    type OptionsSelectInterface,
+   type OptionsSelectStrInterface,
 } from "../../types/filterTypes";
 import { Dropdown } from "primereact/dropdown";
 import { optionsTipoAnime } from "../../types/animeTypes";
 import { optionsTipoManga } from "../../types/mangaTypes";
+import { FilterMultiSelect } from "./FilterMultiSelect";
 
 interface FiltersProps {
    filtersParam: FilterParamsInterface;
@@ -29,6 +32,10 @@ interface FiltersProps {
    setSelAutores: (callback: () => FilterObjSchema[]) => void;
    selEmision: OptionsSelectInterface | null;
    setSelEmision: (item: OptionsSelectInterface) => void;
+   selFieldOrd: OptionsSelectStrInterface | null;
+   setSelFieldOrd: (item: OptionsSelectStrInterface) => void;
+   selOrderBy: OptionsSelectStrInterface | null;
+   setSelOrderBy: (item: OptionsSelectStrInterface) => void;
    selTiposAnime: OptionsSelectInterface[];
    setSelTiposAnime: (callback: () => OptionsSelectInterface[]) => void;
    selTiposManga: OptionsSelectInterface[];
@@ -48,6 +55,10 @@ export function FiltersSearchForm({
    setSelAutores,
    selEmision,
    setSelEmision,
+   selFieldOrd,
+   setSelFieldOrd,
+   selOrderBy,
+   setSelOrderBy,
    selTiposAnime,
    setSelTiposAnime,
    selTiposManga,
@@ -57,6 +68,8 @@ export function FiltersSearchForm({
    const [loadingFilters, setLoadingFilters] = useState<boolean>(true);
    const idSelGenres = useId();
    const idSelEmison = useId();
+   const idSelOrderBy = useId();
+   const idSelFieldOrd = useId();
    const idSelTiposAnime = useId();
    const idSelTiposManga = useId();
    const idSelStudios = useId();
@@ -133,6 +146,20 @@ export function FiltersSearchForm({
                   );
                   setSelEmision(em ?? optionsEmision[3]);
                }
+
+               if (filtersParam.orderBy) {
+                  const ordb = optionsOrderBy.find(
+                     (ob) => ob.code === filtersParam.orderBy
+                  );
+                  setSelOrderBy(ordb ?? optionsOrderBy[0]);
+               }
+
+               if (filtersParam.orderField) {
+                  const ford = optionsFieldOrd.find(
+                     (fo) => fo.code === filtersParam.orderField
+                  );
+                  setSelFieldOrd(ford ?? optionsFieldOrd[0]);
+               }
             })
             .catch((error) => {
                console.log(error);
@@ -142,20 +169,6 @@ export function FiltersSearchForm({
       fetchFilters();
    }, []);
 
-   const footerTemplate = (selectedF: FilterObjSchema[]) => {
-      const length = selectedF.length;
-
-      return (
-         <div className="py-2 px-3">
-            <b>{length > 0 ? length : ""}</b>
-            {length > 1
-               ? " opciones seleccionadas."
-               : length === 0
-               ? ""
-               : " opción seleccionada."}
-         </div>
-      );
-   };
    return loadingFilters ? (
       <div className="flex items-center gap-4">
          <Spinner color="purple" aria-label="cargando" />
@@ -179,89 +192,75 @@ export function FiltersSearchForm({
                   {(tipoContenido === TipoContenidoEnum.manga ||
                      tipoContenido === TipoContenidoEnum.todos) && (
                      <>
-                        <MultiSelect
+                        <FilterMultiSelect
                            id={idSelTiposManga}
                            value={selTiposManga}
                            options={optionsTipoManga}
                            onChange={(e) => setSelTiposManga(e.value)}
-                           optionLabel="name"
                            placeholder="Selecciona los tipos de Manga"
-                           panelFooterTemplate={() =>
-                              footerTemplate(selTiposManga)
-                           }
-                           className="md:w-full mb-2 min-w-0 w-60"
-                           display="chip"
                         />
-                        <MultiSelect
+                        <FilterMultiSelect
                            id={idSelEditorials}
                            value={selEditoriales}
                            options={advFilters?.editorialesList ?? []}
                            onChange={(e) => setSelEditoriales(e.value)}
-                           optionLabel="name"
                            placeholder="Selecciona una Editorial de Manga"
-                           panelFooterTemplate={() =>
-                              footerTemplate(selEditoriales)
-                           }
-                           className="md:w-full mb-2 min-w-0 w-60"
-                           display="chip"
                         />
-                        <MultiSelect
+                        <FilterMultiSelect
                            id={idSelAuthors}
                            value={selAutores}
                            options={advFilters?.autoresList ?? []}
                            onChange={(e) => setSelAutores(e.value)}
-                           optionLabel="name"
                            placeholder="Selecciona un Autor de Manga"
-                           panelFooterTemplate={() =>
-                              footerTemplate(selAutores)
-                           }
-                           className="md:w-full mb-2 min-w-0 w-60"
-                           display="chip"
                         />
                      </>
                   )}
-                  <MultiSelect
+                  <FilterMultiSelect
                      id={idSelGenres}
                      value={selGenres}
                      options={advFilters?.genresList ?? []}
                      onChange={(e) => setSelGenres(e.value)}
-                     optionLabel="name"
                      placeholder="Selecciona un Genero"
-                     panelFooterTemplate={() => footerTemplate(selGenres)}
-                     className="md:w-full mb-2 min-w-0 w-60"
-                     display="chip"
                   />
                   {(tipoContenido === TipoContenidoEnum.anime ||
                      tipoContenido === TipoContenidoEnum.todos) && (
                      <>
-                        <MultiSelect
+                        <FilterMultiSelect
                            id={idSelTiposAnime}
                            value={selTiposAnime}
                            options={optionsTipoAnime}
                            onChange={(e) => setSelTiposAnime(e.value)}
-                           optionLabel="name"
                            placeholder="Selecciona los tipos de Anime"
-                           panelFooterTemplate={() =>
-                              footerTemplate(selTiposAnime)
-                           }
-                           className="md:w-full mb-2 min-w-0 w-60"
-                           display="chip"
                         />
-                        <MultiSelect
+                        <FilterMultiSelect
                            id={idSelStudios}
                            value={selStudios}
                            options={advFilters?.studiosList ?? []}
                            onChange={(e) => setSelStudios(e.value)}
-                           optionLabel="name"
                            placeholder="Selecciona un Estudio de Animación"
-                           panelFooterTemplate={() =>
-                              footerTemplate(selStudios)
-                           }
-                           className="md:w-full mb-2 min-w-0 w-60"
-                           display="chip"
                         />
                      </>
                   )}
+                  <Dropdown
+                     value={selOrderBy}
+                     onChange={(e) => setSelOrderBy(e.value)}
+                     options={optionsOrderBy}
+                     optionLabel="name"
+                     showClear
+                     placeholder="Ordenar en..."
+                     className="md:w-full mb-2 min-w-0 w-60"
+                     id={idSelOrderBy}
+                  />
+                  <Dropdown
+                     value={selFieldOrd}
+                     onChange={(e) => setSelFieldOrd(e.value)}
+                     options={optionsFieldOrd}
+                     optionLabel="name"
+                     showClear
+                     placeholder="Ordenar por..."
+                     className="md:w-full mb-2 min-w-0 w-60"
+                     id={idSelFieldOrd}
+                  />
                </div>
             </AccordionTab>
          </Accordion>

@@ -21,6 +21,9 @@ const ExploreMangasPage = lazy(
 );
 const Profile = lazy(() => import("./pages/User/Profile.tsx"));
 const UserStatsPage = lazy(() => import("./pages/User/UserStatsPage.tsx"));
+const UserAnimeListPage = lazy(
+   () => import("./pages/User/UserAnimeListPage.tsx")
+);
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));
 
 function App() {
@@ -59,6 +62,10 @@ function App() {
                <Route path="/explore/mangas" element={<ExploreMangasPage />} />
                <Route path="/user/:name/lists" element={<Profile />} />
                <Route path="/user/:name/stats" element={<UserStatsPage />} />
+               <Route
+                  path="/user/:name/animelist"
+                  element={<UserAnimeListPage />}
+               />
                <Route path="*" element={<NotFoundPage />} />
             </Routes>
          </Suspense>
