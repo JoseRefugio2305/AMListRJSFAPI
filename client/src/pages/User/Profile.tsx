@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router";
+import { Link, Navigate, useNavigate, useParams } from "react-router";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import { authStore } from "../../store/authStore";
 import { useEffect, useState } from "react";
@@ -19,33 +19,32 @@ export default function Profile() {
    const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
 
    useEffect(() => {
-      if (!name?.toLowerCase() && !username) {
-         navigate("/");
-      }
       const fetchUserData = () => {
-         if (name?.toLowerCase() === username) {
-            setIsOwnProf(true);
-         }
+         const own = name?.trim().toLowerCase() === username;
+         setIsOwnProf(own);
          setLoadingUserData(true);
-         getUserDataProfile(
-            isOwnProfile ? username ?? "" : name?.toLowerCase() ?? ""
-         )
+         getUserDataProfile(own ? username ?? "" : name?.toLowerCase() ?? "")
             .then((resp) => {
                if (!resp) {
-                  navigate("/404-not-found");
+                  navigate("/404-not-found", { replace: true });
+                  return;
                }
 
                setUserData(resp);
+               setLoadingUserData(false);
             })
             .catch((error) => {
                console.error(error);
-               navigate("/404-not-found");
-            })
-            .finally(() => setLoadingUserData(false));
+               navigate("/404-not-found", { replace: true });
+            });
       };
       fetchUserData();
    }, [name]);
 
+   if (!name?.toLowerCase() && !username) {
+      //TODO: Solo ver si existe name agregar un return
+      return <Navigate to="/404-not-found" replace />;
+   }
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 pb-14 mt-5 min-h-screen">
          {loadingUserData ? (
