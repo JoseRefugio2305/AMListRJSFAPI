@@ -4,6 +4,7 @@ import type { AnimeSchema } from "../../schemas/animeSchemas";
 import { AnimeCard } from "../Anime/AnimeCard";
 import { AnimeListCard } from "../Anime/AnimeListCard";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
+import { NotResultsFound } from "../Common/NotResultsFound";
 
 interface AnimePaginationProps {
    page: number;
@@ -68,24 +69,30 @@ export function AnimePagination({
 
    return (
       <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow">
-         <Paginator
-            first={(page - 1) * 20}
-            rows={20}
-            totalRecords={total}
-            onPageChange={handlePageChange}
-         />
-         <DataView
-            value={animes}
-            listTemplate={listTemplate}
-            layout={layout}
-            header={header()}
-         />
-         <Paginator
-            first={(page - 1) * 20}
-            rows={20}
-            totalRecords={total}
-            onPageChange={handlePageChange}
-         />
+         {total > 0 ? (
+            <>
+               <Paginator
+                  first={(page - 1) * 20}
+                  rows={20}
+                  totalRecords={total}
+                  onPageChange={handlePageChange}
+               />
+               <DataView
+                  value={animes}
+                  listTemplate={listTemplate}
+                  layout={layout}
+                  header={header()}
+               />
+               <Paginator
+                  first={(page - 1) * 20}
+                  rows={20}
+                  totalRecords={total}
+                  onPageChange={handlePageChange}
+               />
+            </>
+         ) : (
+            <NotResultsFound message="No hay Animes que coincidan con la búsqueda." />
+         )}
       </div>
    );
 }
