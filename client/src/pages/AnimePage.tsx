@@ -7,20 +7,20 @@ import { AnimePagination } from "../components/Anime/AnimePagination";
 import { useSearchParams } from "react-router";
 import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
 import type { AnimeSchema } from "../schemas/animeSchemas";
+import { parseStringNumber } from "../utils/parse";
 
 export default function AnimePage() {
    const [searchParams, setSearchParams] = useSearchParams();
 
-   const [page, setPage] = useState<number>(() => {
-      const p = parseInt(searchParams.get("page") ?? "0", 10);
-      return Number.isNaN(p) || p <= 0 ? 0 : (p - 1) * 20;
-   });
+   const [page, setPage] = useState<number>(
+      parseStringNumber(searchParams.get("page") ?? "1")
+   );
    const [total, setTotalAnimes] = useState<number>(0);
    const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
    const fetchAnimes = () => {
-      getAnimes("/anime/", { limit: 20, page: page / 20 + 1, emision: 3 })
+      getAnimes("/anime/", { limit: 20, page: page > 1 ? page : 1, emision: 3 })
          .then((resp) => {
             setAnimes(resp.listaAnimes ?? []);
             setTotalAnimes(resp.totalAnimes ?? 0);
@@ -34,7 +34,11 @@ export default function AnimePage() {
    useEffect(() => {
       fetchAnimes();
       setSearchParams((params: URLSearchParams) => {
-         params.set("page", String(page / 20 + 1));
+         if (page > 1) {
+            params.set("page", String(page));
+         } else {
+            params.delete("page");
+         }
 
          return params;
       });

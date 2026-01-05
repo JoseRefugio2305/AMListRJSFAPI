@@ -20,7 +20,7 @@ export function AnimePagination({
 }: AnimePaginationProps) {
    const handlePageChange = (event: PaginatorPageChangeEvent) => {
       setLoading(true);
-      setPage(event.first);
+      setPage(event.first / 20 + 1);
    };
 
    return (
@@ -28,7 +28,7 @@ export function AnimePagination({
          {animes.length > 0 ? (
             <>
                <Paginator
-                  first={page}
+                  first={(page - 1) * 20}
                   rows={20}
                   totalRecords={total}
                   onPageChange={handlePageChange}
@@ -39,10 +39,10 @@ export function AnimePagination({
                   ))}
                </div>
                <Paginator
-                  first={page}
+                  first={(page - 1) * 20}
                   rows={20}
                   totalRecords={total}
-                  onPageChange={(event) => setPage(event.first)}
+                  onPageChange={handlePageChange}
                />
             </>
          ) : (

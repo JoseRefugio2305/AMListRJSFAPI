@@ -7,20 +7,20 @@ import type { MangaSchema } from "../schemas/mangaSchemas";
 import { getMangas } from "../services/mangaServices";
 import { CarouselManga } from "../components/Manga/CarouselManga";
 import { MangaPagination } from "../components/Manga/MangaPagination";
+import { parseStringNumber } from "../utils/parse";
 
 export default function MangaPage() {
    const [searchParams, setSearchParams] = useSearchParams();
 
-   const [page, setPage] = useState<number>(() => {
-      const p = parseInt(searchParams.get("page") ?? "0", 10);
-      return Number.isNaN(p) || p <= 0 ? 0 : (p - 1) * 20;
-   });
+   const [page, setPage] = useState<number>(
+      parseStringNumber(searchParams.get("page") ?? "1")
+   );
    const [total, setTotalMangas] = useState<number>(0);
    const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
    const fetchMangas = () => {
-      getMangas("/manga/", { limit: 20, page: page / 20 + 1, emision: 3 })
+      getMangas("/manga/", { limit: 20, page: page > 1 ? page : 1, emision: 3 })
          .then((resp) => {
             setMangas(resp.listaMangas ?? []);
             setTotalMangas(resp.totalMangas ?? 0);
@@ -34,7 +34,11 @@ export default function MangaPage() {
    useEffect(() => {
       fetchMangas();
       setSearchParams((params: URLSearchParams) => {
-         params.set("page", String(page / 20 + 1));
+         if (page > 1) {
+            params.set("page", String(page));
+         } else {
+            params.delete("page");
+         }
 
          return params;
       });
