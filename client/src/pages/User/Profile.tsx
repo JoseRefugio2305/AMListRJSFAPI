@@ -1,4 +1,4 @@
-import { Link, Navigate, useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import { authStore } from "../../store/authStore";
 import { useEffect, useState } from "react";
@@ -41,10 +41,6 @@ export default function Profile() {
       fetchUserData();
    }, [name]);
 
-   if (!name?.toLowerCase() && !username) {
-      //TODO: Solo ver si existe name agregar un return
-      return <Navigate to="/404-not-found" replace />;
-   }
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 pb-14 mt-5 min-h-screen">
          {loadingUserData ? (
@@ -84,7 +80,7 @@ export default function Profile() {
                            <b>Se unió el:</b> {userData?.created_date}
                         </p>
                         <Link
-                           to={`/user/${name?.toLowerCase()??""}/animelist`}
+                           to={`/user/${name?.toLowerCase() ?? ""}/animelist`}
                            className="hover:underline hover:text-white font-semibold text-md bg-purple-500 rounded-lg px-2 py-1 w-full justify-center flex items-center text-white mb-3"
                         >
                            Lista de Animes
