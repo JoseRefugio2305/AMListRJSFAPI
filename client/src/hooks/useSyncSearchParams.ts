@@ -5,7 +5,8 @@ import type { SetURLSearchParams } from "react-router";
 export function useSyncSearchParams(
      filtersParam: FilterParamsInterface,
      page: number,
-     setSearchParams: SetURLSearchParams
+     setSearchParams: SetURLSearchParams,
+     onlyFavs: boolean = false
 ) {
      useEffect(() => {
           setSearchParams((params) => {
@@ -71,8 +72,17 @@ export function useSyncSearchParams(
                     params.delete("orderfield");
                }
 
-               if (page / 20 + 1 > 1) {
-                    params.set("page", String(page / 20 + 1));
+               //estado de vision solo favoritos
+               if (onlyFavs) {
+                    if (filtersParam.statusView) {
+                         params.set("status", String(filtersParam.statusView));
+                    } else {
+                         params.delete("status");
+                    }
+               }
+
+               if (page > 1) {
+                    params.set("page", String(page));
                } else {
                     params.delete("page");
                }

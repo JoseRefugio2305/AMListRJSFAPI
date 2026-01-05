@@ -84,7 +84,7 @@ export default function Profile() {
                            <b>Se unió el:</b> {userData?.created_date}
                         </p>
                         <Link
-                           to="/lista" //TODO: Crear ruta de listado de animes favoritos
+                           to={`/user/${name?.toLowerCase()??""}/animelist`}
                            className="hover:underline hover:text-white font-semibold text-md bg-purple-500 rounded-lg px-2 py-1 w-full justify-center flex items-center text-white mb-3"
                         >
                            Lista de Animes

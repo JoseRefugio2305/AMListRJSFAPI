@@ -1,7 +1,7 @@
 import { parseStringNumber } from "./parse";
-import { FieldOrdEnum, TipoContenidoEnum, type FilterParamsInterface } from "../types/filterTypes";
+import { FieldOrdEnum, StatusViewEnum, TipoContenidoEnum, type FilterParamsInterface } from "../types/filterTypes";
 
-export function getInitialFilters(searchParams: URLSearchParams, tipoContenido: TipoContenidoEnum): FilterParamsInterface {
+export function getInitialFilters(searchParams: URLSearchParams, tipoContenido: TipoContenidoEnum, onlyFavs: boolean = false): FilterParamsInterface {
      return {
           tit_search: searchParams.get("tit_search") || "",
           generos:
@@ -42,6 +42,11 @@ export function getInitialFilters(searchParams: URLSearchParams, tipoContenido: 
                return Object.prototype.hasOwnProperty.call(FieldOrdEnum, key)
                     ? FieldOrdEnum[key as keyof typeof FieldOrdEnum]
                     : FieldOrdEnum.key;
+          })(),
+          statusView: (() => {
+               if (!onlyFavs) return StatusViewEnum.ninguno
+               const key = parseStringNumber(searchParams.get("status") || "5")
+               return StatusViewEnum[key] ? key : StatusViewEnum.ninguno
           })()
      };
 }
@@ -61,7 +66,8 @@ export function getURLParamsAM(tipo: TipoContenidoEnum, filtersParam: FilterPara
           if (filtersParam.estudios.length > 0) actualParams.append("studios", filtersParam.estudios.join(","))
           if (filtersParam.tiposAnime.length > 0) actualParams.append("tiposAnime", filtersParam.tiposAnime.join(","))
      }
-     if (page / 20 + 1 > 1) actualParams.append("page", String(page / 20 + 1))
+     if (page > 1) actualParams.append("page", String(page));
+
 
      const queryParams = actualParams.toString()
 

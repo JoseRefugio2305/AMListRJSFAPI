@@ -30,6 +30,15 @@ export enum StatusViewEnum {
      abandonado = 4,
      ninguno = 5,
 }
+
+export const optionsStatusView: OptionsSelectInterface[] = [
+     { code: StatusViewEnum.ninguno, name: "Todos" },
+     { code: StatusViewEnum.viendo, name: "Viendo" },
+     { code: StatusViewEnum.pendiente, name: "Pendiente" },
+     { code: StatusViewEnum.considerando, name: "Considerando" },
+     { code: StatusViewEnum.abandonado, name: "Abandonado" },
+]
+
 export enum TipoContenidoEnum {
      anime = 1,
      manga = 2,
@@ -102,5 +111,5 @@ export interface FilterParamsInterface {
      tipoContenido: number;
      orderBy: OrderByType;
      orderField: FieldOrdEnum;
-
+     statusView?: StatusViewEnum
 }

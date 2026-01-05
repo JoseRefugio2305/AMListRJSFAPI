@@ -8,8 +8,9 @@ import { getTipoContenido } from "../utils/common";
 import { doAdvancedSearch } from "../services/searchServices";
 import { getInitialFilters, getURLParamsAM } from "../utils/filters";
 import { useSyncSearchParams } from "./useSyncSearchParams";
+import { getUserAnimeList } from "../services/userServices";
 
-export const useFilters = (tipoContenido: TipoContenidoEnum) => {
+export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean = false, username: string = "") => {
      const [searchParams, setSearchParams] = useSearchParams();
      const [animes, setAnimes] = useState<AnimeSchema[]>([]);
      const [totalAnimes, setTotalAnimes] = useState<number>(0);
@@ -18,20 +19,20 @@ export const useFilters = (tipoContenido: TipoContenidoEnum) => {
      const [loading, setLoaging] = useState<boolean>(true);
 
      const [filtersParam, setFiltersParam] = useState<FilterParamsInterface>(
-          () => getInitialFilters(searchParams, tipoContenido)
+          () => getInitialFilters(searchParams, tipoContenido, onlyFavs)
      );
      const [page, setPage] = useState<number>(
-          tipoContenido === TipoContenidoEnum.todos ? 0 : parseStringNumber(searchParams.get("page") ?? "0")
+          tipoContenido === TipoContenidoEnum.todos ? 0 : parseStringNumber(searchParams.get("page") ?? "1")
      );
 
-     useSyncSearchParams(filtersParam, page, setSearchParams)
+     useSyncSearchParams(filtersParam, page, setSearchParams, onlyFavs)
 
      useEffect(() => {
           const fetchResultsSearch = () => {
                setLoaging(true);
                const filtersPayload: FilterPayload = {
                     limit: 20,
-                    page: page / 20 + 1,
+                    page: page>1?page:1,
                     tituloBusq: filtersParam.tit_search,
                     generos: filtersParam.generos,
                     animeEstudios: filtersParam.estudios,
@@ -57,20 +58,33 @@ export const useFilters = (tipoContenido: TipoContenidoEnum) => {
                               )
                          : 3,
                     orderBy: filtersParam.orderBy === "asc" ? 1 : -1,
-                    orderField: filtersParam.orderField
+                    orderField: filtersParam.orderField,
                };
 
-               doAdvancedSearch(filtersPayload)
-                    .then((resp) => {
-                         setAnimes(resp.listaAnimes ?? []);
-                         setTotalAnimes(resp.totalAnimes ?? 0);
-                         setMangas(resp.listaMangas ?? []);
-                         setTotalMangas(resp.totalMangas ?? 0);
-                    })
-                    .catch((error) => {
-                         console.error(error);
-                    })
-                    .finally(() => setLoaging(false));
+               if (onlyFavs && username.trim()) {
+                    filtersPayload.onlyFavs = true
+                    filtersPayload.statusView = filtersParam.statusView
+                    getUserAnimeList(username, filtersPayload)
+                         .then((resp) => {
+                              setAnimes(resp.listaAnimes ?? []);
+                              setTotalAnimes(resp.totalAnimes ?? 0);
+                         }).catch((error) => {
+                              console.error(error);
+                         })
+                         .finally(() => setLoaging(false));
+               } else {
+                    doAdvancedSearch(filtersPayload)
+                         .then((resp) => {
+                              setAnimes(resp.listaAnimes ?? []);
+                              setTotalAnimes(resp.totalAnimes ?? 0);
+                              setMangas(resp.listaMangas ?? []);
+                              setTotalMangas(resp.totalMangas ?? 0);
+                         })
+                         .catch((error) => {
+                              console.error(error);
+                         })
+                         .finally(() => setLoaging(false));
+               }
           };
           fetchResultsSearch();
      }, [filtersParam, page]);
