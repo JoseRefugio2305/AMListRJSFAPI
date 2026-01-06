@@ -19,6 +19,7 @@ export default function UserMangaListPage() {
 
    const [, setIsOwnProf] = useState<boolean>(false);
    const [checkUser, setCheckUser] = useState<boolean>(true);
+   const [layout, setLayout] = useState<"list" | "grid">("grid");
 
    useEffect(() => {
       const fetchUserData = async () => {
@@ -119,6 +120,8 @@ export default function UserMangaListPage() {
                         setLoading={setLoaging}
                         setPage={setPage}
                         mangas={mangas}
+                        layout={layout}
+                        setLayout={setLayout}
                      />
                   </section>
                )}

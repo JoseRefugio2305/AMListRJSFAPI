@@ -19,6 +19,7 @@ export default function UserAnimeListPage() {
 
    const [, setIsOwnProf] = useState<boolean>(false);
    const [checkUser, setCheckUser] = useState<boolean>(true);
+   const [layout, setLayout] = useState<"list" | "grid">("grid");
 
    useEffect(() => {
       const fetchUserData = async () => {
@@ -119,6 +120,8 @@ export default function UserAnimeListPage() {
                         setLoading={setLoaging}
                         setPage={setPage}
                         animes={animes}
+                        layout={layout}
+                        setLayout={setLayout}
                      />
                   </section>
                )}

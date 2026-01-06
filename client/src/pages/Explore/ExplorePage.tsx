@@ -13,6 +13,7 @@ import { AnimePagination } from "../../components/Anime/AnimePagination";
 import { MangaPagination } from "../../components/Manga/MangaPagination";
 import { TipoContenidoEnum } from "../../types/filterTypes";
 import { Link } from "react-router";
+import { useState } from "react";
 export default function ExplorePage() {
    const {
       animes,
@@ -27,6 +28,8 @@ export default function ExplorePage() {
       setLoaging,
       getURLParamsAM,
    } = useFilters(TipoContenidoEnum.todos);
+
+   const [layout, setLayout] = useState<"list" | "grid">("grid");
 
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 px-5 pb-14 mt-5 gap-8 min-h-screen">
@@ -88,6 +91,8 @@ export default function ExplorePage() {
                         setPage={setPage}
                         setLoading={setLoaging}
                         animes={animes}
+                        layout={layout}
+                        setLayout={setLayout}
                      />
                   </TabItem>
                   <TabItem
@@ -123,6 +128,8 @@ export default function ExplorePage() {
                         setPage={setPage}
                         setLoading={setLoaging}
                         mangas={mangas}
+                        layout={layout}
+                        setLayout={setLayout}
                      />
                   </TabItem>
                </Tabs>

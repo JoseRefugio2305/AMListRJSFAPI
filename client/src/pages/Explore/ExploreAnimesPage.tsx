@@ -5,6 +5,7 @@ import { TipoContenidoEnum } from "../../types/filterTypes";
 import { SearchForm } from "../../components/Search/SearchForm";
 import { PaginationSkeleton } from "../../components/Skeletons/PaginationSekeleton";
 import { AnimePagination } from "../../components/Anime/AnimePagination";
+import { useState } from "react";
 
 export default function ExploreAnimePage() {
    const {
@@ -17,6 +18,8 @@ export default function ExploreAnimePage() {
       loading,
       setLoaging,
    } = useFilters(TipoContenidoEnum.anime);
+   const [layout, setLayout] = useState<"list" | "grid">("grid");
+
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 px-5 pb-14 mt-5 gap-8 min-h-screen">
          <Breadcrumbs
@@ -56,6 +59,8 @@ export default function ExploreAnimePage() {
                      setPage={setPage}
                      setLoading={setLoaging}
                      animes={animes}
+                     layout={layout}
+                     setLayout={setLayout}
                   />
                </>
             )}

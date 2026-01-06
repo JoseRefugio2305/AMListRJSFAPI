@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import { NotResultsFound } from "../Common/NotResultsFound";
@@ -12,6 +11,8 @@ interface MangaPaginationProps {
    setLoading: (load: boolean) => void;
    setPage: (first: number) => void;
    mangas: MangaSchema[];
+   layout: "list" | "grid";
+   setLayout: (layout: "list" | "grid") => void;
 }
 export function MangaPagination({
    page,
@@ -19,8 +20,10 @@ export function MangaPagination({
    setLoading,
    setPage,
    mangas,
+   layout,
+   setLayout,
 }: MangaPaginationProps) {
-   const [layout, setLayout] = useState<"list" | "grid">("grid");
+   // const [layout, setLayout] = useState<"list" | "grid">("grid");
 
    const handlePageChange = (event: PaginatorPageChangeEvent) => {
       setLoading(true);

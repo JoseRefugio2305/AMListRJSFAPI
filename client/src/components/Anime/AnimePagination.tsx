@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { DataView, DataViewLayoutOptions } from "primereact/dataview";
 import type { AnimeSchema } from "../../schemas/animeSchemas";
 import { AnimeCard } from "../Anime/AnimeCard";
@@ -12,6 +11,8 @@ interface AnimePaginationProps {
    setLoading: (load: boolean) => void;
    setPage: (first: number) => void;
    animes: AnimeSchema[];
+   layout: "list" | "grid";
+   setLayout: (layout: "list" | "grid") => void;
 }
 export function AnimePagination({
    page,
@@ -19,8 +20,10 @@ export function AnimePagination({
    setLoading,
    setPage,
    animes,
+   layout,
+   setLayout,
 }: AnimePaginationProps) {
-   const [layout, setLayout] = useState<"list" | "grid">("grid");
+   // const [layout, setLayout] = useState<"list" | "grid">("grid");
 
    const handlePageChange = (event: PaginatorPageChangeEvent) => {
       setLoading(true);
