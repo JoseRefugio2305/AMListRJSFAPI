@@ -12,7 +12,16 @@ import {
 import { NavLink, useNavigate } from "react-router";
 import amlLogo from "/logo.png";
 import { ButtonToggleTheme } from "./ButtonToggleTheme";
-import { Brush, House, Telescope, TvMinimalPlay, UserPlus } from "lucide-react";
+import {
+   ArrowRightToLine,
+   Bolt,
+   Brush,
+   House,
+   ListCollapse,
+   Telescope,
+   TvMinimalPlay,
+   UserPlus,
+} from "lucide-react";
 import { authStore } from "../../store/authStore";
 
 function AvatarSettings() {
@@ -38,10 +47,22 @@ function AvatarSettings() {
                <span className="block text-sm">{username}</span>
             </DropdownHeader>
             <DropdownDivider />
-            <DropdownItem onClick={() => navigate(`user/${username}/lists`)}>
+            <DropdownItem
+               icon={ListCollapse}
+               onClick={() => navigate(`user/${username}/lists`)}
+            >
                Mis Listas
             </DropdownItem>
-            <DropdownItem onClick={() => logout(navigate)}>
+            <DropdownItem
+               icon={Bolt}
+               onClick={() => navigate(`user/${username}/lists`)}
+            >
+               Configuración
+            </DropdownItem>
+            <DropdownItem
+               icon={ArrowRightToLine}
+               onClick={() => logout(navigate)}
+            >
                Cerrar Sesión
             </DropdownItem>
          </Dropdown>
