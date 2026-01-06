@@ -83,7 +83,7 @@ export default function ExplorePage() {
                         Más Animes <SquareArrowOutUpRightIcon size={24} />
                      </Link>
                      <AnimePagination
-                        total={20}
+                        total={totalAnimes > 20 ? 20 : totalAnimes}
                         page={page}
                         setPage={setPage}
                         setLoading={setLoaging}
@@ -118,7 +118,7 @@ export default function ExplorePage() {
                         Más Mangas <SquareArrowOutUpRightIcon size={24} />
                      </Link>
                      <MangaPagination
-                        total={20}
+                        total={totalMangas > 20 ? 20 : totalMangas}
                         page={page}
                         setPage={setPage}
                         setLoading={setLoaging}
