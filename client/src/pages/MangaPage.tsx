@@ -18,6 +18,7 @@ export default function MangaPage() {
    const [total, setTotalMangas] = useState<number>(0);
    const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
+   const [layout, setLayout] = useState<"list" | "grid">("grid");
 
    const fetchMangas = () => {
       getMangas("/manga/", { limit: 20, page: page > 1 ? page : 1, emision: 3 })
@@ -72,6 +73,8 @@ export default function MangaPage() {
                      setLoading={setLoading}
                      setPage={setPage}
                      mangas={mangas}
+                     layout={layout}
+                     setLayout={setLayout}
                   />
                </>
             )}

@@ -19,6 +19,8 @@ export default function AnimePage() {
    const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
+   const [layout, setLayout] = useState<"list" | "grid">("grid");
+
    const fetchAnimes = () => {
       getAnimes("/anime/", { limit: 20, page: page > 1 ? page : 1, emision: 3 })
          .then((resp) => {
@@ -72,6 +74,8 @@ export default function AnimePage() {
                      setLoading={setLoading}
                      setPage={setPage}
                      animes={animes}
+                     layout={layout}
+                     setLayout={setLayout}
                   />
                </>
             )}
