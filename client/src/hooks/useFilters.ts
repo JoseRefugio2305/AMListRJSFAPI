@@ -8,7 +8,7 @@ import { getTipoContenido } from "../utils/common";
 import { doAdvancedSearch } from "../services/searchServices";
 import { getInitialFilters, getURLParamsAM } from "../utils/filters";
 import { useSyncSearchParams } from "./useSyncSearchParams";
-import { getUserAnimeList } from "../services/userServices";
+import { getUserAnimeList, getUserMangaList } from "../services/userServices";
 
 export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean = false, username: string = "") => {
      const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +32,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
                setLoaging(true);
                const filtersPayload: FilterPayload = {
                     limit: 20,
-                    page: page>1?page:1,
+                    page: page > 1 ? page : 1,
                     tituloBusq: filtersParam.tit_search,
                     generos: filtersParam.generos,
                     animeEstudios: filtersParam.estudios,
@@ -64,14 +64,25 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
                if (onlyFavs && username.trim()) {
                     filtersPayload.onlyFavs = true
                     filtersPayload.statusView = filtersParam.statusView
-                    getUserAnimeList(username, filtersPayload)
-                         .then((resp) => {
-                              setAnimes(resp.listaAnimes ?? []);
-                              setTotalAnimes(resp.totalAnimes ?? 0);
-                         }).catch((error) => {
-                              console.error(error);
-                         })
-                         .finally(() => setLoaging(false));
+                    if (tipoContenido === TipoContenidoEnum.anime) {
+                         getUserAnimeList(username, filtersPayload)
+                              .then((resp) => {
+                                   setAnimes(resp.listaAnimes ?? []);
+                                   setTotalAnimes(resp.totalAnimes ?? 0);
+                              }).catch((error) => {
+                                   console.error(error);
+                              })
+                              .finally(() => setLoaging(false));
+                    } else {
+                         getUserMangaList(username, filtersPayload)
+                              .then((resp) => {
+                                   setMangas(resp.listaMangas ?? []);
+                                   setTotalMangas(resp.totalMangas ?? 0);
+                              }).catch((error) => {
+                                   console.error(error);
+                              })
+                              .finally(() => setLoaging(false));
+                    }
                } else {
                     doAdvancedSearch(filtersPayload)
                          .then((resp) => {
