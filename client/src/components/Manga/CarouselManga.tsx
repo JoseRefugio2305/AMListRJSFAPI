@@ -89,7 +89,13 @@ export function CarouselManga({
                         : ""}
                   </h2>
                   <Link
-                     to="/explore/mangas?emision=1" //TODO: link en caso de publicacion, favoritos o normales
+                     to={
+                        isPublicacion
+                           ? "/explore/mangas?emision=1"
+                           : onlyFavs
+                           ? `/user/${username}/mangalist`
+                           : "/explore/mangas?emision=3"
+                     }
                      className="flex flex-row btn-link"
                   >
                      Ver más <SquareArrowOutUpRightIcon />

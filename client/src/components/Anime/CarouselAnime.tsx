@@ -85,7 +85,13 @@ export function CarouselAnime({
                      {isEmision ? "en Emisión" : onlyFavs ? "en Favoritos" : ""}
                   </h2>
                   <Link
-                     to="/explore/animes?emision=1" //TODO: link en caso de emision, favoritos o normales
+                     to={
+                        isEmision
+                           ? "/explore/animes?emision=1"
+                           : onlyFavs
+                           ? `/user/${username}/animelist`
+                           : "/explore/animes?emision=3"
+                     }
                      className="flex flex-row btn-link"
                   >
                      Ver más <SquareArrowOutUpRightIcon />
