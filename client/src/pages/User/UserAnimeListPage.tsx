@@ -6,11 +6,11 @@ import { useFilters } from "../../hooks/useFilters";
 import { TipoContenidoEnum } from "../../types/filterTypes";
 import { SearchForm } from "../../components/Search/SearchForm";
 import { useEffect, useState } from "react";
-import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
 import { getUserDataProfile } from "../../services/userServices";
 import { TabMenuStatusView } from "../../components/Common/User/TabMenuStatusView";
 import { PaginationSkeleton } from "../../components/Skeletons/PaginationSekeleton";
 import { AnimePagination } from "../../components/Anime/AnimePagination";
+import { SearchSkeleton } from "../../components/Skeletons/SearchSkeleton";
 
 export default function UserAnimeListPage() {
    const navigate = useNavigate();
@@ -61,13 +61,11 @@ export default function UserAnimeListPage() {
    if (!name?.trim()) {
       return <Navigate to="/404-not-found" replace />;
    }
-   console.log(animes);
-   console.log(totalAnimes);
 
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 pb-14 mt-5 min-h-screen">
          {checkUser ? (
-            <DetailsSkeleton />
+            <SearchSkeleton />
          ) : (
             <>
                <header>

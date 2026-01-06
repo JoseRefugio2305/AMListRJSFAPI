@@ -35,23 +35,23 @@ export function AnimePagination({
       return <AnimeCard {...anime} key={anime.id} />;
    };
 
-   const itemTemplate = (product: AnimeSchema, layout: string) => {
-      if (!product) {
+   const itemTemplate = (anime: AnimeSchema, layout: string) => {
+      if (!anime) {
          return;
       }
 
-      if (layout === "list") return listItem(product);
-      else if (layout === "grid") return gridItem(product);
+      if (layout === "list") return listItem(anime);
+      else if (layout === "grid") return gridItem(anime);
    };
 
-   const listTemplate = (products: AnimeSchema[], layout: "list" | "grid") => {
+   const listTemplate = (animes: AnimeSchema[], layout: "list" | "grid") => {
       return layout === "grid" ? (
          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
-            {products.map((product) => itemTemplate(product, layout))}
+            {animes.map((anime) => itemTemplate(anime, layout))}
          </div>
       ) : (
          <div className="grid grid-cols-1">
-            {products.map((product) => itemTemplate(product, layout))}
+            {animes.map((anime) => itemTemplate(anime, layout))}
          </div>
       );
    };
