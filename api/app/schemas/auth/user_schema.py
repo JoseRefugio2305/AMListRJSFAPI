@@ -29,6 +29,10 @@ class PayloadEmailSchema(BaseModel):
     old_email: Annotated[EmailStr, BeforeValidator(str_trim_lower)]
 
 
+class ResponseEmailSchema(PayloadEmailSchema):
+    access_token: str
+
+
 class PayloadPassSchema(BaseModel):
     new_pass: str = Field(..., min_length=8)
     old_pass: str = Field(..., min_length=8)

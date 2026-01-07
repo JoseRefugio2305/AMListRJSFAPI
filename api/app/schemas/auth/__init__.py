@@ -13,6 +13,7 @@ from .user_schema import (
     PayloadActiveStateSchema,
     ResponseNewPassSchema,
     UserListSchema,
+    ResponseEmailSchema,
 )
 
 __all__ = [
@@ -28,4 +29,5 @@ __all__ = [
     "ResponseNewPassSchema",
     "UserListSchema",
     "PayloadActiveStateSchema",
+    "ResponseEmailSchema",
 ]

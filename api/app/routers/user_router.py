@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.services.user_services import UserService
 from app.services.anime import AnimeService
@@ -10,6 +10,7 @@ from app.schemas.auth import (
     PayloadProfPicSchema,
     PayloadUsernameSchema,
     PayloadEmailSchema,
+    ResponseEmailSchema,
     PayloadPassSchema,
     ResponseNewPassSchema,
 )
@@ -128,18 +129,24 @@ async def change_username(
     user: UserLogRespSchema = Depends(get_current_user),
 ):
 
-    response = await UserService.change_username(newUNData, user)
+    try:
+        response = await UserService.change_username(newUNData, user)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
     return response.model_dump()
 
 
 # Cambio de email
-@routerUser.post("/change_email/", response_model=PayloadEmailSchema)
+@routerUser.post("/change_email/", response_model=ResponseEmailSchema)
 async def change_email(
     new_emaildata: PayloadEmailSchema,
     user: UserLogRespSchema = Depends(get_current_user),
 ):
-    response = await UserService.change_email(new_emaildata, user)
+    try:
+        response = await UserService.change_email(new_emaildata, user)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
     return response.model_dump()
 
@@ -149,5 +156,9 @@ async def change_email(
 async def change_pass(
     new_passdata: PayloadPassSchema, user: UserLogRespSchema = Depends(get_current_user)
 ):
-    response = await UserService.change_pass(new_passdata, user)
+    try:
+        response = await UserService.change_pass(new_passdata, user)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
     return response.model_dump()

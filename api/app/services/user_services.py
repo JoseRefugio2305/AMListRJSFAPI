@@ -8,6 +8,7 @@ from app.schemas.auth import (
     PayloadProfPicSchema,
     PayloadUsernameSchema,
     PayloadEmailSchema,
+    ResponseEmailSchema,
     PayloadPassSchema,
     ResponseNewPassSchema,
     RolEnum,
@@ -17,6 +18,7 @@ from app.schemas.auth import UserListSchema, PayloadActiveStateSchema
 from app.core.utils import object_id_to_str, objects_id_list_to_str, UsernameType
 from app.services.auth_service import verify_pass, get_pass_hash
 from app.core.database import apply_paginacion_ordenacion
+from app.core.security import create_access_token
 
 from app.core.logging import get_logger
 
@@ -105,7 +107,7 @@ class UserService:
     @staticmethod
     async def change_email(
         new_emaildata: PayloadEmailSchema, user: UserLogRespSchema
-    ) -> PayloadEmailSchema:
+    ) -> ResponseEmailSchema:
         # Primero revisamos si no existe otro ususario con el mismo email al que se quiere atualizar
         is_exists = await UserModel.find_by_email(
             email=new_emaildata.new_email, username="", tipoactive=ActiveUserEnum.todos
@@ -121,7 +123,12 @@ class UserService:
                 {"$set": {"email": new_emaildata.new_email}},
                 False,
             )
-            return new_emaildata
+            access_token = create_access_token(subject=new_emaildata.new_email)
+            return ResponseEmailSchema(
+                new_email=new_emaildata.new_email,
+                old_email=new_emaildata.old_email,
+                access_token=access_token,
+            )
         except HTTPException:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -141,7 +148,7 @@ class UserService:
         # Si la contraseña no es correcta
         if not verify_pass(new_passdata.old_pass, old_pass_hash.get("password")):
             raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Contraseña incorrecta. ",
             )
         # Si la contraseña es correcta procedemos a actualizarla
