@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import type { FavsCountSchema } from "../../schemas/statsSchemas";
+import type {
+   FavsCountSchema,
+   FullStatsSchema,
+} from "../../schemas/statsSchemas";
 import ReactApexChart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { themeStore } from "../../store/themeStore";
@@ -7,7 +10,7 @@ import { ChartSkeleton } from "../Skeletons/ChartSkeleton";
 import { MessageNoContenido } from "../Common/User/MessageNoContenido";
 
 interface ChartGenerosProps {
-   dataStats: FavsCountSchema | null;
+   dataStats: FavsCountSchema | FullStatsSchema | null;
 }
 
 interface StateChart {

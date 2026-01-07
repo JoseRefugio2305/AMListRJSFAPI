@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import type { FavsCountSchema } from "../../schemas/statsSchemas";
+import type {
+   FavsCountSchema,
+   FullStatsSchema,
+} from "../../schemas/statsSchemas";
 import ReactApexChart from "react-apexcharts";
 import { themeStore } from "../../store/themeStore";
 import type { ApexOptions } from "apexcharts";
 import { MessageNoContenido } from "../Common/User/MessageNoContenido";
 
 interface ChartsTypeAMProps {
-   dataStats: FavsCountSchema | null;
+   dataStats: FavsCountSchema | FullStatsSchema | null;
 }
 
 interface StateChart {
