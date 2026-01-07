@@ -16,6 +16,7 @@ interface AuthState {
      logout: (navigate?: (path: string) => void) => void;
      setProfPic: (avatar: number) => void;
      setUsername: (name: string) => void;
+     setEmail: (access_token: string) => void;
 }
 
 export const authStore = create<AuthState>((set) => ({
@@ -73,6 +74,11 @@ export const authStore = create<AuthState>((set) => ({
           sessionStorage.removeItem("username")
           sessionStorage.setItem("username", name)
           set({ username: name })
+     },
+     setEmail: (access_token: string) => {
+          sessionStorage.removeItem("token_jwt_url")
+          sessionStorage.setItem("token_jwt_url", access_token)
+          set({ token_jwt: access_token })
      }
 }));
 

@@ -26,6 +26,7 @@ export interface ResponseEmail {
    msg: string
    old_email?: RespPayCngEmailSchema["old_email"]
    new_email?: RespPayCngEmailSchema["new_email"]
+   access_token?: RespPayCngEmailSchema["access_token"]
 }
 
 export interface PayloadPass {

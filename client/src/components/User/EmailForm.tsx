@@ -3,6 +3,7 @@ import { useState, type FormEvent } from "react";
 import { RespPayCngEmailZ } from "../../schemas/userSchemas";
 import { toastStore } from "../../store/toastStore";
 import { changeEmail } from "../../services/userServices";
+import { authStore } from "../../store/authStore";
 
 interface EmailFormProps {
    email: string;
@@ -10,6 +11,7 @@ interface EmailFormProps {
 
 export function EmailForm({ email }: EmailFormProps) {
    const showToast = toastStore((s) => s.showToast);
+   const { setEmail } = authStore();
    const [actualEmail, setActualEmail] = useState<string>(email);
    const [loading, setLoading] = useState<boolean>(false);
 
@@ -23,6 +25,7 @@ export function EmailForm({ email }: EmailFormProps) {
       const parsed = RespPayCngEmailZ.safeParse({
          new_email: new_email.trim().toLowerCase(),
          old_email: actualEmail,
+         access_token: "",
       });
       if (!parsed.success) {
          showToast({
@@ -41,6 +44,7 @@ export function EmailForm({ email }: EmailFormProps) {
                });
                if (resp.is_success) {
                   setActualEmail(resp.new_email ?? email);
+                  setEmail(resp.access_token ?? "");
                   setTimeout(() => {
                      window.location.reload();
                   }, 1000);

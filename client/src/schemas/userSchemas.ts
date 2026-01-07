@@ -23,6 +23,7 @@ export const RespPayCngUsernameZ = z.object({
 export const RespPayCngEmailZ = z.object({
      new_email: z.email(),
      old_email: z.email(),
+     access_token: z.string(),
 })
 
 export const RespPayCngPassZ = z.object({
