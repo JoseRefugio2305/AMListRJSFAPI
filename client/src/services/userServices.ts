@@ -1,8 +1,8 @@
 import axiosInstance from "../hooks/useAxios";
 import { AnimeSearchResultZ, MangaSearchResultZ, type AnimeSearchResultSchema, type MangaSearchResultSchema } from "../schemas/searchSchemas";
-import { ResponseProfPicZ, RespPayCngUsernameZ, UserProfileZ, type UserProfileSchema } from "../schemas/userSchemas";
+import { ResponseProfPicZ, RespPayCngEmailZ, RespPayCngUsernameZ, UserProfileZ, type UserProfileSchema } from "../schemas/userSchemas";
 import type { FilterPayload } from "../types/filterTypes";
-import type { PayloadProfPic, PayloadUsername, ResponseProfPic, ResponseUsername } from "../types/userTypes";
+import type { PayloadEmail, PayloadProfPic, PayloadUsername, ResponseEmail, ResponseProfPic, ResponseUsername } from "../types/userTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function getUserDataProfile(username: string, isConfig: boolean = false): Promise<UserProfileSchema> {
@@ -96,6 +96,32 @@ export async function changeUsernane(payload: PayloadUsername): Promise<Response
                return {
                     is_success: true,
                     msg: "Se cambio el nombre de perfil.",
+                    ...parsed.data
+               };
+          }).catch((error) => {
+               return {
+                    is_success: false,
+                    msg: getMessageError(error)
+               }
+          })
+
+     return response
+}
+
+export async function changeEmail(payload: PayloadEmail): Promise<ResponseEmail> {
+     const response: ResponseEmail = await axiosInstance.post("/user/change_email/", payload)
+          .then((resp) => {
+               const parsed = RespPayCngEmailZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.");
+                    return {
+                         is_success: false,
+                         msg: "Datos invalidos desde el servidor."
+                    };
+               }
+               return {
+                    is_success: true,
+                    msg: "Se cambio el email de usuario.",
                     ...parsed.data
                };
           }).catch((error) => {

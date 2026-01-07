@@ -1,4 +1,4 @@
-import type { ResponseProfPicSchema, RespPayCngUsernameSchema } from "../schemas/userSchemas"
+import type { ResponseProfPicSchema, RespPayCngEmailSchema, RespPayCngUsernameSchema } from "../schemas/userSchemas"
 
 export interface PayloadProfPic {
    profile_pic: number
@@ -14,6 +14,18 @@ export interface ResponseUsername {
    msg: string
    old_name?: RespPayCngUsernameSchema["old_name"]
    new_name?: RespPayCngUsernameSchema["new_name"]
+}
+
+export interface PayloadEmail {
+   old_email: string
+   new_email: string
+}
+
+export interface ResponseEmail {
+   is_success: boolean
+   msg: string
+   old_email?: RespPayCngEmailSchema["old_email"]
+   new_email?: RespPayCngEmailSchema["new_email"]
 }
 
 export interface ResponseProfPic {

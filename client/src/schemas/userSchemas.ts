@@ -20,6 +20,12 @@ export const RespPayCngUsernameZ = z.object({
      old_name: NameZ
 })
 
+export const RespPayCngEmailZ = z.object({
+     new_email: z.email(),
+     old_email: z.email(),
+})
+
 export type UserProfileSchema = z.infer<typeof UserProfileZ>
 export type ResponseProfPicSchema = z.infer<typeof ResponseProfPicZ>
 export type RespPayCngUsernameSchema = z.infer<typeof RespPayCngUsernameZ>
+export type RespPayCngEmailSchema = z.infer<typeof RespPayCngEmailZ>
