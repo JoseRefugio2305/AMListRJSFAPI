@@ -116,7 +116,7 @@ async def get_manga_list(
 async def change_profpic(
     profPic: PayloadProfPicSchema, user: UserLogRespSchema = Depends(get_current_user)
 ):
-    response = await UserService.changeProfPic(profPic, user)
+    response = await UserService.change_profpic(profPic, user)
 
     return response.model_dump()
 
