@@ -6,10 +6,10 @@ import type { UserProfileSchema } from "../../schemas/userSchemas";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import { CircleUserRoundIcon } from "lucide-react";
 import { AvatarForm } from "../../components/User/AvatarForm";
-import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
 import { UsernameForm } from "../../components/User/UsernameForm";
 import { EmailForm } from "../../components/User/EmailForm";
 import { PasswordForm } from "../../components/User/PasswordForm";
+import { ConfigProfileSkeleton } from "../../components/Skeletons/ConfigProfileSkeleton";
 
 export default function ConfigProfilePage() {
    const { username } = authStore();
@@ -47,7 +47,7 @@ export default function ConfigProfilePage() {
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 pb-14 mt-5 min-h-screen">
          {loading && !userData ? (
-            <DetailsSkeleton />
+            <ConfigProfileSkeleton />
          ) : (
             <>
                <header>
