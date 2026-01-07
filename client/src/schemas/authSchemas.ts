@@ -25,7 +25,6 @@ export const NameZ = z
      .trim()
      .default("")
      .superRefine((s, ctx) => {
-          // allow empty (optional name) — do not validate when empty
           if (s === "") return;
 
           if (s.length < 8) {

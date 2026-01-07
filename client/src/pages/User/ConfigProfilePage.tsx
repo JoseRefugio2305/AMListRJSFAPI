@@ -7,6 +7,7 @@ import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import { CircleUserRoundIcon } from "lucide-react";
 import { AvatarForm } from "../../components/User/AvatarForm";
 import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
+import { UsernameForm } from "../../components/User/UsernameForm";
 
 export default function ConfigProfilePage() {
    const { username } = authStore();
@@ -65,6 +66,9 @@ export default function ConfigProfilePage() {
                </header>
                <section className="w-[85%] mx-auto  flex flex-col justify-center items-center  gap-5 shadow-2xl rounded-2xl dark:bg-gray-700 p-6">
                   <AvatarForm actualAvatar={userData?.profile_pic??1} />
+               </section>
+               <section className="w-[85%] mx-auto  flex flex-col justify-center items-center  gap-5 shadow-2xl rounded-2xl dark:bg-gray-700 p-6">
+                  <UsernameForm/>
                </section>
             </>
          )}

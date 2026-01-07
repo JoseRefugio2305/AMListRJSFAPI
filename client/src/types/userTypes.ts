@@ -1,13 +1,25 @@
-import type { ResponseProfPicSchema } from "../schemas/userSchemas"
+import type { ResponseProfPicSchema, RespPayCngUsernameSchema } from "../schemas/userSchemas"
 
 export interface PayloadProfPic {
-     profile_pic: number
+   profile_pic: number
+}
+
+export interface PayloadUsername {
+   old_name: string
+   new_name: string
+}
+
+export interface ResponseUsername {
+   is_success: boolean
+   msg: string
+   old_name?: RespPayCngUsernameSchema["old_name"]
+   new_name?: RespPayCngUsernameSchema["new_name"]
 }
 
 export interface ResponseProfPic {
-     is_success: boolean
-     msg: string
-     profile_pic?: ResponseProfPicSchema["profile_pic"]
+   is_success: boolean
+   msg: string
+   profile_pic?: ResponseProfPicSchema["profile_pic"]
 }
 
 export const avatarsOptions: { img: string; code: number }[] = [

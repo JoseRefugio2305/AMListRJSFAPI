@@ -1,8 +1,8 @@
 import axiosInstance from "../hooks/useAxios";
 import { AnimeSearchResultZ, MangaSearchResultZ, type AnimeSearchResultSchema, type MangaSearchResultSchema } from "../schemas/searchSchemas";
-import { ResponseProfPicZ, UserProfileZ, type UserProfileSchema } from "../schemas/userSchemas";
+import { ResponseProfPicZ, RespPayCngUsernameZ, UserProfileZ, type UserProfileSchema } from "../schemas/userSchemas";
 import type { FilterPayload } from "../types/filterTypes";
-import type { PayloadProfPic, ResponseProfPic } from "../types/userTypes";
+import type { PayloadProfPic, PayloadUsername, ResponseProfPic, ResponseUsername } from "../types/userTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function getUserDataProfile(username: string, isConfig: boolean = false): Promise<UserProfileSchema> {
@@ -69,7 +69,33 @@ export async function changeProfilePic(payload: PayloadProfPic): Promise<Respons
                }
                return {
                     is_success: true,
-                    msg: "Se cambio el avatar de perfil.", 
+                    msg: "Se cambio el avatar de perfil.",
+                    ...parsed.data
+               };
+          }).catch((error) => {
+               return {
+                    is_success: false,
+                    msg: getMessageError(error)
+               }
+          })
+
+     return response
+}
+
+export async function changeUsernane(payload: PayloadUsername): Promise<ResponseUsername> {
+     const response: ResponseUsername = await axiosInstance.post("/user/change_username/", payload)
+          .then((resp) => {
+               const parsed = RespPayCngUsernameZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.");
+                    return {
+                         is_success: false,
+                         msg: "Datos invalidos desde el servidor."
+                    };
+               }
+               return {
+                    is_success: true,
+                    msg: "Se cambio el nombre de perfil.",
                     ...parsed.data
                };
           }).catch((error) => {

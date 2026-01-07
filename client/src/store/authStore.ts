@@ -15,6 +15,7 @@ interface AuthState {
      }>;
      logout: (navigate?: (path: string) => void) => void;
      setProfPic: (avatar: number) => void;
+     setUsername: (name: string) => void;
 }
 
 export const authStore = create<AuthState>((set) => ({
@@ -67,6 +68,11 @@ export const authStore = create<AuthState>((set) => ({
           sessionStorage.removeItem("prof_pic")
           sessionStorage.setItem("prof_pic", prof_pic)
           set({ prof_pic: prof_pic })
+     },
+     setUsername: (name: string) => {
+          sessionStorage.removeItem("username")
+          sessionStorage.setItem("username", name)
+          set({ username: name })
      }
 }));
 
