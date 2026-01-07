@@ -20,6 +20,9 @@ const ExploreMangasPage = lazy(
    () => import("./pages/Explore/ExploreMangasPage.tsx")
 );
 const Profile = lazy(() => import("./pages/User/Profile.tsx"));
+const ConfigProfilePage = lazy(
+   () => import("./pages/User/ConfigProfilePage.tsx")
+);
 const UserStatsPage = lazy(() => import("./pages/User/UserStatsPage.tsx"));
 const UserAnimeListPage = lazy(
    () => import("./pages/User/UserAnimeListPage.tsx")
@@ -64,6 +67,7 @@ function App() {
                <Route path="/explore/animes" element={<ExploreAnimesPage />} />
                <Route path="/explore/mangas" element={<ExploreMangasPage />} />
                <Route path="/user/:name/lists" element={<Profile />} />
+               <Route path="/user/config" element={<ConfigProfilePage />} />
                <Route path="/user/:name/stats" element={<UserStatsPage />} />
                <Route
                   path="/user/:name/animelist"

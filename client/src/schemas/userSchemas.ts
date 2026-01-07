@@ -11,4 +11,9 @@ export const UserProfileZ = z.object({
      created_date: z.string()
 })
 
+export const ResponseProfPicZ = z.object({
+     profile_pic: z.number().default(1),
+})
+
 export type UserProfileSchema = z.infer<typeof UserProfileZ>
+export type ResponseProfPicSchema = z.infer<typeof ResponseProfPicZ>

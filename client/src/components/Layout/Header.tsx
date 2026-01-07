@@ -55,7 +55,7 @@ function AvatarSettings() {
             </DropdownItem>
             <DropdownItem
                icon={Bolt}
-               onClick={() => navigate(`user/${username}/lists`)}
+               onClick={() => navigate(`user/config`)}
             >
                Configuración
             </DropdownItem>

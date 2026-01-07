@@ -13,7 +13,8 @@ interface AuthState {
      login: (data: AuthSchema, is_login: AuthType) => Promise<{
           message: string, is_success: boolean
      }>;
-     logout: (navigate?: (path: string) => void) => void
+     logout: (navigate?: (path: string) => void) => void;
+     setProfPic: (avatar: number) => void;
 }
 
 export const authStore = create<AuthState>((set) => ({
@@ -44,7 +45,8 @@ export const authStore = create<AuthState>((set) => ({
           }
 
 
-     }, logout: (navigate?: (path: string) => void) => {
+     },
+     logout: (navigate?: (path: string) => void) => {
           //Guardamos los datos de token y username
           sessionStorage.removeItem("token_jwt_url")
           sessionStorage.removeItem("username")
@@ -59,6 +61,12 @@ export const authStore = create<AuthState>((set) => ({
           })
 
           navigate?.("/login");
+     },
+     setProfPic: (avatar: number) => {
+          const prof_pic = avatar !== 0 ? `/avatars/${avatar}.png` : "/avatars/not_found.png";
+          sessionStorage.removeItem("prof_pic")
+          sessionStorage.setItem("prof_pic", prof_pic)
+          set({ prof_pic: prof_pic })
      }
 }));
 
