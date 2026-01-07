@@ -34,14 +34,17 @@ export function EmailForm({ email }: EmailFormProps) {
       } else {
          changeEmail({ ...parsed.data })
             .then((resp) => {
-               if (resp.is_success) {
-                  setActualEmail(resp.new_email ?? email);
-               }
                showToast({
                   severity: resp.is_success ? "success" : "error",
                   summary: resp.is_success ? "Exito" : "Error",
                   detail: resp.msg,
                });
+               if (resp.is_success) {
+                  setActualEmail(resp.new_email ?? email);
+                  setTimeout(() => {
+                     window.location.reload();
+                  }, 1000);
+               }
                setLoading(false);
             })
             .catch((error) => {

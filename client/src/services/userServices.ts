@@ -69,7 +69,7 @@ export async function changeProfilePic(payload: PayloadProfPic): Promise<Respons
                }
                return {
                     is_success: true,
-                    msg: "Se cambio el avatar de perfil.",
+                    msg: "Se cambio el avatar de perfil. La pagina se recargara en breve.",
                     ...parsed.data
                };
           }).catch((error) => {
@@ -95,7 +95,7 @@ export async function changeUsernane(payload: PayloadUsername): Promise<Response
                }
                return {
                     is_success: true,
-                    msg: "Se cambio el nombre de perfil.",
+                    msg: "Se cambio el nombre de perfil. La pagina se recargara en breve.",
                     ...parsed.data
                };
           }).catch((error) => {
@@ -121,7 +121,7 @@ export async function changeEmail(payload: PayloadEmail): Promise<ResponseEmail>
                }
                return {
                     is_success: true,
-                    msg: "Se cambio el email de usuario.",
+                    msg: "Se cambio el email de usuario. La pagina se recargara en breve.",
                     ...parsed.data
                };
           }).catch((error) => {

@@ -40,7 +40,7 @@ export function PasswordForm() {
                if (resp.is_success) {
                   setTimeout(() => {
                      window.location.reload();
-                  }, 500);
+                  }, 1000);
                }
                setLoading(false);
             })

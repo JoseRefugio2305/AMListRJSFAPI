@@ -31,15 +31,18 @@ export function UsernameForm() {
       } else {
          changeUsernane({ ...parsed.data })
             .then((resp) => {
-               if (resp.is_success) {
-                  setUsername(resp.new_name ?? "");
-               }
-
                showToast({
                   severity: resp.is_success ? "success" : "error",
                   summary: resp.is_success ? "Exito" : "Error",
                   detail: resp.msg,
                });
+               if (resp.is_success) {
+                  setUsername(resp.new_name ?? "");
+                  setTimeout(() => {
+                     window.location.reload();
+                  }, 1000);
+               }
+
                setLoading(false);
             })
             .catch((error) => {

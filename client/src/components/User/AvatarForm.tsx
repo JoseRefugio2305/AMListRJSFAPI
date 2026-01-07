@@ -26,19 +26,22 @@ export function AvatarForm({ actualAvatar }: AvatarFormProps) {
          setShowAvatars(false);
          changeProfilePic({ profile_pic: avatarSel })
             .then((resp) => {
-               if (resp.is_success) {
-                  setSelAvatar(resp.profile_pic ?? 1);
-                  setProfPic(resp.profile_pic ?? 1);
-                  setActAvatar(resp.profile_pic ?? 1);
-               } else {
-                  setSelAvatar(actualAvatar ?? 1);
-               }
-
                showToast({
                   severity: resp.is_success ? "success" : "error",
                   summary: resp.is_success ? "Exito" : "Error",
                   detail: resp.msg,
                });
+               if (resp.is_success) {
+                  setSelAvatar(resp.profile_pic ?? 1);
+                  setProfPic(resp.profile_pic ?? 1);
+                  setActAvatar(resp.profile_pic ?? 1);
+                  setTimeout(() => {
+                     window.location.reload();
+                  }, 1000);
+               } else {
+                  setSelAvatar(actualAvatar ?? 1);
+               }
+
                setLoading(false);
             })
             .catch((error) => {
