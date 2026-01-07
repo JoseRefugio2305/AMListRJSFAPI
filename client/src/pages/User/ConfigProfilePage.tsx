@@ -9,6 +9,7 @@ import { AvatarForm } from "../../components/User/AvatarForm";
 import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
 import { UsernameForm } from "../../components/User/UsernameForm";
 import { EmailForm } from "../../components/User/EmailForm";
+import { PasswordForm } from "../../components/User/PasswordForm";
 
 export default function ConfigProfilePage() {
    const { username } = authStore();
@@ -73,6 +74,9 @@ export default function ConfigProfilePage() {
                </section>
                <section className="w-[85%] mx-auto  flex flex-col justify-center items-center  gap-5 shadow-2xl rounded-2xl dark:bg-gray-700 p-6">
                   <EmailForm email={userData?.email ?? ""} />
+               </section>
+               <section className="w-[85%] mx-auto  flex flex-col justify-center items-center  gap-5 shadow-2xl rounded-2xl dark:bg-gray-700 p-6">
+                  <PasswordForm />
                </section>
             </>
          )}

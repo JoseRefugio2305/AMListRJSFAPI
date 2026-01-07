@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { NameZ } from "./authSchemas";
+import { NameZ, PasswordZ } from "./authSchemas";
 
 export const UserProfileZ = z.object({
      id: z.string(),
@@ -25,7 +25,13 @@ export const RespPayCngEmailZ = z.object({
      old_email: z.email(),
 })
 
+export const RespPayCngPassZ = z.object({
+     new_pass: PasswordZ,
+     old_pass: PasswordZ,
+})
+
 export type UserProfileSchema = z.infer<typeof UserProfileZ>
 export type ResponseProfPicSchema = z.infer<typeof ResponseProfPicZ>
 export type RespPayCngUsernameSchema = z.infer<typeof RespPayCngUsernameZ>
 export type RespPayCngEmailSchema = z.infer<typeof RespPayCngEmailZ>
+export type RespPayCngPassSchema = z.infer<typeof RespPayCngPassZ>

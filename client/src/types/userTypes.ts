@@ -28,6 +28,16 @@ export interface ResponseEmail {
    new_email?: RespPayCngEmailSchema["new_email"]
 }
 
+export interface PayloadPass {
+   old_pass: string
+   new_pass: string
+}
+
+export interface ResponsePass {
+   is_success: boolean
+   msg: string
+}
+
 export interface ResponseProfPic {
    is_success: boolean
    msg: string

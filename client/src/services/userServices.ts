@@ -2,7 +2,7 @@ import axiosInstance from "../hooks/useAxios";
 import { AnimeSearchResultZ, MangaSearchResultZ, type AnimeSearchResultSchema, type MangaSearchResultSchema } from "../schemas/searchSchemas";
 import { ResponseProfPicZ, RespPayCngEmailZ, RespPayCngUsernameZ, UserProfileZ, type UserProfileSchema } from "../schemas/userSchemas";
 import type { FilterPayload } from "../types/filterTypes";
-import type { PayloadEmail, PayloadProfPic, PayloadUsername, ResponseEmail, ResponseProfPic, ResponseUsername } from "../types/userTypes";
+import type { PayloadEmail, PayloadPass, PayloadProfPic, PayloadUsername, ResponseEmail, ResponsePass, ResponseProfPic, ResponseUsername } from "../types/userTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function getUserDataProfile(username: string, isConfig: boolean = false): Promise<UserProfileSchema> {
@@ -123,6 +123,23 @@ export async function changeEmail(payload: PayloadEmail): Promise<ResponseEmail>
                     is_success: true,
                     msg: "Se cambio el email de usuario.",
                     ...parsed.data
+               };
+          }).catch((error) => {
+               return {
+                    is_success: false,
+                    msg: getMessageError(error)
+               }
+          })
+
+     return response
+}
+
+export async function changePass(payload: PayloadPass): Promise<ResponsePass> {
+     const response: ResponsePass = await axiosInstance.post("/user/change_password/", payload)
+          .then(() => {
+               return {
+                    is_success: true,
+                    msg: "Se cambio la contraseña de usuario. La pagina se recargara en breve.",
                };
           }).catch((error) => {
                return {
