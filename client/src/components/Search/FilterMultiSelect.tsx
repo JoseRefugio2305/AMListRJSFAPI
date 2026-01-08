@@ -42,6 +42,7 @@ export function FilterMultiSelect<T>({
          panelFooterTemplate={() => footerTemplate(value)}
          className={className}
          display="chip"
+         filter
       />
    );
 }
