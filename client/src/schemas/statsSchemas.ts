@@ -35,6 +35,16 @@ export const StatsZ = z.object({
 
 })
 
+export const FullStatsZ = StatsZ.extend({
+     totalUsuarios: z.number().default(0),
+     totalAnimes: z.number().default(0),
+     totalMangas: z.number().default(0),
+     totalAutoresMangas: z.number().default(0),
+     totalStdAnime: z.number().default(0),
+     totalEdtManga: z.number().default(0),
+     totalGeneros: z.number().default(0),
+})
+
 export const StatusViewCountZ = z.object({
      statusView: z.number().default(0),
      conteo: z.number().default(0),
@@ -48,4 +58,5 @@ export const FavsCountZ = StatsZ.extend({
 })
 
 export type FavsCountSchema = z.infer<typeof FavsCountZ>
-export type StatusViewCountSchema=z.infer<typeof StatusViewCountZ>
+export type StatusViewCountSchema = z.infer<typeof StatusViewCountZ>
+export type FullStatsSchema = z.infer<typeof FullStatsZ>

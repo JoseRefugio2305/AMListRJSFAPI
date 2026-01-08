@@ -10,6 +10,7 @@ interface TabMenuStatsProps {
    setStatActive: (typeS: TypeStatsEnum) => void;
    setSelTypeStat: (item: OptionsSelectInterface) => void;
    selTypeStat: OptionsSelectInterface;
+   isDashboard: boolean;
 }
 
 export function TabMenuStats({
@@ -18,29 +19,32 @@ export function TabMenuStats({
    setStatActive,
    setSelTypeStat,
    selTypeStat,
+   isDashboard,
 }: TabMenuStatsProps) {
    const idSelTypeStat = useId();
    return (
       <div className="w-full flex justify-center items-center">
          <ButtonGroup className="h-10 hidden md:flex">
-            <Button
-               disabled={loadingStats}
-               className="h-10"
-               outline={statActive !== TypeStatsEnum.a_m_favs}
-               color="purple"
-               onClick={() => {
-                  setStatActive(TypeStatsEnum.a_m_favs);
-                  setSelTypeStat(
-                     optionsTypeStat.find(
-                        (opt) => opt.code === TypeStatsEnum.a_m_favs
-                     ) ?? optionsTypeStat[TypeStatsEnum.a_m_favs]
-                  );
-               }}
-            >
-               <p className="text-md font-bold">
-                  Estado de Lectura/Visualización
-               </p>
-            </Button>
+            {!isDashboard && (
+               <Button
+                  disabled={loadingStats}
+                  className="h-10"
+                  outline={statActive !== TypeStatsEnum.a_m_favs}
+                  color="purple"
+                  onClick={() => {
+                     setStatActive(TypeStatsEnum.a_m_favs);
+                     setSelTypeStat(
+                        optionsTypeStat.find(
+                           (opt) => opt.code === TypeStatsEnum.a_m_favs
+                        ) ?? optionsTypeStat[TypeStatsEnum.a_m_favs]
+                     );
+                  }}
+               >
+                  <p className="text-md font-bold">
+                     Estado de Lectura/Visualización
+                  </p>
+               </Button>
+            )}
             <Button
                disabled={loadingStats}
                className="h-10"
@@ -114,7 +118,9 @@ export function TabMenuStats({
                   setSelTypeStat(e.value);
                   setStatActive(e.value?.code);
                }}
-               options={optionsTypeStat}
+               options={optionsTypeStat.filter(
+                  (opt) => opt.code !== TypeStatsEnum.a_m_favs
+               )}
                optionLabel="name"
                placeholder="Selecciona un tipo de Estadísticas"
                className="w-full"

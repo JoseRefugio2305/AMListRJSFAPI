@@ -83,6 +83,7 @@ export default function UserStatsPage() {
                      setStatActive={setStatActive}
                      setSelTypeStat={setSelTypeStat}
                      selTypeStat={selTypeStat}
+                     isDashboard={false}
                   />
                </section>
                {loadingStats ? (

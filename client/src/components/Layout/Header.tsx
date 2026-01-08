@@ -18,6 +18,7 @@ import {
    Brush,
    House,
    ListCollapse,
+   ShieldUser,
    Telescope,
    TvMinimalPlay,
    UserPlus,
@@ -58,6 +59,12 @@ function AvatarSettings() {
                onClick={() => navigate(`user/config`)}
             >
                Configuración
+            </DropdownItem>
+            <DropdownItem
+               icon={ShieldUser}
+               onClick={() => navigate(`dashboard`)}
+            >
+               Dashboard
             </DropdownItem>
             <DropdownItem
                icon={ArrowRightToLine}
