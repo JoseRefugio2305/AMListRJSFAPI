@@ -43,7 +43,7 @@ export default function ChartGeneros({ dataStats }: ChartGenerosProps) {
                      style: {
                         fontSize: "15px",
                         fontWeight: 700,
-                        color: "#ffffff",
+                        color: theme === "light" ? "#000" : "#fff",
                      },
                   },
                },
@@ -113,6 +113,40 @@ export default function ChartGeneros({ dataStats }: ChartGenerosProps) {
                ...prev.options,
                theme: {
                   mode: theme,
+               },
+               plotOptions: {
+                  ...((prev.options as ApexOptions).plotOptions ?? {}),
+                  bar: {
+                     ...(((prev.options as ApexOptions).plotOptions ?? {})
+                        .bar ?? {}),
+                     dataLabels: {
+                        ...((
+                           ((prev.options as ApexOptions).plotOptions ?? {})
+                              .bar ?? {}
+                        ).dataLabels ?? {}),
+                        total: {
+                           ...(
+                              (
+                                 (
+                                    (prev.options as ApexOptions).plotOptions ??
+                                    {}
+                                 ).bar ?? {}
+                              ).dataLabels ?? {}
+                           ).total,
+                           style: {
+                              ...((
+                                 (
+                                    (
+                                       (prev.options as ApexOptions)
+                                          .plotOptions ?? {}
+                                    ).bar ?? {}
+                                 ).dataLabels ?? {}
+                              ).total?.style ?? {}),
+                              color: theme === "light" ? "#000" : "#fff",
+                           },
+                        },
+                     },
+                  },
                },
             },
          }));

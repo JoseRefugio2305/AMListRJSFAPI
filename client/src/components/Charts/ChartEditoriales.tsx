@@ -42,7 +42,7 @@ export default function ChartStudios({ dataStats }: ChartStudiosProps) {
             },
          },
          dataLabels: {
-            enabled: false,
+            enabled: true,
          },
          xaxis: {
             categories: [],
