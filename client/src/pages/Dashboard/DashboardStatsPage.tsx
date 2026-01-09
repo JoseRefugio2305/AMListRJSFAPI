@@ -1,16 +1,12 @@
-import { Button } from "flowbite-react";
-import { Sidebar } from "primereact/sidebar";
-import { lazy, useEffect, useState } from "react";
-import { ChartArea, ListCheck, Menu, TvMinimalPlay } from "lucide-react";
+import { useEffect, useState } from "react";
 import StatsSection from "../../components/Dashboard/StatsSection";
 import { authStore } from "../../store/authStore";
 import { useNavigate } from "react-router";
 import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
+import { SidebarDash } from "../../components/Dashboard/SidebarDash";
 
 export default function DashboardStatsPage() {
    const navigate = useNavigate();
-   const [visible, setVisible] = useState<boolean>(false);
-   const [pageSelect, setPageSelect] = useState<number>(1);
    const [loading, setLoading] = useState<boolean>(true);
    const { rol } = authStore();
 
@@ -31,31 +27,9 @@ export default function DashboardStatsPage() {
             <DetailsSkeleton />
          ) : (
             <>
-               <Sidebar visible={visible} onHide={() => setVisible(false)}>
-                  <h2 className="text-2xl font-bold flex flex-row gap-4">
-                     <ChartArea size={28} /> Dashboard
-                  </h2>
-                  <Button
-                     className="hover:underline hover:bg-purple-600 dark:hover:bg-purple-600 hover:text-white font-semibold text-md bg-purple-500 dark:bg-purple-500 rounded-3xl px-2 py-1 w-full justify-center flex items-center text-white my-3"
-                     onClick={() => setPageSelect(1)}
-                  >
-                     <ChartArea size={28} /> Dasboard
-                  </Button>
-                  <h2 className="text-2xl font-bold flex flex-row gap-4">
-                     <TvMinimalPlay size={28} /> Animes
-                  </h2>
-                  <Button
-                     className="hover:underline hover:bg-purple-600 dark:hover:bg-purple-600 hover:text-white font-semibold text-md bg-purple-500 dark:bg-purple-500 rounded-3xl px-2 py-1 w-full justify-center flex items-center text-white my-3"
-                     onClick={() => setPageSelect(2)}
-                  >
-                     <ListCheck size={28} /> Lista de Animes
-                  </Button>
-               </Sidebar>
-               <Button onClick={() => setVisible(!visible)} color="purple">
-                  <Menu size={28} />
-               </Button>
+               <SidebarDash selectedOption={1} />
                <section className="w-full">
-                  {pageSelect === 1 ? <StatsSection /> : <></>}
+                  <StatsSection />
                </section>
             </>
          )}
