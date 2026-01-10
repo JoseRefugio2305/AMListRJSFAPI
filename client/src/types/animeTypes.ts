@@ -1,4 +1,4 @@
-import type { AnimeCompleteSchema } from "../schemas/animeSchemas";
+import type { AnimeCompleteSchema, ResponseUpdCrtAnimeSchema } from "../schemas/animeSchemas";
 import type { OptionsSelectInterface } from "./filterTypes";
 
 
@@ -35,3 +35,7 @@ export interface AnimeResult {
      anime?: AnimeCompleteSchema
 }
 
+export interface ResponseUpdCrtAnime {
+     is_success: boolean
+     message: ResponseUpdCrtAnimeSchema["message"]
+}

@@ -13,7 +13,7 @@ export function SidebarDash({ selectedOption }: SidebarDashProps) {
 
    const getClassLink = (opt: number) => {
       return `hover:underline hover:bg-purple-600 dark:hover:bg-purple-600 hover:text-white font-semibold text-md bg-purple-500 dark:bg-purple-500 rounded-3xl px-2 py-1 w-full justify-center flex items-center text-white my-3 ${
-         selectedOption === opt && "underline"
+         selectedOption === opt && "underline bg-purple-600 dark:bg-purple-600"
       }`;
    };
 

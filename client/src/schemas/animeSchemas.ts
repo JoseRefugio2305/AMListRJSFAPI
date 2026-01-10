@@ -43,7 +43,20 @@ export const AnimeResultZ = z.object({
      anime: AnimeCompleteZ.optional(),
 });
 
+export const AnimeCreateZ = z.object({
+     key_anime: z.number().int(),
+     titulo: z.string(),
+     tipo: TipoAnimeZ,
+     link_p: z.url(),
+})
+
+export const ResponseUpdCrtAnimeZ = z.object({
+     message: z.string()
+})
+
 //Exports de tipos
 export type AnimeSchema = z.infer<typeof AnimeZ>
 export type AnimeCompleteSchema = z.infer<typeof AnimeCompleteZ>
 export type AnimeRelAdpSchema = z.infer<typeof AnimeRelAdpZ>
+export type AnimeCreateSchema = z.infer<typeof AnimeCreateZ>
+export type ResponseUpdCrtAnimeSchema = z.infer<typeof ResponseUpdCrtAnimeZ>
