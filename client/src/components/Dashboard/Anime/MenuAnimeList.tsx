@@ -7,9 +7,11 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ModalFormCreate } from "./ModalFormCreate";
+import { ModalFormFile } from "./ModalFormFile";
 
 export function MenuAnimeList() {
    const [oModalCreate, setOModalCreate] = useState<boolean>(false);
+   const [oModalFile, setOModalFile] = useState<boolean>(false);
 
    return (
       <>
@@ -27,6 +29,7 @@ export function MenuAnimeList() {
                <Button
                   className="bg-purple-600 hover:underline mb-2"
                   color="purple"
+                  onClick={() => setOModalFile(true)}
                >
                   <FilePlus className="mr-2" />
                   Agregar desde Archivo
@@ -52,6 +55,7 @@ export function MenuAnimeList() {
             openModal={oModalCreate}
             setOpenModal={setOModalCreate}
          />
+         <ModalFormFile openModal={oModalFile} setOpenModal={setOModalFile} />
       </>
    );
 }

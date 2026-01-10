@@ -54,9 +54,28 @@ export const ResponseUpdCrtAnimeZ = z.object({
      message: z.string()
 })
 
+export const AnimeFileZ = z.object({
+     file: z
+          .instanceof(File)
+          .refine((file) => file.type === "application/json", {
+               message: "El archivo debe ser un JSON válido",
+          })
+          .refine((file) => file.size > 0, {
+               message: "El archivo no puede estar vacío",
+          }),
+});
+
+export const ResponseUpdAllMALZ = z.object({
+     message: z.string(),
+     totalToAct: z.number().default(0),
+     totalAct: z.number().default(0)
+})
+
 //Exports de tipos
 export type AnimeSchema = z.infer<typeof AnimeZ>
 export type AnimeCompleteSchema = z.infer<typeof AnimeCompleteZ>
 export type AnimeRelAdpSchema = z.infer<typeof AnimeRelAdpZ>
 export type AnimeCreateSchema = z.infer<typeof AnimeCreateZ>
 export type ResponseUpdCrtAnimeSchema = z.infer<typeof ResponseUpdCrtAnimeZ>
+export type AnimeFileSchema = z.infer<typeof AnimeFileZ>
+export type ResponseUpdAllMALSchema = z.infer<typeof ResponseUpdAllMALZ>

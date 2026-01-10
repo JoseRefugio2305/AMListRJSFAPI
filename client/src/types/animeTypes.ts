@@ -1,4 +1,4 @@
-import type { AnimeCompleteSchema, ResponseUpdCrtAnimeSchema } from "../schemas/animeSchemas";
+import type { AnimeCompleteSchema, ResponseUpdAllMALSchema, ResponseUpdCrtAnimeSchema } from "../schemas/animeSchemas";
 import type { OptionsSelectInterface } from "./filterTypes";
 
 
@@ -38,4 +38,11 @@ export interface AnimeResult {
 export interface ResponseUpdCrtAnime {
      is_success: boolean
      message: ResponseUpdCrtAnimeSchema["message"]
+}
+
+export interface ResponseUpdAllMAL {
+     is_success: boolean
+     message: ResponseUpdAllMALSchema["message"]
+     totalToAct?: ResponseUpdAllMALSchema["totalToAct"]
+     totalAct?: ResponseUpdAllMALSchema["totalAct"]
 }

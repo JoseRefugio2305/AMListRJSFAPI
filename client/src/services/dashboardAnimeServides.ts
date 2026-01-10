@@ -1,6 +1,6 @@
 import axiosInstance from "../hooks/useAxios";
-import { ResponseUpdCrtAnimeZ, type AnimeCreateSchema } from "../schemas/animeSchemas";
-import type { ResponseUpdCrtAnime } from "../types/animeTypes";
+import { ResponseUpdAllMALZ, ResponseUpdCrtAnimeZ, type AnimeCreateSchema, type AnimeFileSchema } from "../schemas/animeSchemas";
+import type { ResponseUpdAllMAL, ResponseUpdCrtAnime } from "../types/animeTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function createAnime(payload: AnimeCreateSchema): Promise<ResponseUpdCrtAnime> {
@@ -25,6 +25,29 @@ export async function createAnime(payload: AnimeCreateSchema): Promise<ResponseU
                }
           })
 
+
+     return response
+}
+
+export async function uploadFileAnimes(payload: AnimeFileSchema): Promise<ResponseUpdAllMAL> {
+     const response: ResponseUpdAllMAL = await axiosInstance.post("dashboard/anime/upload_file/", payload, { headers: { 'Content-Type': 'multipart/form-data' } })
+          .then((resp) => {
+               const parsed = ResponseUpdAllMALZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, message: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    ...resp.data
+               }
+          }).catch((error) => {
+               console.error(error)
+               return {
+                    is_success: false,
+                    message: getMessageError(error),
+               }
+          })
 
      return response
 }
