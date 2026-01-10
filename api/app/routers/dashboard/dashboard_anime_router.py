@@ -21,8 +21,7 @@ from app.schemas.anime import (
     ResponseUpdCrtAnime,
     AnimeUpdateSchema,
     PayloadAnimeIDMAL,
-    ResponseUpdAllMALSchema,
-    RespUpdMALAnimeSchema,
+    ResponseUpdAllMALSchema
 )
 from app.schemas.search import (
     PayloadSearchAnimeMAL,

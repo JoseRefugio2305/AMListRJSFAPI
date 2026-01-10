@@ -1,10 +1,24 @@
 from jikan4snek import Jikan4SNEK
 from app.schemas.search import TipoContMALEnum
-from typing import Dict
+from typing import Dict, List
 
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
+
+
+def get_genres_am(genres_list: List[Dict]) -> List[Dict]:
+    list_genres = []
+    for gen in genres_list:
+        list_genres.append(
+            {
+                "id_MAL": gen.get("mal_id"),
+                "nombre": gen.get("name"),
+                "nombre_mal": gen.get("name"),
+                "linkMAL": gen.get("url"),
+            }
+        )
+    return list_genres
 
 
 # Servicios de Jikan
@@ -108,7 +122,9 @@ class JikanService:
                             "type_rel": rel.get("relation"),
                         }
                     )
-
+        dict_anime["generos"].extend(get_genres_am(animedata.get("explicit_genres")))
+        dict_anime["generos"].extend(get_genres_am(animedata.get("themes")))
+        dict_anime["generos"].extend(get_genres_am(animedata.get("demographics")))
         # logger.debug(dict_anime)
 
         return dict_anime
@@ -216,5 +232,8 @@ class JikanService:
                             "type_rel": rel.get("relation"),
                         }
                     )
+        dict_manga["generos"].extend(get_genres_am(mangadata.get("explicit_genres")))
+        dict_manga["generos"].extend(get_genres_am(mangadata.get("themes")))
+        dict_manga["generos"].extend(get_genres_am(mangadata.get("demographics")))
 
         return dict_manga

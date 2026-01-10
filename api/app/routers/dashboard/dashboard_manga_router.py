@@ -3,11 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from app.services.manga import MangaService, MangaJikanService, MangaCRUDService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
-from app.schemas.anime import (
-    PayloadAnimeIDMAL,
-    ResponseUpdAllMALSchema,
-    RespUpdMALAnimeSchema,
-)
+from app.schemas.anime import PayloadAnimeIDMAL
 from app.schemas.manga import MangaCreateSchema, MangaUpdateSchema, ResponseUpdCrtManga
 from app.schemas.search import (
     PayloadSearchAnimeMAL,
