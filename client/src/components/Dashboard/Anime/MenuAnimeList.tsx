@@ -17,6 +17,7 @@ import { SearchMALSkeleton } from "../../Skeletons/SearchMALSkeleton.tsx";
 const ModalFormCreate = lazy(() => import("./ModalFormCreate.tsx"));
 const ModalFormFile = lazy(() => import("./ModalFormFile.tsx"));
 const ModalFormSMAL = lazy(() => import("./ModalFormSMAL.tsx"));
+const ModalUpdAll = lazy(() => import("./ModalUpdAll.tsx"));
 
 export function MenuAnimeList() {
    const [openModal, setOpenModal] = useState<boolean>(false);
@@ -63,6 +64,10 @@ export function MenuAnimeList() {
                <Button
                   className="bg-purple-600 hover:underline mb-2"
                   color="purple"
+                  onClick={() => {
+                     setOpenModal(true);
+                     setFormSel(4);
+                  }}
                >
                   <CloudUploadIcon className="mr-2" />
                   Actualizar desde MAL
@@ -73,17 +78,13 @@ export function MenuAnimeList() {
          <Modal show={openModal} onClose={() => setOpenModal(false)}>
             <Suspense fallback={<SearchMALSkeleton />}>
                {formSel === 1 ? (
-                  <ModalFormCreate
-                     setOpenModal={setOpenModal}
-                  />
+                  <ModalFormCreate setOpenModal={setOpenModal} />
                ) : formSel === 2 ? (
-                  <ModalFormFile
-                     setOpenModal={setOpenModal}
-                  />
+                  <ModalFormFile setOpenModal={setOpenModal} />
+               ) : formSel === 3 ? (
+                  <ModalFormSMAL setOpenModal={setOpenModal} />
                ) : (
-                  <ModalFormSMAL
-                     setOpenModal={setOpenModal}
-                  />
+                  <ModalUpdAll setOpenModal={setOpenModal} />
                )}
             </Suspense>
          </Modal>
