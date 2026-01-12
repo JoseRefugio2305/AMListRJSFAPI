@@ -113,3 +113,10 @@ export interface FilterParamsInterface {
      orderField: FieldOrdEnum;
      statusView?: StatusViewEnum
 }
+
+
+export enum ReadyToMALEnum {
+     no_listo = 0,
+     listo = 1,
+     todos = 2
+}

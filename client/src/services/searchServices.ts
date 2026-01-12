@@ -1,8 +1,8 @@
 import axiosInstance from "../hooks/useAxios";
 import { FiltersAdvancedSearchZ, type FiltersAdvancedSearchSchema } from "../schemas/filtersSchemas";
-import { AdvancedSearchResultZ } from "../schemas/searchSchemas";
-import type { FilterPayload } from "../types/filterTypes";
-import type { AdvancedSearchResult } from "../types/searchTypes";
+import { AdvancedSearchResultZ, AnimeIncSResultZ, ResponseSearchAnimeMALZ, type SearchOnMALSchema } from "../schemas/searchSchemas";
+import { ReadyToMALEnum, type FilterPayload } from "../types/filterTypes";
+import type { AdvancedSearchResult, AnimeIncSearchResult, ResponseSearchAnimeMAL } from "../types/searchTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function getFilters(): Promise<FiltersAdvancedSearchSchema> {
@@ -45,4 +45,52 @@ export async function doAdvancedSearch(filterPayload: FilterPayload): Promise<Ad
           })
 
      return response;
+}
+
+export async function getIncompleteAnimes(filterPayload: FilterPayload, tipo: ReadyToMALEnum = ReadyToMALEnum.todos): Promise<AnimeIncSearchResult> {
+     const response: AnimeIncSearchResult = await axiosInstance.post(`/dashboard/anime/get_incomplete/${tipo}`, filterPayload)
+          .then((resp) => {
+               const parsed = AnimeIncSResultZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, msg: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    msg: "OK",
+                    ...parsed.data,
+               };
+          }).catch(error => {
+               console.error(error)
+               return {
+                    msg: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+     return response
+}
+
+export async function getAnimesFromMAL(payload: SearchOnMALSchema): Promise<ResponseSearchAnimeMAL> {
+     const response: ResponseSearchAnimeMAL = await axiosInstance.post("/dashboard/anime/search_on_mal/", payload)
+          .then((resp) => {
+               const parsed = ResponseSearchAnimeMALZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, msg: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    msg: "OK",
+                    ...parsed.data,
+               };
+          }).catch(error => {
+               console.error(error)
+               return {
+                    msg: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+     return response
 }

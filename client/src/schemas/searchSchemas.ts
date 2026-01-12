@@ -1,5 +1,5 @@
 import * as z from "zod";
-import { AnimeZ } from "./animeSchemas";
+import { AnimeIncompleteZ, AnimeMALSearchZ, AnimeZ } from "./animeSchemas";
 import { MangaZ } from "./mangaSchemas";
 
 
@@ -19,7 +19,26 @@ export const MangaSearchResultZ = z.object({
 
 export const AdvancedSearchResultZ = AnimeSearchResultZ.and(MangaSearchResultZ);
 
+export const AnimeIncSResultZ = z.object({
+     listaAnimes: z.array(AnimeIncompleteZ).default([]),
+     page: z.number().optional(),
+     totalAnimes: z.number().optional(),
+     totalPages: z.number().optional(),
+})
+
+export const SearchOnMALZ = z.object({
+     tit_search: z.string().min(4)
+})
+
+export const ResponseSearchAnimeMALZ = z.object({
+     listaAnimes: z.array(AnimeMALSearchZ).default([]),
+     totalResults: z.number().default(0)
+})
+
 //Exports de tipos
 export type AnimeSearchResultSchema = z.infer<typeof AnimeSearchResultZ>
 
 export type MangaSearchResultSchema = z.infer<typeof MangaSearchResultZ>
+export type AnimeIncSResultSchema = z.infer<typeof AnimeIncSResultZ>
+export type SearchOnMALSchema = z.infer<typeof SearchOnMALZ>
+export type ResponseSearchAnimeMALSchema = z.infer<typeof ResponseSearchAnimeMALZ>

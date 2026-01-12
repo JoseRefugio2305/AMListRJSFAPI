@@ -71,6 +71,23 @@ export const ResponseUpdAllMALZ = z.object({
      totalAct: z.number().default(0)
 })
 
+export const AnimeIncompleteZ = z.object({
+     key_anime: z.number(),
+     titulo: z.string(),
+     link_p: z.url(),
+     tipo: TipoAnimeZ,
+     id: z.string(),
+     id_MAL: z.number().nullable().transform((v) => v ?? 0)
+})
+
+export const AnimeMALSearchZ = z.object({
+     titulo: z.string(),
+     id_MAL: z.number(),
+     linkMAL: z.url(),
+     tipo: z.string(),
+     image: z.url().nullable().optional(),
+})
+
 //Exports de tipos
 export type AnimeSchema = z.infer<typeof AnimeZ>
 export type AnimeCompleteSchema = z.infer<typeof AnimeCompleteZ>
@@ -79,3 +96,5 @@ export type AnimeCreateSchema = z.infer<typeof AnimeCreateZ>
 export type ResponseUpdCrtAnimeSchema = z.infer<typeof ResponseUpdCrtAnimeZ>
 export type AnimeFileSchema = z.infer<typeof AnimeFileZ>
 export type ResponseUpdAllMALSchema = z.infer<typeof ResponseUpdAllMALZ>
+export type AnimeIncompleteSchema = z.infer<typeof AnimeIncompleteZ>
+export type AnimeMALSearchSchema = z.infer<typeof AnimeMALSearchZ>

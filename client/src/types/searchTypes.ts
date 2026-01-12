@@ -1,4 +1,4 @@
-import type { AnimeSearchResultSchema, MangaSearchResultSchema } from "../schemas/searchSchemas"
+import type { AnimeIncSResultSchema, AnimeSearchResultSchema, MangaSearchResultSchema, ResponseSearchAnimeMALSchema } from "../schemas/searchSchemas"
 
 export interface AnimeSearchResult {
      is_success: boolean
@@ -29,4 +29,20 @@ export interface AdvancedSearchResult {
      totalMangas?: MangaSearchResultSchema["totalMangas"]
      pageM?: MangaSearchResultSchema["pageM"]
      totalPagesM?: MangaSearchResultSchema["totalPagesM"]
+}
+
+export interface AnimeIncSearchResult {
+     is_success: boolean
+     msg: string
+     listaAnimes?: AnimeIncSResultSchema["listaAnimes"]
+     totalAnimes?: AnimeIncSResultSchema["totalAnimes"]
+     pageA?: AnimeIncSResultSchema["page"]
+     totalPagesA?: AnimeIncSResultSchema["totalPages"]
+}
+
+export interface ResponseSearchAnimeMAL {
+     is_success: boolean
+     msg: string
+     listaAnimes?: ResponseSearchAnimeMALSchema["listaAnimes"]
+     totalResults?: ResponseSearchAnimeMALSchema["totalResults"]
 }

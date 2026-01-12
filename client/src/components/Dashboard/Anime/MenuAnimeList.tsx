@@ -8,10 +8,12 @@ import {
 import { useState } from "react";
 import { ModalFormCreate } from "./ModalFormCreate";
 import { ModalFormFile } from "./ModalFormFile";
+import { ModalFormSMAL } from "./ModalFormSMAL";
 
 export function MenuAnimeList() {
    const [oModalCreate, setOModalCreate] = useState<boolean>(false);
    const [oModalFile, setOModalFile] = useState<boolean>(false);
+   const [oModalSMAL, setOModalSMAL] = useState<boolean>(false);
 
    return (
       <>
@@ -37,6 +39,7 @@ export function MenuAnimeList() {
                <Button
                   className="bg-purple-600 hover:underline mb-2"
                   color="purple"
+                  onClick={() => setOModalSMAL(true)}
                >
                   <SearchSlashIcon className="mr-2" />
                   Buscar en MAL
@@ -56,6 +59,7 @@ export function MenuAnimeList() {
             setOpenModal={setOModalCreate}
          />
          <ModalFormFile openModal={oModalFile} setOpenModal={setOModalFile} />
+         <ModalFormSMAL openModal={oModalSMAL} setOpenModal={setOModalSMAL} />
       </>
    );
 }
