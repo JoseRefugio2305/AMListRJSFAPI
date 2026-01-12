@@ -1,19 +1,26 @@
-import { Button, MegaMenu, NavbarCollapse, NavbarToggle } from "flowbite-react";
+import {
+   Button,
+   MegaMenu,
+   Modal,
+   NavbarCollapse,
+   NavbarToggle,
+} from "flowbite-react";
 import {
    CloudUploadIcon,
    DiamondPlusIcon,
    FilePlus,
    SearchSlashIcon,
 } from "lucide-react";
-import { useState } from "react";
-import { ModalFormCreate } from "./ModalFormCreate";
-import { ModalFormFile } from "./ModalFormFile";
-import { ModalFormSMAL } from "./ModalFormSMAL";
+import { lazy, Suspense, useState } from "react";
+import { SearchMALSkeleton } from "../../Skeletons/SearchMALSkeleton.tsx";
+
+const ModalFormCreate = lazy(() => import("./ModalFormCreate.tsx"));
+const ModalFormFile = lazy(() => import("./ModalFormFile.tsx"));
+const ModalFormSMAL = lazy(() => import("./ModalFormSMAL.tsx"));
 
 export function MenuAnimeList() {
-   const [oModalCreate, setOModalCreate] = useState<boolean>(false);
-   const [oModalFile, setOModalFile] = useState<boolean>(false);
-   const [oModalSMAL, setOModalSMAL] = useState<boolean>(false);
+   const [openModal, setOpenModal] = useState<boolean>(false);
+   const [formSel, setFormSel] = useState<number>(1);
 
    return (
       <>
@@ -23,7 +30,10 @@ export function MenuAnimeList() {
                <Button
                   className="bg-purple-600 hover:underline mb-2"
                   color="purple"
-                  onClick={() => setOModalCreate(true)}
+                  onClick={() => {
+                     setOpenModal(true);
+                     setFormSel(1);
+                  }}
                >
                   <DiamondPlusIcon className="mr-2" />
                   Crear Anime
@@ -31,7 +41,10 @@ export function MenuAnimeList() {
                <Button
                   className="bg-purple-600 hover:underline mb-2"
                   color="purple"
-                  onClick={() => setOModalFile(true)}
+                  onClick={() => {
+                     setOpenModal(true);
+                     setFormSel(2);
+                  }}
                >
                   <FilePlus className="mr-2" />
                   Agregar desde Archivo
@@ -39,7 +52,10 @@ export function MenuAnimeList() {
                <Button
                   className="bg-purple-600 hover:underline mb-2"
                   color="purple"
-                  onClick={() => setOModalSMAL(true)}
+                  onClick={() => {
+                     setOpenModal(true);
+                     setFormSel(3);
+                  }}
                >
                   <SearchSlashIcon className="mr-2" />
                   Buscar en MAL
@@ -54,12 +70,23 @@ export function MenuAnimeList() {
             </NavbarCollapse>
          </MegaMenu>
 
-         <ModalFormCreate
-            openModal={oModalCreate}
-            setOpenModal={setOModalCreate}
-         />
-         <ModalFormFile openModal={oModalFile} setOpenModal={setOModalFile} />
-         <ModalFormSMAL openModal={oModalSMAL} setOpenModal={setOModalSMAL} />
+         <Modal show={openModal} onClose={() => setOpenModal(false)}>
+            <Suspense fallback={<SearchMALSkeleton />}>
+               {formSel === 1 ? (
+                  <ModalFormCreate
+                     setOpenModal={setOpenModal}
+                  />
+               ) : formSel === 2 ? (
+                  <ModalFormFile
+                     setOpenModal={setOpenModal}
+                  />
+               ) : (
+                  <ModalFormSMAL
+                     setOpenModal={setOpenModal}
+                  />
+               )}
+            </Suspense>
+         </Modal>
       </>
    );
 }

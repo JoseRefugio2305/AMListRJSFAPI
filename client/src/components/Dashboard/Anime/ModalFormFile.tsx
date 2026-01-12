@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalHeader, XIcon } from "flowbite-react";
+import { ModalBody, ModalHeader, XIcon } from "flowbite-react";
 import type { ModalProps } from "./ModalFormCreate";
 import { useRef, useState } from "react";
 import {
@@ -20,7 +20,7 @@ import { toastStore } from "../../../store/toastStore";
 import { uploadFileAnimes } from "../../../services/dashboardAnimeServides";
 import { AnimeFileZ } from "../../../schemas/animeSchemas";
 
-export function ModalFormFile({ openModal, setOpenModal }: ModalProps) {
+export default function ModalFormFile({ setOpenModal }: ModalProps) {
    const showToast = toastStore((s) => s.showToast);
    const [totalSize, setTotalSize] = useState(0);
    const [loading, setLoading] = useState<boolean>(false);
@@ -198,13 +198,7 @@ export function ModalFormFile({ openModal, setOpenModal }: ModalProps) {
    };
 
    return (
-      <Modal
-         show={openModal}
-         onClose={() => {
-            setOpenModal(false);
-            setTotalSize(0);
-         }}
-      >
+      <>
          <ModalHeader>Subir Archivo de Animes</ModalHeader>
          <ModalBody>
             {loading ? (
@@ -246,6 +240,6 @@ export function ModalFormFile({ openModal, setOpenModal }: ModalProps) {
                </div>
             )}
          </ModalBody>
-      </Modal>
+      </>
    );
 }

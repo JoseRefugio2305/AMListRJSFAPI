@@ -1,10 +1,4 @@
-import {
-   Button,
-   Modal,
-   ModalBody,
-   ModalFooter,
-   ModalHeader,
-} from "flowbite-react";
+import { Button, ModalBody, ModalFooter, ModalHeader } from "flowbite-react";
 import type { ModalProps } from "./ModalFormCreate";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type {
@@ -23,7 +17,7 @@ import { AnimeCardMAL } from "../../Anime/AnimeCardMAL";
 import { asignAnimeIDMAL } from "../../../services/dashboardAnimeServides";
 import { FormSearch } from "./FormSMAL/FormSearch";
 
-export function ModalFormSMAL({ openModal, setOpenModal }: ModalProps) {
+export default function ModalFormSMAL({ setOpenModal }: ModalProps) {
    const showToast = toastStore((s) => s.showToast);
 
    const [loading, setLoading] = useState<boolean>(true);
@@ -217,7 +211,7 @@ export function ModalFormSMAL({ openModal, setOpenModal }: ModalProps) {
    };
 
    return (
-      <Modal show={openModal} size="7xl" onClose={() => setOpenModal(false)}>
+      <>
          <ModalHeader>Asignar ID MAL a Animes</ModalHeader>
          <ModalBody>
             <FormSearch
@@ -256,6 +250,6 @@ export function ModalFormSMAL({ openModal, setOpenModal }: ModalProps) {
                Cerrar
             </Button>
          </ModalFooter>
-      </Modal>
+      </>
    );
 }

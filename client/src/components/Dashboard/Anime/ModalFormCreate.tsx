@@ -1,7 +1,6 @@
 import {
    Button,
    Label,
-   Modal,
    ModalBody,
    ModalFooter,
    ModalHeader,
@@ -17,11 +16,10 @@ import { isNumber, parseStringNumber } from "../../../utils/parse";
 import { createAnime } from "../../../services/dashboardAnimeServides";
 
 export interface ModalProps {
-   openModal: boolean;
    setOpenModal: (open: boolean) => void;
 }
 
-export function ModalFormCreate({ openModal, setOpenModal }: ModalProps) {
+export default function ModalFormCreate({ setOpenModal }: ModalProps) {
    const idSelTipo = useId();
    const [selTipo, setSelTipo] = useState<OptionsSelectInterface | null>(null);
    const [loading, setLoading] = useState<boolean>(false);
@@ -45,7 +43,7 @@ export function ModalFormCreate({ openModal, setOpenModal }: ModalProps) {
       const titulo = String(formData.get("titulo") ?? "");
       const link_p = String(formData.get("link_p") ?? "");
       const tipo = selTipo.code;
-      
+
       setLoading(true);
       const parsed = AnimeCreateZ.safeParse({
          key_anime,
@@ -53,7 +51,7 @@ export function ModalFormCreate({ openModal, setOpenModal }: ModalProps) {
          link_p,
          tipo,
       });
-      
+
       if (!parsed.success) {
          showToast({
             severity: "error",
@@ -64,7 +62,7 @@ export function ModalFormCreate({ openModal, setOpenModal }: ModalProps) {
          return;
       } else {
          createAnime(parsed.data)
-         .then((resp) => {
+            .then((resp) => {
                showToast({
                   severity: resp.is_success ? "success" : "error",
                   summary: resp.is_success ? "Exito" : "Error",
@@ -88,7 +86,7 @@ export function ModalFormCreate({ openModal, setOpenModal }: ModalProps) {
       }
    };
    return (
-      <Modal show={openModal} onClose={() => setOpenModal(false)}>
+      <>
          <ModalHeader>Crear Anime</ModalHeader>
          <form onSubmit={handleSubmit}>
             <ModalBody>
@@ -159,6 +157,6 @@ export function ModalFormCreate({ openModal, setOpenModal }: ModalProps) {
                </Button>
             </ModalFooter>
          </form>
-      </Modal>
+      </>
    );
 }
