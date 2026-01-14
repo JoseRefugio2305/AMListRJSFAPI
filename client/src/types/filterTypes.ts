@@ -1,5 +1,8 @@
+import type { DataTableFilterMeta } from "primereact/datatable"
+import type { LazyTableState } from "../components/Dashboard/Anime/AnimeIncompleteList"
 import type { TipoAnimeEnum } from "./animeTypes"
 import type { TipoMangaEnum } from "./mangaTypes"
+import { FilterMatchMode } from "primereact/api"
 
 export interface OptionsSelectInterface {
      code: number,
@@ -120,3 +123,32 @@ export enum ReadyToMALEnum {
      listo = 1,
      todos = 2
 }
+
+export const optionsReadyToMAL: OptionsSelectInterface[] = [
+     { code: ReadyToMALEnum.no_listo, name: "No Listo" },
+     { code: ReadyToMALEnum.listo, name: "Listo" },
+     { code: ReadyToMALEnum.todos, name: "Todos" },
+]
+
+
+export interface LazyTableStateInc {
+     first: number;
+     rows: number;
+     page: number;
+     sortField?: string | null;
+     sortOrder?: 1 | -1 | 0 | null;
+     filters: DataTableFilterMeta;
+}
+
+export const lazyStateInicial: LazyTableState = {
+     first: 0,
+     rows: 20,
+     page: 0,
+     sortField: "key",
+     sortOrder: 1,
+     filters: {
+          global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+          tipo: { value: null, matchMode: FilterMatchMode.IN },
+          status: { value: null, matchMode: FilterMatchMode.IN },
+     },
+};

@@ -8,7 +8,6 @@ import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import {
    CircleCheckIcon,
    HourglassIcon,
-   
    TvMinimalPlayIcon,
 } from "lucide-react";
 import { TabItem, Tabs } from "flowbite-react";
@@ -16,6 +15,9 @@ import { TopSkeleton } from "../../components/Skeletons/TopSkeleton";
 
 const AnimeFullList = lazy(
    () => import("../../components/Dashboard/Anime/AnimeFullList.tsx")
+);
+const AnimeIncompleteList = lazy(
+   () => import("../../components/Dashboard/Anime/AnimeIncompleteList.tsx")
 );
 
 export default function DashboardAnimeListPage() {
@@ -74,9 +76,7 @@ export default function DashboardAnimeListPage() {
                         onClick={() => setListSel(0)}
                         active={listSel === 0}
                      >
-                        <Suspense fallback={<TopSkeleton />}>
-                           {listSel === 0 && <AnimeFullList />}
-                        </Suspense>
+                        <AnimeFullList />
                      </TabItem>
 
                      <TabItem
@@ -91,7 +91,9 @@ export default function DashboardAnimeListPage() {
                         onClick={() => setListSel(1)}
                         active={listSel === 1}
                      >
-                        {/* //TODO: Tabla de animes incompletos */}
+                        <Suspense fallback={<TopSkeleton />}>
+                           <AnimeIncompleteList />
+                        </Suspense>
                      </TabItem>
                   </Tabs>
                </section>
