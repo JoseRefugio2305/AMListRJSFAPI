@@ -74,7 +74,7 @@ export function AvatarForm({ actualAvatar }: AvatarFormProps) {
          <Button
             color="purple"
             pill
-            className="w-fit"
+            className="w-fit px-3 py-6"
             onClick={() => setShowAvatars(!showAvatars)}
             disabled={loading}
          >
