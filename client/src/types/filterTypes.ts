@@ -53,7 +53,7 @@ export const optionsTipoCont: OptionsSelectInterface[] = [
 
 export enum FieldOrdEnum {
      key = "key",
-     id_mal = "id_MAL",
+     id_MAL = "id_MAL",
      titulo = "titulo",
      calificacion = "calificacion",
      episodios = "episodios",
@@ -62,7 +62,7 @@ export enum FieldOrdEnum {
 
 export const optionsFieldOrd: OptionsSelectStrInterface[] = [
      { code: FieldOrdEnum.key, name: "Key" },
-     { code: FieldOrdEnum.id_mal, name: "ID MAL" },
+     { code: FieldOrdEnum.id_MAL, name: "ID MAL" },
      { code: FieldOrdEnum.titulo, name: "Título" },
      { code: FieldOrdEnum.calificacion, name: "Calificación" },
      { code: FieldOrdEnum.episodios, name: "Episodios" },

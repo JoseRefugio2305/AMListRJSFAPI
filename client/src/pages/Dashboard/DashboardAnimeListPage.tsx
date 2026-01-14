@@ -1,16 +1,28 @@
 import { useNavigate } from "react-router";
 import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { authStore } from "../../store/authStore";
 import { SidebarDash } from "../../components/Dashboard/SidebarDash";
 import { MenuAnimeList } from "../../components/Dashboard/Anime/MenuAnimeList";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
-import { TvMinimalPlayIcon } from "lucide-react";
+import {
+   CircleCheckIcon,
+   HourglassIcon,
+   
+   TvMinimalPlayIcon,
+} from "lucide-react";
+import { TabItem, Tabs } from "flowbite-react";
+import { TopSkeleton } from "../../components/Skeletons/TopSkeleton";
+
+const AnimeFullList = lazy(
+   () => import("../../components/Dashboard/Anime/AnimeFullList.tsx")
+);
 
 export default function DashboardAnimeListPage() {
    const navigate = useNavigate();
    const [loading, setLoading] = useState<boolean>(true);
    const { rol } = authStore();
+   const [listSel, setListSel] = useState<number>(0);
 
    useEffect(() => {
       const checkRol = () => {
@@ -47,6 +59,41 @@ export default function DashboardAnimeListPage() {
                </header>{" "}
                <section className="w-full">
                   <MenuAnimeList />
+               </section>
+               <section className="w-full">
+                  <Tabs variant="underline" className="w-full justify-center">
+                     <TabItem
+                        title={
+                           <div className="text-lg md:text-2xl ml-2">
+                              Animes Actualizados
+                           </div>
+                        }
+                        icon={() => {
+                           return <CircleCheckIcon size={24} />;
+                        }}
+                        onClick={() => setListSel(0)}
+                        active={listSel === 0}
+                     >
+                        <Suspense fallback={<TopSkeleton />}>
+                           {listSel === 0 && <AnimeFullList />}
+                        </Suspense>
+                     </TabItem>
+
+                     <TabItem
+                        title={
+                           <div className="text-lg md:text-2xl ml-2">
+                              Animes Por Actualizar
+                           </div>
+                        }
+                        icon={() => {
+                           return <HourglassIcon size={24} />;
+                        }}
+                        onClick={() => setListSel(1)}
+                        active={listSel === 1}
+                     >
+                        {/* //TODO: Tabla de animes incompletos */}
+                     </TabItem>
+                  </Tabs>
                </section>
             </>
          )}
