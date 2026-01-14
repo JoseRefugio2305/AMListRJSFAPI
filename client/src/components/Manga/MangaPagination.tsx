@@ -4,15 +4,16 @@ import { NotResultsFound } from "../Common/NotResultsFound";
 import type { MangaSchema } from "../../schemas/mangaSchemas";
 import { MangaListCard } from "./MangaListCard";
 import { MangaCard } from "./MangaCard";
+import type { Dispatch, SetStateAction } from "react";
 
 interface MangaPaginationProps {
    page: number;
    total: number;
-   setLoading: (load: boolean) => void;
-   setPage: (first: number) => void;
+   setLoading: Dispatch<SetStateAction<boolean>>;
+   setPage: Dispatch<SetStateAction<number>>;
    mangas: MangaSchema[];
    layout: "list" | "grid";
-   setLayout: (layout: "list" | "grid") => void;
+   setLayout: Dispatch<SetStateAction<"list" | "grid">>;
 }
 export function MangaPagination({
    page,

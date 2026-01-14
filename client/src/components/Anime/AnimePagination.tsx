@@ -4,15 +4,16 @@ import { AnimeCard } from "../Anime/AnimeCard";
 import { AnimeListCard } from "../Anime/AnimeListCard";
 import { Paginator, type PaginatorPageChangeEvent } from "primereact/paginator";
 import { NotResultsFound } from "../Common/NotResultsFound";
+import type { Dispatch, SetStateAction } from "react";
 
 interface AnimePaginationProps {
    page: number;
    total: number;
-   setLoading: (load: boolean) => void;
-   setPage: (first: number) => void;
+   setLoading: Dispatch<SetStateAction<boolean>>;
+   setPage: Dispatch<SetStateAction<number>>;
    animes: AnimeSchema[];
    layout: "list" | "grid";
-   setLayout: (layout: "list" | "grid") => void;
+   setLayout: Dispatch<SetStateAction<"list" | "grid">>;
 }
 export function AnimePagination({
    page,

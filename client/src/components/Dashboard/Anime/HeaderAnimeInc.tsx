@@ -13,7 +13,7 @@ import {
 
 interface HeaderAnimeIncProps {
    loading: boolean;
-   setLoading: (load: boolean) => void;
+   setLoading: Dispatch<SetStateAction<boolean>>;
    setLazyState: Dispatch<SetStateAction<LazyTableStateInc>>;
    selTipoAnime: OptionsSelectInterface | null;
    setSelTipoAnime: Dispatch<SetStateAction<OptionsSelectInterface | null>>;

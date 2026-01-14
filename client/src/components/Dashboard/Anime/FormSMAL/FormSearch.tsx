@@ -7,13 +7,13 @@ import {
 import type { AnimeIncompleteSchema } from "../../../../schemas/animeSchemas";
 import { Link } from "react-router";
 import { Button, TextInput, Tooltip } from "flowbite-react";
-import type { RefObject } from "react";
+import type { Dispatch, RefObject, SetStateAction } from "react";
 import { BtnDeleteAnime } from "../BtnDeleteAnime";
 
 interface FormSearchProps {
    loading: boolean;
    loadingMAL: boolean;
-   setLoadingMAL: (load: boolean) => void;
+   setLoadingMAL: Dispatch<SetStateAction<boolean>>;
    currentAnime: AnimeIncompleteSchema | null;
    animesToAct: number;
    titSearch: RefObject<HTMLInputElement | null>;

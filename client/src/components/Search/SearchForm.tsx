@@ -1,6 +1,12 @@
 import { Button, TextInput } from "flowbite-react";
 import type { FilterObjSchema } from "../../schemas/filtersSchemas";
-import { useId, useState, type FormEvent } from "react";
+import {
+   useId,
+   useState,
+   type Dispatch,
+   type FormEvent,
+   type SetStateAction,
+} from "react";
 import { Search } from "lucide-react";
 import { FiltersSearchForm } from "./FiltersSearchForm";
 import {
@@ -14,8 +20,8 @@ import {
 
 interface SearchFormProps {
    filtersParam: FilterParamsInterface;
-   setFiltersParam: (itme: FilterParamsInterface) => void;
-   setPage: (page: number) => void;
+   setFiltersParam: Dispatch<SetStateAction<FilterParamsInterface>>;
+   setPage: Dispatch<SetStateAction<number>>;
    tipoContenido: TipoContenidoEnum;
 }
 

@@ -3,7 +3,13 @@ import type {
    FilterObjSchema,
    FiltersAdvancedSearchSchema,
 } from "../../schemas/filtersSchemas";
-import { useEffect, useId, useState } from "react";
+import {
+   useEffect,
+   useId,
+   useState,
+   type Dispatch,
+   type SetStateAction,
+} from "react";
 import { getFilters } from "../../services/searchServices";
 import { Spinner } from "flowbite-react";
 import {
@@ -23,23 +29,23 @@ import { FilterMultiSelect } from "./FilterMultiSelect";
 interface FiltersProps {
    filtersParam: FilterParamsInterface;
    selGenres: FilterObjSchema[];
-   setSelGenres: (callback: () => FilterObjSchema[]) => void;
+   setSelGenres: Dispatch<SetStateAction<FilterObjSchema[]>>;
    selStudios: FilterObjSchema[];
-   setSelStudios: (callback: () => FilterObjSchema[]) => void;
+   setSelStudios: Dispatch<SetStateAction<FilterObjSchema[]>>;
    selEditoriales: FilterObjSchema[];
-   setSelEditoriales: (callback: () => FilterObjSchema[]) => void;
+   setSelEditoriales: Dispatch<SetStateAction<FilterObjSchema[]>>;
    selAutores: FilterObjSchema[];
-   setSelAutores: (callback: () => FilterObjSchema[]) => void;
+   setSelAutores: Dispatch<SetStateAction<FilterObjSchema[]>>;
    selEmision: OptionsSelectInterface | null;
-   setSelEmision: (item: OptionsSelectInterface) => void;
+   setSelEmision: Dispatch<SetStateAction<OptionsSelectInterface | null>>;
    selFieldOrd: OptionsSelectStrInterface | null;
-   setSelFieldOrd: (item: OptionsSelectStrInterface) => void;
+   setSelFieldOrd: Dispatch<SetStateAction<OptionsSelectStrInterface | null>>;
    selOrderBy: OptionsSelectStrInterface | null;
-   setSelOrderBy: (item: OptionsSelectStrInterface) => void;
+   setSelOrderBy: Dispatch<SetStateAction<OptionsSelectStrInterface | null>>;
    selTiposAnime: OptionsSelectInterface[];
-   setSelTiposAnime: (callback: () => OptionsSelectInterface[]) => void;
+   setSelTiposAnime: Dispatch<SetStateAction<OptionsSelectInterface[]>>;
    selTiposManga: OptionsSelectInterface[];
-   setSelTiposManga: (callback: () => OptionsSelectInterface[]) => void;
+   setSelTiposManga: Dispatch<SetStateAction<OptionsSelectInterface[]>>;
    tipoContenido: TipoContenidoEnum;
 }
 

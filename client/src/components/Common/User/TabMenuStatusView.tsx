@@ -6,16 +6,20 @@ import {
    type OptionsSelectInterface,
 } from "../../../types/filterTypes";
 import { Dropdown } from "primereact/dropdown";
-import { useEffect, useId, useState } from "react";
+import {
+   useEffect,
+   useId,
+   useState,
+   type Dispatch,
+   type SetStateAction,
+} from "react";
 
 interface TabMenuStatusViewProps {
    isAnime: boolean;
    loading: boolean;
    filtersParam: FilterParamsInterface;
-   setFiltersParams: (
-      callback: (prev: FilterParamsInterface) => FilterParamsInterface
-   ) => void;
-   setPage: (page: number) => void;
+   setFiltersParams: Dispatch<SetStateAction<FilterParamsInterface>>;
+   setPage: Dispatch<SetStateAction<number>>;
 }
 
 export function TabMenuStatusView({

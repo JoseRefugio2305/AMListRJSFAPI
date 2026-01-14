@@ -1,14 +1,14 @@
 import { Button, ButtonGroup } from "flowbite-react";
 import { optionsTypeStat, TypeStatsEnum } from "../../../types/statsTypes";
 import { Dropdown } from "primereact/dropdown";
-import { useId } from "react";
+import { useId, type Dispatch, type SetStateAction } from "react";
 import type { OptionsSelectInterface } from "../../../types/filterTypes";
 
 interface TabMenuStatsProps {
    loadingStats: boolean;
    statActive: TypeStatsEnum;
-   setStatActive: (typeS: TypeStatsEnum) => void;
-   setSelTypeStat: (item: OptionsSelectInterface) => void;
+   setStatActive: Dispatch<SetStateAction<TypeStatsEnum>>;
+   setSelTypeStat: Dispatch<SetStateAction<OptionsSelectInterface>>;
    selTypeStat: OptionsSelectInterface;
    isDashboard: boolean;
 }
