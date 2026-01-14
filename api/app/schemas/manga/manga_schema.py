@@ -67,7 +67,7 @@ class MangaUpdateSchema(MangaCreateSchema):
     link_p: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     tipo: Optional[TipoMangaEnum] = None
     mangaImages: Optional[MangaImagesSchema] = None
-    calificacion: Optional[float] = Field(default=None, ge=0, le=10)
+    calificacion: Optional[float] = Field(default=0, ge=0, le=10)
     descripcion: Optional[str] = None
     publicando: Optional[EstadoEmEnum] = None
     capitulos: Optional[float] = Field(default=None, ge=0)
@@ -76,7 +76,7 @@ class MangaUpdateSchema(MangaCreateSchema):
     fechaFinPub: Optional[str] = None
     generos: Optional[List[GenreARelSchema]] = None
     linkMAL: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
-    numRatings: Optional[int] = Field(default=None, ge=0)
+    numRatings: Optional[int] = Field(default=0, ge=0)
     relaciones: Optional[List[MangaRelTypeIncompleteSchema]] = None
     editoriales: Optional[List[EditorialMRelSchema]] = None
     autores: Optional[List[AutoresMRelSchema]] = None
