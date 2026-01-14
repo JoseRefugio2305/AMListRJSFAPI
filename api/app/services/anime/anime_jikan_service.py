@@ -53,7 +53,7 @@ class AnimeJikanService:
                 linkMAL=anime.get("url"),
                 image=anime.get("images").get("jpg").get("small_image_url"),
                 titulo=anime.get("title"),
-                tipo=anime.get("type"),
+                tipo=anime.get("type") if anime.get("type") else "Anime",
             )
             for anime in results.get("data")
         ]  # Creamos la lista de los resultados

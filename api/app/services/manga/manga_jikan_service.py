@@ -51,7 +51,7 @@ class MangaJikanService:
                 linkMAL=manga.get("url"),
                 image=manga.get("images").get("jpg").get("small_image_url"),
                 titulo=manga.get("title"),
-                tipo=manga.get("type"),
+                tipo=manga.get("type") if manga.get("type") else "Manga",
             )
             for manga in results.get("data")
         ]  # Creamos la lista de los resultados
