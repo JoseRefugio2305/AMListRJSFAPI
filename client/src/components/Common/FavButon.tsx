@@ -69,7 +69,7 @@ export function FavButton({
          pill
          outline={!fav_status}
          color="red"
-         className={`z-10 mb-5 ${className}`}
+         className={`z-10 mb-5 px-3 py-6 ${className}`}
          disabled={loading}
       >
          {loading ? (
