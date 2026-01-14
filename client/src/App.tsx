@@ -6,6 +6,8 @@ import { Route, Routes } from "react-router";
 import { Footer } from "./components/Layout/Footer.tsx";
 import { ToastNotif } from "./components/Layout/ToastNotif.tsx";
 import { usePrimeReactTheme } from "./hooks/usePrimeReactTheme.ts";
+import { ProtectedRoute } from "./components/Auth/ProtectedRoute.tsx";
+import { AdminProtectedRoute } from "./components/Auth/AdminProtectedRoute.tsx";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const AnimePage = lazy(() => import("./pages/AnimePage.tsx"));
@@ -73,7 +75,14 @@ function App() {
                <Route path="/explore/animes" element={<ExploreAnimesPage />} />
                <Route path="/explore/mangas" element={<ExploreMangasPage />} />
                <Route path="/user/:name/lists" element={<Profile />} />
-               <Route path="/user/config" element={<ConfigProfilePage />} />
+               <Route
+                  path="/user/config"
+                  element={
+                     <ProtectedRoute redirectTo="/login">
+                        <ConfigProfilePage />
+                     </ProtectedRoute>
+                  }
+               />
                <Route path="/user/:name/stats" element={<UserStatsPage />} />
                <Route
                   path="/user/:name/animelist"
@@ -83,10 +92,21 @@ function App() {
                   path="/user/:name/mangalist"
                   element={<UserMangaListPage />}
                />
-               <Route path="/dashboard" element={<DashboardStatsPage />} />
+               <Route
+                  path="/dashboard"
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <DashboardStatsPage />
+                     </AdminProtectedRoute>
+                  }
+               />
                <Route
                   path="/dashboard/animelist"
-                  element={<DashboardAnimeListPage />}
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <DashboardAnimeListPage />
+                     </AdminProtectedRoute>
+                  }
                />
                <Route path="*" element={<NotFoundPage />} />
             </Routes>
