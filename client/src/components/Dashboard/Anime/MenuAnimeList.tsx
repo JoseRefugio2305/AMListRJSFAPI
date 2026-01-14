@@ -75,7 +75,7 @@ export function MenuAnimeList() {
             </NavbarCollapse>
          </MegaMenu>
 
-         <Modal show={openModal} onClose={() => setOpenModal(false)}>
+         <Modal show={openModal} onClose={() => setOpenModal(false)} size="7xl">
             <Suspense fallback={<SearchMALSkeleton />}>
                {formSel === 1 ? (
                   <ModalFormCreate setOpenModal={setOpenModal} />

@@ -6,8 +6,9 @@ import {
 } from "lucide-react";
 import type { AnimeIncompleteSchema } from "../../../../schemas/animeSchemas";
 import { Link } from "react-router";
-import { Button, TextInput } from "flowbite-react";
+import { Button, TextInput, Tooltip } from "flowbite-react";
 import type { RefObject } from "react";
+import { BtnDeleteAnime } from "../BtnDeleteAnime";
 
 interface FormSearchProps {
    loading: boolean;
@@ -18,6 +19,7 @@ interface FormSearchProps {
    titSearch: RefObject<HTMLInputElement | null>;
    currentIdx: number;
    fetchFromMAL: (change: boolean) => void;
+   fetchAnimes: () => void;
    nextprevAnime: (idx: number) => void;
    lengthAIncom: number;
 }
@@ -31,6 +33,7 @@ export function FormSearch({
    titSearch,
    currentIdx,
    fetchFromMAL,
+   fetchAnimes,
    nextprevAnime,
    lengthAIncom,
 }: FormSearchProps) {
@@ -42,22 +45,42 @@ export function FormSearch({
                Animes a Actualizar: {animesToAct}
             </p>
             <p className="font-semibold text-md text-center">Anime Actual</p>
-            <p className="font-semibold text-sm">
-               Key Anime: {currentAnime.key_anime}
-            </p>
-            <p className="font-semibold text-sm">
-               Título: {currentAnime.titulo}
-            </p>
-
-            <p className="font-semibold text-sm text-blue-500 underline">
-               <Link
-                  to={currentAnime.link_p}
-                  target="_blank"
-                  className="flex flex-row"
-               >
-                  Visitar Página P. <SquareArrowOutUpRightIcon size={16} />
-               </Link>
-            </p>
+            <div className="flex flex-col md:flex-row gap-1">
+               <div className="w-full md:w-[70%]">
+                  <p className="font-semibold text-sm">
+                     Key Anime: {currentAnime.key_anime}
+                  </p>
+                  <p className="font-semibold text-sm">
+                     Título: {currentAnime.titulo}
+                  </p>
+               </div>
+               <div className="w-full md:w-[30%] flex flex-row gap-5 justify-center">
+                  <Tooltip
+                     content="Visitar Página P."
+                     animation="duration-150"
+                     placement="right"
+                  >
+                     <Link
+                        to={currentAnime.link_p}
+                        target="_blank"
+                        className="text-white font-bold text-sm m-1 bg-blue-500 rounded-full px-3 py-3 flex w-fit"
+                     >
+                        <SquareArrowOutUpRightIcon />
+                     </Link>
+                  </Tooltip>
+                  <Tooltip
+                     content="Eliminar el Anime"
+                     animation="duration-150"
+                     placement="right"
+                  >
+                     <BtnDeleteAnime
+                        animeId={currentAnime.id}
+                        animeTitulo={currentAnime.titulo}
+                        callBackDel={fetchAnimes}
+                     />
+                  </Tooltip>
+               </div>
+            </div>
             <div className="flex md:flex-row gap-2 flex-col w-full ">
                <TextInput
                   ref={titSearch}

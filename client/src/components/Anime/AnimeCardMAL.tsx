@@ -52,7 +52,7 @@ export function AnimeCardMAL({
                      <Button
                         onClick={() => callbackHandleIDMAL(anime.id_MAL)}
                         color="purple"
-                        className="rounded-full"
+                        className="rounded-full px-3 py-6"
                      >
                         <CircleCheckIcon />
                      </Button>

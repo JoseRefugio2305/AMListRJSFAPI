@@ -223,6 +223,7 @@ export default function ModalFormSMAL({ setOpenModal }: ModalProps) {
                titSearch={titSearch}
                currentIdx={currentIdx}
                fetchFromMAL={fetchFromMAL}
+               fetchAnimes={fetchAnimes}
                nextprevAnime={nextprevAnime}
                lengthAIncom={animesIncomplete.length}
             />
