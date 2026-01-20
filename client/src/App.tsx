@@ -8,6 +8,7 @@ import { ToastNotif } from "./components/Layout/ToastNotif.tsx";
 import { usePrimeReactTheme } from "./hooks/usePrimeReactTheme.ts";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute.tsx";
 import { AdminProtectedRoute } from "./components/Auth/AdminProtectedRoute.tsx";
+import { ScrollTop } from "./components/Layout/ScrollTop.tsx";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const AnimePage = lazy(() => import("./pages/AnimePage.tsx"));
@@ -45,6 +46,7 @@ function App() {
    return (
       <>
          <Header />
+         <ScrollTop />
          <Suspense
             fallback={
                <div
