@@ -22,28 +22,31 @@ export default function AnimeDetailsPage() {
    const [statusView, setStatusView] = useState<number>(5);
 
    useEffect(() => {
-      const k_a = parseInt(key_anime ?? "0", 10);
-
-      if (k_a && k_a > 0) {
-         getAnimeDetails(k_a)
-            .then((resp) => {
-               if (!resp.is_success) {
+      const fetchAnimeDetails = () => {
+         const k_a = parseInt(key_anime ?? "0", 10);
+         setLoading(true);
+         if (k_a && k_a > 0) {
+            getAnimeDetails(k_a)
+               .then((resp) => {
+                  if (!resp.is_success) {
+                     navigate("/404-not-found");
+                  }
+                  if (resp.anime) {
+                     setAnimeDetails(resp.anime);
+                     setFav(resp.anime?.isFav ?? false);
+                     setStatusView(resp.anime?.statusView ?? 5);
+                  }
+               })
+               .catch((error) => {
+                  console.error(error);
                   navigate("/404-not-found");
-               }
-               if (resp.anime) {
-                  setAnimeDetails(resp.anime);
-                  setFav(resp.anime?.isFav ?? false);
-                  setStatusView(resp.anime?.statusView ?? 5);
-               }
-            })
-            .catch((error) => {
-               console.error(error);
-               navigate("/404-not-found");
-            })
-            .finally(() => setLoading(false));
-      } else {
-         navigate("/404-not-found");
-      }
+               })
+               .finally(() => setLoading(false));
+         } else {
+            navigate("/404-not-found");
+         }
+      };
+      fetchAnimeDetails();
    }, [key_anime, navigate]);
 
    return (

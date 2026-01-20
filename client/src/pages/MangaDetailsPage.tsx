@@ -22,28 +22,31 @@ export default function MangaDetailsPage() {
    const [statusView, setStatusView] = useState<number>(5);
 
    useEffect(() => {
-      const k_a = parseInt(key_manga ?? "0", 10);
-
-      if (k_a && k_a > 0) {
-         getMangaDetails(k_a)
-            .then((resp) => {
-               if (!resp.is_success) {
+      const fetchMangaDetails = () => {
+         const k_a = parseInt(key_manga ?? "0", 10);
+         setLoading(true);
+         if (k_a && k_a > 0) {
+            getMangaDetails(k_a)
+               .then((resp) => {
+                  if (!resp.is_success) {
+                     navigate("/404-not-found");
+                  }
+                  if (resp.manga) {
+                     setMangaDetails(resp.manga);
+                     setFav(resp.manga?.isFav ?? false);
+                     setStatusView(resp.manga?.statusView ?? 5);
+                  }
+               })
+               .catch((error) => {
+                  console.error(error);
                   navigate("/404-not-found");
-               }
-               if (resp.manga) {
-                  setMangaDetails(resp.manga);
-                  setFav(resp.manga?.isFav ?? false);
-                  setStatusView(resp.manga?.statusView ?? 5);
-               }
-            })
-            .catch((error) => {
-               console.error(error);
-               navigate("/404-not-found");
-            })
-            .finally(() => setLoading(false));
-      } else {
-         navigate("/404-not-found");
-      }
+               })
+               .finally(() => setLoading(false));
+         } else {
+            navigate("/404-not-found");
+         }
+      };
+      fetchMangaDetails();
    }, [key_manga, navigate]);
 
    return (
