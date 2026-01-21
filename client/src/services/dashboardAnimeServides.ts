@@ -1,6 +1,6 @@
 import axiosInstance from "../hooks/useAxios";
 import { ResponseUpdAllMALZ, ResponseUpdCrtAnimeZ, type AnimeCreateSchema, type AnimeFileSchema } from "../schemas/animeSchemas";
-import type { PayloadAnimeIDMAL, ResponseUpdAllMAL, ResponseUpdCrtAnime } from "../types/animeTypes";
+import type { PayloadIDMAL, ResponseUpdAllMAL, ResponseUpdCrtAnime } from "../types/animeTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function createAnime(payload: AnimeCreateSchema): Promise<ResponseUpdCrtAnime> {
@@ -52,7 +52,7 @@ export async function uploadFileAnimes(payload: AnimeFileSchema): Promise<Respon
      return response
 }
 
-export async function asignAnimeIDMAL(payload: PayloadAnimeIDMAL): Promise<ResponseUpdCrtAnime> {
+export async function asignAnimeIDMAL(payload: PayloadIDMAL): Promise<ResponseUpdCrtAnime> {
      const response: ResponseUpdCrtAnime = await axiosInstance.post("/dashboard/anime/assign_id_mal/", payload)
           .then((resp) => {
                const parsed = ResponseUpdCrtAnimeZ.safeParse(resp.data)

@@ -1,8 +1,8 @@
 import axiosInstance from "../hooks/useAxios";
 import { FiltersAdvancedSearchZ, type FiltersAdvancedSearchSchema } from "../schemas/filtersSchemas";
-import { AdvancedSearchResultZ, AnimeIncSResultZ, ResponseSearchAnimeMALZ, type SearchOnMALSchema } from "../schemas/searchSchemas";
+import { AdvancedSearchResultZ, AnimeIncSResultZ, MangaIncSResultZ, ResponseSearchAnimeMALZ, ResponseSearchMangaMALZ, type SearchOnMALSchema } from "../schemas/searchSchemas";
 import { ReadyToMALEnum, type FilterPayload } from "../types/filterTypes";
-import type { AdvancedSearchResult, AnimeIncSearchResult, ResponseSearchAnimeMAL } from "../types/searchTypes";
+import type { AdvancedSearchResult, AnimeIncSearchResult, MangaIncSearchResult, ResponseSearchAnimeMAL, ResponseSearchMangaMAL } from "../types/searchTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function getFilters(): Promise<FiltersAdvancedSearchSchema> {
@@ -75,6 +75,54 @@ export async function getAnimesFromMAL(payload: SearchOnMALSchema): Promise<Resp
      const response: ResponseSearchAnimeMAL = await axiosInstance.post("/dashboard/anime/search_on_mal/", payload)
           .then((resp) => {
                const parsed = ResponseSearchAnimeMALZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, msg: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    msg: "OK",
+                    ...parsed.data,
+               };
+          }).catch(error => {
+               console.error(error)
+               return {
+                    msg: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+     return response
+}
+
+export async function getIncompleteMangas(filterPayload: FilterPayload, tipo: ReadyToMALEnum = ReadyToMALEnum.todos): Promise<MangaIncSearchResult> {
+     const response: MangaIncSearchResult = await axiosInstance.post(`/dashboard/manga/get_incomplete/${tipo}`, filterPayload)
+          .then((resp) => {
+               const parsed = MangaIncSResultZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, msg: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    msg: "OK",
+                    ...parsed.data,
+               };
+          }).catch(error => {
+               console.error(error)
+               return {
+                    msg: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+     return response
+}
+
+export async function getMangasFromMAL(payload: SearchOnMALSchema): Promise<ResponseSearchMangaMAL> {
+     const response: ResponseSearchMangaMAL = await axiosInstance.post("/dashboard/manga/search_on_mal/", payload)
+          .then((resp) => {
+               const parsed = ResponseSearchMangaMALZ.safeParse(resp.data)
                if (!parsed.success) {
                     console.error("Datos invalidos desde el servidor.")
                     return { is_success: false, msg: "Datos invalidos desde el servidor." };

@@ -47,7 +47,7 @@ export interface ResponseUpdAllMAL {
      totalAct?: ResponseUpdAllMALSchema["totalAct"]
 }
 
-export interface PayloadAnimeIDMAL {
+export interface PayloadIDMAL {
      id: string
      id_MAL: number
 }

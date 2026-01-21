@@ -46,7 +46,17 @@ export const MangaCreateZ = z.object({
      link_p: z.url(),
 })
 
+export const MangaIncompleteZ = z.object({
+     key_manga: z.number(),
+     titulo: z.string(),
+     link_p: z.url(),
+     tipo: TipoMangaZ,
+     id: z.string(),
+     id_MAL: z.number().nullable().transform((v) => v ?? 0)
+})
+
 //Exports de tipos
 export type MangaSchema = z.infer<typeof MangaZ>
 export type MangaCompleteSchema = z.infer<typeof MangaCompleteZ>
 export type MangaCreateSchema = z.infer<typeof MangaCreateZ>
+export type MangaIncompleteSchema = z.infer<typeof MangaIncompleteZ>
