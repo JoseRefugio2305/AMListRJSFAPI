@@ -29,7 +29,7 @@ export const MangaZ = z.object({
      isFav: z.boolean().optional().default(false),
 });
 
-export const MangaCompleteZ =MangaZ.extend({
+export const MangaCompleteZ = MangaZ.extend({
      generos: z.array(z.object({ id_MAL: z.number(), nombre: z.string() })).default([]),
      relaciones: z.array(MangaFullRelationZ).default([]),
      adaptaciones: z.array(AnimeRelAdpZ).default([]),
@@ -39,7 +39,14 @@ export const MangaCompleteZ =MangaZ.extend({
      statusView: StatusViewZ.nullable().optional(),
 })
 
+export const MangaCreateZ = z.object({
+     key_manga: z.number().int(),
+     titulo: z.string(),
+     tipo: TipoMangaZ,
+     link_p: z.url(),
+})
 
 //Exports de tipos
 export type MangaSchema = z.infer<typeof MangaZ>
 export type MangaCompleteSchema = z.infer<typeof MangaCompleteZ>
+export type MangaCreateSchema = z.infer<typeof MangaCreateZ>

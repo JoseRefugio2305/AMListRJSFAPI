@@ -1,5 +1,11 @@
 import { Button } from "flowbite-react";
-import { ChartArea, ListCheck, Menu, TvMinimalPlayIcon } from "lucide-react";
+import {
+   Brush,
+   ChartArea,
+   ListCheck,
+   Menu,
+   TvMinimalPlayIcon,
+} from "lucide-react";
 import { Sidebar } from "primereact/sidebar";
 import { useState } from "react";
 import { Link } from "react-router";
@@ -31,6 +37,12 @@ export function SidebarDash({ selectedOption }: SidebarDashProps) {
             </h2>
             <Link to="/dashboard/animelist" className={getClassLink(2)}>
                <ListCheck size={28} /> Lista de Animes
+            </Link>
+            <h2 className="text-2xl font-bold flex flex-row gap-4">
+               <Brush size={28} /> Mangas
+            </h2>
+            <Link to="/dashboard/mangalist" className={getClassLink(3)}>
+               <ListCheck size={28} /> Lista de Mangas
             </Link>
          </Sidebar>
          <Button onClick={() => setVisible(!visible)} color="purple">
