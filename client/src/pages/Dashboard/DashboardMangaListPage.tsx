@@ -1,12 +1,14 @@
-import { lazy, useState } from "react";
+import { lazy, Suspense, useState } from "react";
 import { SidebarDash } from "../../components/Dashboard/SidebarDash";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
-import { Brush } from "lucide-react";
+import { Brush, CircleCheckIcon, HourglassIcon } from "lucide-react";
 import { MenuMangaList } from "../../components/Dashboard/Manga/MenuMangaList.tsx";
+import { TabItem, Tabs } from "flowbite-react";
+import { TopSkeleton } from "../../components/Skeletons/TopSkeleton.tsx";
 
-// const AnimeFullList = lazy(
-//    () => import("../../components/Dashboard/Anime/AnimeFullList.tsx")
-// );
+const MangaFullList = lazy(
+   () => import("../../components/Dashboard/Manga/MangaFullList.tsx")
+);
 // const AnimeIncompleteList = lazy(
 //    () => import("../../components/Dashboard/Anime/AnimeIncompleteList.tsx")
 // );
@@ -31,9 +33,45 @@ export default function DashboardMangaListPage() {
                   <Brush size={45} /> Mangas
                </h1>
             </header>
-         </header>{" "}
-         <section className="w-full"><MenuMangaList/></section>
-         <section className="w-full"></section>
+         </header>
+         <section className="w-full">
+            <MenuMangaList />
+         </section>
+         <section className="w-full">
+            <Tabs variant="underline" className="w-full justify-center">
+               <TabItem
+                  title={
+                     <div className="text-lg md:text-2xl ml-2">
+                        Mangas Actualizados
+                     </div>
+                  }
+                  icon={() => {
+                     return <CircleCheckIcon size={24} />;
+                  }}
+                  onClick={() => setListSel(0)}
+                  active={listSel === 0}
+               >
+                  <MangaFullList />
+               </TabItem>
+
+               <TabItem
+                  title={
+                     <div className="text-lg md:text-2xl ml-2">
+                        Mangas Por Actualizar
+                     </div>
+                  }
+                  icon={() => {
+                     return <HourglassIcon size={24} />;
+                  }}
+                  onClick={() => setListSel(1)}
+                  active={listSel === 1}
+               >
+                  <Suspense fallback={<TopSkeleton />}>
+                     {/* <AnimeIncompleteList /> */}
+                  </Suspense>
+               </TabItem>
+            </Tabs>
+         </section>
       </main>
    );
 }
