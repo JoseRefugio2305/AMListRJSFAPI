@@ -9,19 +9,19 @@ import {
    type FilterGSAEPayload,
    type LazyTableStateInc,
 } from "../../../types/filterTypes";
-import { HeaderGSAEList } from "./HeaderGSAEList";
-import { AccionesGSAEList } from "./AccionesGenerosList";
 import { getGSAE } from "../../../services/searchServices";
 import type { GSAESchema } from "../../../schemas/gsaeSchema";
+import { AccionesGSAEList } from "../Generos/AccionesGenerosList";
+import { HeaderGSAEList } from "../Generos/HeaderGSAEList";
 
-export default function GenerosList() {
-   const [generos, setGeneros] = useState<GSAESchema[]>([]);
-   const [totalGen, seTotalGen] = useState<number>(0);
+export default function EstudiosList() {
+   const [estudios, setEstudios] = useState<GSAESchema[]>([]);
+   const [totalStd, seTotalStd] = useState<number>(0);
    const [lazyState, setLazyState] =
       useState<LazyTableStateInc>(lazyStateInicial);
    const [loading, setLoading] = useState<boolean>(true);
 
-   const fetchGeneros = () => {
+   const fetchEstudios = () => {
       console.log(lazyState);
 
       const filters: FilterGSAEPayload = {
@@ -39,29 +39,29 @@ export default function GenerosList() {
       if (lazyState.filters.global && lazyState.filters.global.value) {
          filters.txtSearch = lazyState.filters.global.value.trim();
       }
-      getGSAE(filters, TipoGSAEEnum.generos)
+      getGSAE(filters, TipoGSAEEnum.estudios)
          .then((resp) => {
-            setGeneros(resp.lista ?? []);
-            seTotalGen(resp.total ?? 0);
+            setEstudios(resp.lista ?? []);
+            seTotalStd(resp.total ?? 0);
             setLoading(false);
          })
          .catch((error) => {
             console.error(error);
-            setGeneros([]);
-            seTotalGen(0);
+            setEstudios([]);
+            seTotalStd(0);
             setLoading(false);
          });
    };
 
    useEffect(() => {
-      fetchGeneros();
+      fetchEstudios();
    }, [lazyState]);
 
    return (
       <>
-         <h2 className="text-xl font-bold">{totalGen} Géneros</h2>
+         <h2 className="text-xl font-bold">{totalStd} Estudios de Animación</h2>
          <DataTable
-            value={generos}
+            value={estudios}
             lazy
             dataKey="id_MAL"
             rows={20}
@@ -76,13 +76,13 @@ export default function GenerosList() {
             paginatorPosition="both"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
             currentPageReportTemplate={`Mostrando ${
-               totalGen > 0 ? lazyState.first + 1 : totalGen
+               totalStd > 0 ? lazyState.first + 1 : totalStd
             } a ${Math.min(
                lazyState.rows + lazyState.first,
-               totalGen
-            )} géneros(s) de ${totalGen} resultados`}
+               totalStd
+            )} estudio(s) de ${totalStd} resultados`}
             first={lazyState.first}
-            totalRecords={totalGen}
+            totalRecords={totalStd}
             onPage={(event) => {
                setLoading(true);
                setLazyState((prev) => {
@@ -106,7 +106,7 @@ export default function GenerosList() {
             loading={loading}
             rowHover={true}
             emptyMessage={
-               <NotResultsFound message="No Se Encontraron Géneros Que Concuerden con la Búsqueda." />
+               <NotResultsFound message="No Se Encontraron Estudios de Animación Que Concuerden con la Búsqueda." />
             }
             className="rounded-2xl"
          >
@@ -117,7 +117,7 @@ export default function GenerosList() {
                body={(rowData) => (
                   <AccionesGSAEList
                      gsae={rowData}
-                     typeGSAE={TipoGSAEEnum.generos}
+                     typeGSAE={TipoGSAEEnum.estudios}
                      callBackDel={() => {
                         setLoading(true);
                         setLazyState((prev) => {

@@ -32,7 +32,7 @@ export function SidebarDash({ selectedOption }: SidebarDashProps) {
             <Link to="/dashboard" className={getClassLink(1)}>
                <ChartArea size={28} /> Dasboard
             </Link>
-             <Link to="/dashboard/genreslist" className={getClassLink(4)}>
+            <Link to="/dashboard/genreslist" className={getClassLink(4)}>
                <ListCheck size={28} /> Géneros
             </Link>
             <h2 className="text-2xl font-bold flex flex-row gap-4">
@@ -40,6 +40,9 @@ export function SidebarDash({ selectedOption }: SidebarDashProps) {
             </h2>
             <Link to="/dashboard/animelist" className={getClassLink(2)}>
                <ListCheck size={28} /> Lista de Animes
+            </Link>
+            <Link to="/dashboard/studioslist" className={getClassLink(5)}>
+               <ListCheck size={28} /> Estudios de Animación
             </Link>
             <h2 className="text-2xl font-bold flex flex-row gap-4">
                <Brush size={28} /> Mangas

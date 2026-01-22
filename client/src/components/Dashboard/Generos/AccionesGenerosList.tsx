@@ -2,16 +2,27 @@ import { Tooltip } from "flowbite-react";
 import { Link } from "react-router";
 import type { GSAESchema } from "../../../schemas/gsaeSchema";
 import { SquareArrowOutUpRightIcon } from "lucide-react";
+import { TipoGSAEEnum } from "../../../types/filterTypes";
 
-interface AccionesGenerosListProps {
-   genero: GSAESchema;
+interface AccionesGSAEListProps {
+   gsae: GSAESchema;
    callBackDel: <T>(...args: T[]) => void;
+   typeGSAE: TipoGSAEEnum;
 }
 
-export function AccionesGenerosList({
-   genero,
+export function AccionesGSAEList({
+   gsae,
    callBackDel,
-}: AccionesGenerosListProps) {
+   typeGSAE,
+}: AccionesGSAEListProps) {
+   const ruta =
+      typeGSAE === TipoGSAEEnum.generos
+         ? "/explore?genres"
+         : typeGSAE === TipoGSAEEnum.estudios
+         ? "/explore/animes?studios"
+         : typeGSAE === TipoGSAEEnum.editoriales
+         ? "/explore/mangas?editorials"
+         : "/explore/mangas?authors";
    return (
       <>
          <div className="flex flex-row gap-3">
@@ -21,7 +32,7 @@ export function AccionesGenerosList({
                placement="right"
             >
                <Link
-                  to={genero.linkMAL}
+                  to={gsae.linkMAL}
                   target="_blank"
                   className="text-white font-bold text-sm m-1 bg-blue-500 rounded-full px-3 py-3 flex w-fit"
                >
@@ -29,12 +40,12 @@ export function AccionesGenerosList({
                </Link>
             </Tooltip>
             <Tooltip
-               content="Explorar Contenido Con este Género"
+               content="Explorar Contenido En el Sistema"
                animation="duration-150"
                placement="right"
             >
                <Link
-                  to={`/explore/animes?genres=${genero.id_MAL}`}
+                  to={`${ruta}=${gsae.id_MAL}`}
                   target="_blank"
                   className="text-white font-bold text-sm m-1 bg-purple-500 rounded-full px-3 py-3 flex w-fit"
                >

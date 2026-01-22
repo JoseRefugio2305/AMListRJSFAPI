@@ -42,6 +42,9 @@ const DashboardGenresListPage = lazy(
 const DashboardAnimeListPage = lazy(
    () => import("./pages/Dashboard/DashboardAnimeListPage.tsx")
 );
+const DashboardStudiosListPage = lazy(
+   () => import("./pages/Dashboard/DashboardStudiosListPage.tsx")
+);
 const DashboardMangaListPage = lazy(
    () => import("./pages/Dashboard/DashboardMangaListPage.tsx")
 );
@@ -96,6 +99,7 @@ function App() {
                   path="/user/:name/animelist"
                   element={<UserAnimeListPage />}
                />
+
                <Route
                   path="/user/:name/mangalist"
                   element={<UserMangaListPage />}
@@ -121,6 +125,14 @@ function App() {
                   element={
                      <AdminProtectedRoute redirectTo="/">
                         <DashboardAnimeListPage />
+                     </AdminProtectedRoute>
+                  }
+               />
+               <Route
+                  path="/dashboard/studioslist"
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <DashboardStudiosListPage />
                      </AdminProtectedRoute>
                   }
                />

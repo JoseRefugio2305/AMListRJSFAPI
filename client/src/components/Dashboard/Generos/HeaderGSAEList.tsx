@@ -6,17 +6,17 @@ import {
 import { Button, TextInput } from "flowbite-react";
 import { Search } from "lucide-react";
 
-interface HeaderMangaIncProps {
+interface HeaderGSAEListProps {
    loading: boolean;
    setLoading: Dispatch<SetStateAction<boolean>>;
    setLazyState: Dispatch<SetStateAction<LazyTableStateInc>>;
 }
 
-export function HeaderGenerosList({
+export function HeaderGSAEList({
    loading,
    setLoading,
    setLazyState,
-}: HeaderMangaIncProps) {
+}: HeaderGSAEListProps) {
    const nameSearch = useRef<HTMLInputElement>(null);
    const handleCleanFilters = () => {
       if (nameSearch.current && nameSearch.current.value.trim() !== "") {
