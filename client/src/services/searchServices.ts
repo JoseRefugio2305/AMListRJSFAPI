@@ -1,8 +1,8 @@
 import axiosInstance from "../hooks/useAxios";
 import { FiltersAdvancedSearchZ, type FiltersAdvancedSearchSchema } from "../schemas/filtersSchemas";
-import { AdvancedSearchResultZ, AnimeIncSResultZ, MangaIncSResultZ, ResponseSearchAnimeMALZ, ResponseSearchMangaMALZ, type SearchOnMALSchema } from "../schemas/searchSchemas";
-import { ReadyToMALEnum, type FilterPayload } from "../types/filterTypes";
-import type { AdvancedSearchResult, AnimeIncSearchResult, MangaIncSearchResult, ResponseSearchAnimeMAL, ResponseSearchMangaMAL } from "../types/searchTypes";
+import { AdvancedSearchResultZ, AnimeIncSResultZ, MangaIncSResultZ, ResponseSearchAnimeMALZ, ResponseSearchGenerosZ, ResponseSearchMangaMALZ, type SearchOnMALSchema } from "../schemas/searchSchemas";
+import { ReadyToMALEnum, TipoGSAEEnum, type FilterGSAEPayload, type FilterPayload } from "../types/filterTypes";
+import type { AdvancedSearchResult, AnimeIncSearchResult, MangaIncSearchResult, ResponseSearchAnimeMAL, ResponseSearchMangaMAL, ResponseSearchGeneros } from "../types/searchTypes";
 import { getMessageError } from "../utils/parse_error";
 
 export async function getFilters(): Promise<FiltersAdvancedSearchSchema> {
@@ -123,6 +123,32 @@ export async function getMangasFromMAL(payload: SearchOnMALSchema): Promise<Resp
      const response: ResponseSearchMangaMAL = await axiosInstance.post("/dashboard/manga/search_on_mal/", payload)
           .then((resp) => {
                const parsed = ResponseSearchMangaMALZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, msg: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    msg: "OK",
+                    ...parsed.data,
+               };
+          }).catch(error => {
+               console.error(error)
+               return {
+                    msg: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+     return response
+}
+
+//obtener busqueda de generos, estudios, editoriales o autores
+export async function getGSAE(payload: FilterGSAEPayload, typeGSAE: TipoGSAEEnum): Promise<ResponseSearchGeneros> {
+     const rutaGSAE = typeGSAE === TipoGSAEEnum.generos ? "genres_list" : typeGSAE === TipoGSAEEnum.estudios ? "studios_list" : typeGSAE === TipoGSAEEnum.editoriales ? "editorials_list" : "authors_list"
+     const response: ResponseSearchGeneros = await axiosInstance.post(`/dashboard/${typeGSAE === TipoGSAEEnum.generos || typeGSAE === TipoGSAEEnum.estudios ? "anime" : "manga"}/${rutaGSAE}/`, payload)
+          .then((resp) => {
+               const parsed = ResponseSearchGenerosZ.safeParse(resp.data)
                if (!parsed.success) {
                     console.error("Datos invalidos desde el servidor.")
                     return { is_success: false, msg: "Datos invalidos desde el servidor." };

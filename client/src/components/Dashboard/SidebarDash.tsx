@@ -32,6 +32,9 @@ export function SidebarDash({ selectedOption }: SidebarDashProps) {
             <Link to="/dashboard" className={getClassLink(1)}>
                <ChartArea size={28} /> Dasboard
             </Link>
+             <Link to="/dashboard/genreslist" className={getClassLink(4)}>
+               <ListCheck size={28} /> Géneros
+            </Link>
             <h2 className="text-2xl font-bold flex flex-row gap-4">
                <TvMinimalPlayIcon size={28} /> Animes
             </h2>

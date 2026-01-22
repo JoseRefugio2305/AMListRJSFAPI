@@ -19,6 +19,14 @@ export enum EmisionEnum {
      pausado = 2,
      todos = 3,
 }
+
+export enum TipoGSAEEnum {
+     generos = 1,
+     estudios = 2,
+     editoriales = 3,
+     autores = 4
+}
+
 export const optionsEmision: OptionsSelectInterface[] = [
      { code: EmisionEnum.emision, name: "Emisión/Publicación" },
      { code: EmisionEnum.finalizado, name: "Finalizado" },
@@ -63,6 +71,12 @@ export enum FieldOrdEnum {
      capitulos = "capitulos"
 }
 
+export enum FieldOrdGSAEEnum {
+     id_MAL = "id_MAL",
+     nombre = "nombre",
+     nombre_mal = "nombre_mal",
+}
+
 export const optionsFieldOrd: OptionsSelectStrInterface[] = [
      { code: FieldOrdEnum.key, name: "Key" },
      { code: FieldOrdEnum.id_MAL, name: "ID MAL" },
@@ -100,6 +114,14 @@ export interface FilterPayload {
      tipoContenido?: TipoContenidoEnum
      orderBy?: OrderByEnum
      orderField?: FieldOrdEnum
+}
+
+export interface FilterGSAEPayload {
+     limit: number;
+     page: number;
+     txtSearch: string;
+     orderBy: OrderByEnum;
+     orderField: FieldOrdGSAEEnum;
 }
 
 export interface FilterParamsInterface {
