@@ -9,9 +9,9 @@ import { TopSkeleton } from "../../components/Skeletons/TopSkeleton.tsx";
 const MangaFullList = lazy(
    () => import("../../components/Dashboard/Manga/MangaFullList.tsx")
 );
-// const AnimeIncompleteList = lazy(
-//    () => import("../../components/Dashboard/Anime/AnimeIncompleteList.tsx")
-// );
+const MangaIncompleteList = lazy(
+   () => import("../../components/Dashboard/Manga/MangaIncompleteList.tsx")
+);
 
 export default function DashboardMangaListPage() {
    const [listSel, setListSel] = useState<number>(0);
@@ -67,7 +67,7 @@ export default function DashboardMangaListPage() {
                   active={listSel === 1}
                >
                   <Suspense fallback={<TopSkeleton />}>
-                     {/* <AnimeIncompleteList /> */}
+                     <MangaIncompleteList />
                   </Suspense>
                </TabItem>
             </Tabs>
