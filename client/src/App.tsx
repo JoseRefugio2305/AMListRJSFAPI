@@ -48,6 +48,9 @@ const DashboardStudiosListPage = lazy(
 const DashboardMangaListPage = lazy(
    () => import("./pages/Dashboard/DashboardMangaListPage.tsx")
 );
+const DashboardEditorialsListPage = lazy(
+   () => import("./pages/Dashboard/DashboardEditorialsListPage.tsx")
+);
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));
 
 function App() {
@@ -99,7 +102,6 @@ function App() {
                   path="/user/:name/animelist"
                   element={<UserAnimeListPage />}
                />
-
                <Route
                   path="/user/:name/mangalist"
                   element={<UserMangaListPage />}
@@ -141,6 +143,14 @@ function App() {
                   element={
                      <AdminProtectedRoute redirectTo="/">
                         <DashboardMangaListPage />
+                     </AdminProtectedRoute>
+                  }
+               />{" "}
+               <Route
+                  path="/dashboard/editorialslist"
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <DashboardEditorialsListPage />
                      </AdminProtectedRoute>
                   }
                />
