@@ -51,6 +51,9 @@ const DashboardMangaListPage = lazy(
 const DashboardEditorialsListPage = lazy(
    () => import("./pages/Dashboard/DashboardEditorialsListPage.tsx")
 );
+const DashboardAutoresListPage = lazy(
+   () => import("./pages/Dashboard/DashboardAutoresListPage.tsx")
+);
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));
 
 function App() {
@@ -151,6 +154,14 @@ function App() {
                   element={
                      <AdminProtectedRoute redirectTo="/">
                         <DashboardEditorialsListPage />
+                     </AdminProtectedRoute>
+                  }
+               />
+               <Route
+                  path="/dashboard/authorslist"
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <DashboardAutoresListPage />
                      </AdminProtectedRoute>
                   }
                />

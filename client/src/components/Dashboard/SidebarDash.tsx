@@ -53,6 +53,9 @@ export function SidebarDash({ selectedOption }: SidebarDashProps) {
             <Link to="/dashboard/editorialslist" className={getClassLink(6)}>
                <ListCheck size={28} /> Editoriales de Manga
             </Link>
+            <Link to="/dashboard/authorslist" className={getClassLink(7)}>
+               <ListCheck size={28} /> Autores de Manga
+            </Link>
          </Sidebar>
          <Button onClick={() => setVisible(!visible)} color="purple">
             <Menu size={28} />
