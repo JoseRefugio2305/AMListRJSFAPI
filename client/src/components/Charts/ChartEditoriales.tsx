@@ -64,7 +64,7 @@ export default function ChartStudios({ dataStats }: ChartStudiosProps) {
          setState((prev) => {
             return {
                ...prev,
-               series: [{ data: series }],
+               series: [{ name: "Mangas", data: series }],
                options: {
                   ...prev.options,
                   xaxis: {
