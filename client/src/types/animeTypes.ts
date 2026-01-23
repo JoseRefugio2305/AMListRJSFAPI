@@ -7,7 +7,8 @@ export enum StatusViewEnum {
      Pendiente = 2,
      Considerando = 3,
      Abandonado = 4,
-     Ninguno = 5
+     Ninguno = 5,
+     Completado = 6
 }
 
 

@@ -97,6 +97,22 @@ export function TabMenuStatusView({
             <Button
                disabled={loading}
                className="h-10"
+               outline={statusActive !== StatusViewEnum.completado}
+               color="pink"
+               onClick={() => {
+                  setStatusActive(StatusViewEnum.completado);
+                  setSelStatusView(
+                     optionsStatusView.find(
+                        (opt) => opt.code === StatusViewEnum.completado
+                     ) ?? optionsStatusView[StatusViewEnum.completado]
+                  );
+               }}
+            >
+               <p className="text-md font-bold">Completados</p>
+            </Button>
+            <Button
+               disabled={loading}
+               className="h-10"
                outline={statusActive !== StatusViewEnum.pendiente}
                color="default"
                onClick={() => {

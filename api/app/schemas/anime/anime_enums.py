@@ -33,3 +33,4 @@ class StatusViewEnum(IntEnum):
     considerando = 3
     abandonado = 4
     ninguno = 5
+    completado = 6

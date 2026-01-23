@@ -93,6 +93,13 @@ export function StatusViewDropDown({
             </DropdownItem>
             <DropdownDivider />
             <DropdownItem
+               onClick={() => handleStatusChange(6)}
+               className="w-full text-left text-white hover:bg-purple-700 focus:bg-purple-500 dark:hover:bg-purple-700 dark:focus:bg-purple-500"
+            >
+               Completado
+            </DropdownItem>
+            <DropdownDivider />
+            <DropdownItem
                onClick={() => handleStatusChange(2)}
                className="w-full text-left text-white hover:bg-purple-700 focus:bg-purple-500 dark:hover:bg-purple-700 dark:focus:bg-purple-500"
             >

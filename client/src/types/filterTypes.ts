@@ -40,6 +40,7 @@ export enum StatusViewEnum {
      considerando = 3,
      abandonado = 4,
      ninguno = 5,
+     completado = 6
 }
 
 export const optionsStatusView: OptionsSelectInterface[] = [
