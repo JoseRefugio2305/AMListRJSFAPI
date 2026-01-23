@@ -15,7 +15,7 @@ export function AccionesIncList({
 }: AccionesIncListProps) {
    return (
       <>
-         <div className="flex flex-row gap-3">
+         <div className="flex flex-row justify-between">
             <Tooltip
                content="Visitar Página P."
                animation="duration-150"

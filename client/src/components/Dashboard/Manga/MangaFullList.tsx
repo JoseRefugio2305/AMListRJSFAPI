@@ -10,6 +10,7 @@ import {
 import { Column } from "primereact/column";
 import { NotResultsFound } from "../../Common/NotResultsFound";
 import { AccionesFullList } from "./AccionesFullList";
+import { getColorTipoAnimeManga, getMangaStrType } from "../../../utils/common";
 // import { AccionesFullList } from "./AccionesFullList";
 
 interface LazyTableState {
@@ -141,6 +142,22 @@ export default function MangaFullList() {
             <Column field="titulo" sortable header="Título" />
             <Column field="capitulos" sortable header="Capítulos" />
             <Column field="calificacion" sortable header="Calificación" />
+            <Column
+               field="tipo"
+               body={(manga) => {
+                  return (
+                     <p
+                        className={`w-full font-bold text-white rounded-2xl p-1 text-center ${getColorTipoAnimeManga(
+                           manga.tipo,
+                           0
+                        )}`}
+                     >
+                        {getMangaStrType(manga.tipo)}
+                     </p>
+                  );
+               }}
+               header="Tipo"
+            />
             <Column
                header="Acciones"
                body={(rowData) => (

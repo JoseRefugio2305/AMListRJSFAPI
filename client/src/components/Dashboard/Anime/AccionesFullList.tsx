@@ -16,7 +16,7 @@ export function AccionesFullList({
 }: AccionesFullListProps) {
    return (
       <>
-         <div className="flex flex-row gap-3">
+         <div className="flex flex-row justify-center gap-3">
             <Tooltip
                content="Visitar Detalles de Anime"
                animation="duration-150"

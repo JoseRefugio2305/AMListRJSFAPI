@@ -25,7 +25,7 @@ export function AccionesGSAEList({
          : "/explore/mangas?authors";
    return (
       <>
-         <div className="flex flex-row gap-3">
+         <div className="flex flex-row gap-6 justify-center">
             <Tooltip
                content="Visitar Página MAL"
                animation="duration-150"

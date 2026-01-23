@@ -10,6 +10,7 @@ import {
 import { Column } from "primereact/column";
 import { NotResultsFound } from "../../Common/NotResultsFound";
 import { AccionesFullList } from "./AccionesFullList";
+import { getAnimeStrType, getColorTipoAnimeManga } from "../../../utils/common";
 
 interface LazyTableState {
    first: number;
@@ -107,54 +108,69 @@ export default function AnimeFullList() {
          </section>
          <section className="w-full grid gap-5 shadow-2xl md:rounded-2xl rounded-none dark:bg-gray-700 p-6 mt-4 mb-1">
             <h2 className="text-xl font-bold">{totalAnimes} Resultado(s)</h2>
-            
          </section>
          <DataTable
-               value={animes}
-               lazy
-               dataKey="key_anime"
-               rows={20}
-               paginator
-               paginatorPosition="both"
-               paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
-               currentPageReportTemplate={`Mostrando ${
-                  totalAnimes > 0 ? lazyState.first + 1 : totalAnimes
-               } a ${Math.min(
-                  lazyState.rows + lazyState.first,
-                  totalAnimes
-               )} anime(s) de ${totalAnimes} resultados`}
-               first={lazyState.first}
-               totalRecords={totalAnimes}
-               onPage={handlePage}
-               onSort={handleSort}
-               sortField={lazyState.sortField ?? ""}
-               sortOrder={lazyState.sortOrder ?? 0}
-               loading={loading}
-               rowHover={true}
-               emptyMessage={
-                  <NotResultsFound message="No Se Encontraron Animes Que Concuerden con la Búsqueda." />
-               }
-               className="rounded-2xl"
-            >
-               <Column field="key_anime" header="Key" sortable />
-               <Column field="id_MAL" sortable header="ID MAL" />
-               <Column field="titulo" sortable header="Título" />
-               <Column field="episodios" sortable header="Episodios" />
-               <Column field="calificacion" sortable header="Calificación" />
-               <Column
-                  header="Acciones"
-                  body={(rowData) => (
-                     <AccionesFullList
-                        anime={rowData}
-                        callBackDel={() => {
-                           setFiltersParam((prev) => {
-                              return { ...prev };
-                           });
-                        }}
-                     />
-                  )}
-               />
-            </DataTable>
+            value={animes}
+            lazy
+            dataKey="key_anime"
+            rows={20}
+            paginator
+            paginatorPosition="both"
+            paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport"
+            currentPageReportTemplate={`Mostrando ${
+               totalAnimes > 0 ? lazyState.first + 1 : totalAnimes
+            } a ${Math.min(
+               lazyState.rows + lazyState.first,
+               totalAnimes
+            )} anime(s) de ${totalAnimes} resultados`}
+            first={lazyState.first}
+            totalRecords={totalAnimes}
+            onPage={handlePage}
+            onSort={handleSort}
+            sortField={lazyState.sortField ?? ""}
+            sortOrder={lazyState.sortOrder ?? 0}
+            loading={loading}
+            rowHover={true}
+            emptyMessage={
+               <NotResultsFound message="No Se Encontraron Animes Que Concuerden con la Búsqueda." />
+            }
+            className="rounded-2xl"
+         >
+            <Column field="key_anime" header="Key" sortable />
+            <Column field="id_MAL" sortable header="ID MAL" />
+            <Column field="titulo" sortable header="Título" />
+            <Column field="episodios" sortable header="Episodios" />
+            <Column field="calificacion" sortable header="Calificación" />
+            <Column
+               field="tipo"
+               body={(anime) => {
+                  return (
+                     <p
+                        className={`w-full font-bold text-white rounded-2xl p-1 text-center ${getColorTipoAnimeManga(
+                           anime.tipo,
+                           0
+                        )}`}
+                     >
+                        {getAnimeStrType(anime.tipo)}
+                     </p>
+                  );
+               }}
+               header="Tipo"
+            />
+            <Column
+               header="Acciones"
+               body={(rowData) => (
+                  <AccionesFullList
+                     anime={rowData}
+                     callBackDel={() => {
+                        setFiltersParam((prev) => {
+                           return { ...prev };
+                        });
+                     }}
+                  />
+               )}
+            />
+         </DataTable>
       </>
    );
 }
