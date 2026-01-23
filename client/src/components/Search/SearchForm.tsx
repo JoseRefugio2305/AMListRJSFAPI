@@ -94,18 +94,21 @@ export function SearchForm({
             : FieldOrdEnum.key;
       })();
 
-      setFiltersParam({
-         tit_search: titSearch,
-         generos: arrGenres,
-         estudios: arrStudios,
-         autores: arrAuthors,
-         editoriales: arrEditorials,
-         tiposAnime: arrTiposAnime,
-         tiposManga: arrTiposManga,
-         emision: emision,
-         tipoContenido: tipoContenido,
-         orderBy: orderby,
-         orderField: orderfield,
+      setFiltersParam((prev) => {
+         return {
+            ...prev,
+            tit_search: titSearch,
+            generos: arrGenres,
+            estudios: arrStudios,
+            autores: arrAuthors,
+            editoriales: arrEditorials,
+            tiposAnime: arrTiposAnime,
+            tiposManga: arrTiposManga,
+            emision: emision,
+            tipoContenido: tipoContenido,
+            orderBy: orderby,
+            orderField: orderfield,
+         };
       });
       setPage(0);
    };

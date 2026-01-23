@@ -6,13 +6,7 @@ import {
    type OptionsSelectInterface,
 } from "../../../types/filterTypes";
 import { Dropdown } from "primereact/dropdown";
-import {
-   useEffect,
-   useId,
-   useState,
-   type Dispatch,
-   type SetStateAction,
-} from "react";
+import { useId, useState, type Dispatch, type SetStateAction } from "react";
 
 interface TabMenuStatusViewProps {
    isAnime: boolean;
@@ -30,7 +24,6 @@ export function TabMenuStatusView({
    setPage,
 }: TabMenuStatusViewProps) {
    const idSelStatusView = useId();
-
    const [statusActive, setStatusActive] = useState<StatusViewEnum>(
       filtersParam.statusView ?? StatusViewEnum.ninguno
    );
@@ -44,18 +37,22 @@ export function TabMenuStatusView({
       }
    );
 
-   useEffect(() => {
-      const handleChangeStatus = () => {
-         setFiltersParams((prev) => {
-            return {
-               ...prev,
-               statusView: statusActive,
-            };
-         });
+   const handleChangeStatus = (status: StatusViewEnum) => {
+      setStatusActive(status);
+      setSelStatusView(
+         optionsStatusView.find((opt) => opt.code === status) ??
+            optionsStatusView[status]
+      );
+      if (status !== filtersParam.statusView) {
          setPage(1);
-      };
-      handleChangeStatus();
-   }, [statusActive]);
+      }
+      setFiltersParams((prev) => {
+         return {
+            ...prev,
+            statusView: status,
+         };
+      });
+   };
 
    return (
       <div className="w-full flex justify-center items-center">
@@ -66,12 +63,7 @@ export function TabMenuStatusView({
                outline={statusActive !== StatusViewEnum.ninguno}
                color="purple"
                onClick={() => {
-                  setStatusActive(StatusViewEnum.ninguno);
-                  setSelStatusView(
-                     optionsStatusView.find(
-                        (opt) => opt.code === StatusViewEnum.ninguno
-                     ) ?? optionsStatusView[StatusViewEnum.ninguno]
-                  );
+                  handleChangeStatus(StatusViewEnum.ninguno);
                }}
             >
                <p className="text-md font-bold">Todos</p>
@@ -82,12 +74,7 @@ export function TabMenuStatusView({
                outline={statusActive !== StatusViewEnum.viendo}
                color="green"
                onClick={() => {
-                  setStatusActive(StatusViewEnum.viendo);
-                  setSelStatusView(
-                     optionsStatusView.find(
-                        (opt) => opt.code === StatusViewEnum.viendo
-                     ) ?? optionsStatusView[StatusViewEnum.viendo]
-                  );
+                  handleChangeStatus(StatusViewEnum.viendo);
                }}
             >
                <p className="text-md font-bold">
@@ -100,12 +87,7 @@ export function TabMenuStatusView({
                outline={statusActive !== StatusViewEnum.completado}
                color="pink"
                onClick={() => {
-                  setStatusActive(StatusViewEnum.completado);
-                  setSelStatusView(
-                     optionsStatusView.find(
-                        (opt) => opt.code === StatusViewEnum.completado
-                     ) ?? optionsStatusView[StatusViewEnum.completado]
-                  );
+                  handleChangeStatus(StatusViewEnum.completado);
                }}
             >
                <p className="text-md font-bold">Completados</p>
@@ -116,12 +98,7 @@ export function TabMenuStatusView({
                outline={statusActive !== StatusViewEnum.pendiente}
                color="default"
                onClick={() => {
-                  setStatusActive(StatusViewEnum.pendiente);
-                  setSelStatusView(
-                     optionsStatusView.find(
-                        (opt) => opt.code === StatusViewEnum.pendiente
-                     ) ?? optionsStatusView[StatusViewEnum.pendiente]
-                  );
+                  handleChangeStatus(StatusViewEnum.pendiente);
                }}
             >
                <p className="text-md font-bold">Pendientes</p>
@@ -132,12 +109,7 @@ export function TabMenuStatusView({
                outline={statusActive !== StatusViewEnum.considerando}
                color="yellow"
                onClick={() => {
-                  setStatusActive(StatusViewEnum.considerando);
-                  setSelStatusView(
-                     optionsStatusView.find(
-                        (opt) => opt.code === StatusViewEnum.considerando
-                     ) ?? optionsStatusView[StatusViewEnum.considerando]
-                  );
+                  handleChangeStatus(StatusViewEnum.considerando);
                }}
             >
                <p className="text-md font-bold">Considerando</p>
@@ -148,12 +120,7 @@ export function TabMenuStatusView({
                outline={statusActive !== StatusViewEnum.abandonado}
                color="red"
                onClick={() => {
-                  setStatusActive(StatusViewEnum.abandonado);
-                  setSelStatusView(
-                     optionsStatusView.find(
-                        (opt) => opt.code === StatusViewEnum.abandonado
-                     ) ?? optionsStatusView[StatusViewEnum.abandonado]
-                  );
+                  handleChangeStatus(StatusViewEnum.abandonado);
                }}
             >
                <p className="text-md font-bold">Abandonados</p>
@@ -164,8 +131,7 @@ export function TabMenuStatusView({
                disabled={loading}
                value={selStatusView}
                onChange={(e) => {
-                  setSelStatusView(e.value);
-                  setStatusActive(e.value?.code);
+                  handleChangeStatus(e.value?.code ?? StatusViewEnum.ninguno);
                }}
                options={optionsStatusView}
                optionLabel="name"

@@ -46,6 +46,7 @@ export enum StatusViewEnum {
 export const optionsStatusView: OptionsSelectInterface[] = [
      { code: StatusViewEnum.ninguno, name: "Todos" },
      { code: StatusViewEnum.viendo, name: "Viendo" },
+     { code: StatusViewEnum.completado, name: "Completado" },
      { code: StatusViewEnum.pendiente, name: "Pendiente" },
      { code: StatusViewEnum.considerando, name: "Considerando" },
      { code: StatusViewEnum.abandonado, name: "Abandonado" },
