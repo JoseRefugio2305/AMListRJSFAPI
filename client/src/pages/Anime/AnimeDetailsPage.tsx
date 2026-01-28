@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { getAnimeDetails } from "../services/animeServices";
-import { DetailsSkeleton } from "../components/Skeletons/DetailsSkeleton";
-import { LazyLoadImage } from "../components/Common/LazyLoadImage";
-import { cutText } from "../utils/common";
-import { AnimeRelationsSection } from "../components/Anime/Details/RelationsSection";
-import { AdpRelLink } from "../components/Common/Details/AdpRelLink";
-import { LinkPill } from "../components/Common/Details/LinkPill";
-import { Description } from "../components/Common/Details/Description";
-import { TitulosAlt } from "../components/Common/Details/TitulosAlt";
-import { MoreInfoAnime } from "../components/Anime/Details/MoreInfo";
-import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
-import type { AnimeCompleteSchema } from "../schemas/animeSchemas";
+import { getAnimeDetails } from "../../services/animeServices";
+import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
+import { LazyLoadImage } from "../../components/Common/LazyLoadImage";
+import { cutText } from "../../utils/common";
+import { AnimeRelationsSection } from "../../components/Anime/Details/RelationsSection";
+import { AdpRelLink } from "../../components/Common/Details/AdpRelLink";
+import { LinkPill } from "../../components/Common/Details/LinkPill";
+import { Description } from "../../components/Common/Details/Description";
+import { TitulosAlt } from "../../components/Common/Details/TitulosAlt";
+import { MoreInfoAnime } from "../../components/Anime/Details/MoreInfo";
+import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
+import type { AnimeCompleteSchema } from "../../schemas/animeSchemas";
 
 export default function AnimeDetailsPage() {
    const navigate = useNavigate();

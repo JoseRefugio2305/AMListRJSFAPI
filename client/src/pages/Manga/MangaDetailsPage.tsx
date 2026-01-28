@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { DetailsSkeleton } from "../components/Skeletons/DetailsSkeleton";
-import { LazyLoadImage } from "../components/Common/LazyLoadImage";
-import { cutText } from "../utils/common";
-import { AdpRelLink } from "../components/Common/Details/AdpRelLink";
-import { LinkPill } from "../components/Common/Details/LinkPill";
-import { Description } from "../components/Common/Details/Description";
-import { TitulosAlt } from "../components/Common/Details/TitulosAlt";
-import { Breadcrumbs } from "../components/Layout/BreadCrumbs";
-import type { MangaCompleteSchema } from "../schemas/mangaSchemas";
-import { getMangaDetails } from "../services/mangaServices";
-import { MangaRelationsSection } from "../components/Manga/Details/RelationsSection";
-import { MoreInfoManga } from "../components/Manga/Details/MoreInfo";
+import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
+import { LazyLoadImage } from "../../components/Common/LazyLoadImage";
+import { cutText } from "../../utils/common";
+import { AdpRelLink } from "../../components/Common/Details/AdpRelLink";
+import { LinkPill } from "../../components/Common/Details/LinkPill";
+import { Description } from "../../components/Common/Details/Description";
+import { TitulosAlt } from "../../components/Common/Details/TitulosAlt";
+import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
+import type { MangaCompleteSchema } from "../../schemas/mangaSchemas";
+import { getMangaDetails } from "../../services/mangaServices";
+import { MangaRelationsSection } from "../../components/Manga/Details/RelationsSection";
+import { MoreInfoManga } from "../../components/Manga/Details/MoreInfo";
 
 export default function MangaDetailsPage() {
    const navigate = useNavigate();
