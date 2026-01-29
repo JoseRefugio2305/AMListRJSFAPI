@@ -42,3 +42,4 @@ export const StatusViewZ = z.enum(StatusViewEnum);
 export type AnimeRelAdpSchema = z.infer<typeof AnimeRelAdpZ>;
 export type MangaRelAdpSchema = z.infer<typeof MangaRelAdpZ>;
 export type AnimeImagesSharedSchema = z.infer<typeof AnimeImagesSharedZ>;
+export type MangaImagesSharedSchema = z.infer<typeof MangaImagesSharedZ>;

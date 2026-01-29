@@ -12,10 +12,15 @@ import { ScrollTop } from "./components/Layout/ScrollTop.tsx";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
 const AnimePage = lazy(() => import("./pages/Anime/AnimePage.tsx"));
-const AnimeDetailsPage = lazy(() => import("./pages/Anime/AnimeDetailsPage.tsx"));
+const AnimeDetailsPage = lazy(
+   () => import("./pages/Anime/AnimeDetailsPage.tsx")
+);
 const AnimeEditPage = lazy(() => import("./pages/Anime/AnimeEditPage.tsx"));
 const MangaPage = lazy(() => import("./pages/Manga/MangaPage.tsx"));
-const MangaDetailsPage = lazy(() => import("./pages/Manga/MangaDetailsPage.tsx"));
+const MangaEditPage = lazy(() => import("./pages/Manga/MangaEditPage.tsx"));
+const MangaDetailsPage = lazy(
+   () => import("./pages/Manga/MangaDetailsPage.tsx")
+);
 const ExplorePage = lazy(() => import("./pages/Explore/ExplorePage.tsx"));
 const ExploreAnimesPage = lazy(
    () => import("./pages/Explore/ExploreAnimesPage.tsx")
@@ -171,6 +176,14 @@ function App() {
                   element={
                      <AdminProtectedRoute redirectTo="/">
                         <AnimeEditPage />
+                     </AdminProtectedRoute>
+                  }
+               />
+               <Route
+                  path="/manga/:key_manga/edit"
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <MangaEditPage />
                      </AdminProtectedRoute>
                   }
                />

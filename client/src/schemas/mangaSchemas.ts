@@ -46,6 +46,30 @@ export const MangaCreateZ = z.object({
      link_p: z.url(),
 })
 
+export const MangaUpdateZ = z.object({
+     key_manga: z.number(),
+     titulo: z.string(),
+     link_p: z.url(),
+     tipo: TipoMangaZ,
+     mangaImages: MangaImagesZ,
+     calificacion: z.number(),
+     descripcion: z.string(),
+     publicando: z.number(),
+     capitulos: z.number(),
+     volumenes: z.number(),
+     fechaComienzoPub: z.string(),
+     fechaFinPub: z.string().optional(),
+     id_MAL: z.number(),
+     linkMAL: z.url(),
+     numRatings: z.number(),
+     generos: z.array(z.object({ id_MAL: z.number(), nombre: z.string() })).default([]),
+     relaciones: z.array(MangaFullRelationZ).default([]),
+     adaptaciones: z.array(AnimeRelAdpZ).default([]),
+     editoriales: z.array(z.object({ nombre: z.string(), id_MAL: z.number() })).default([]),
+     autores: z.array(z.object({ nombre: z.string(), id_MAL: z.number() })).default([]),
+     titulos_alt: z.array(z.object({ tit_alt: z.string(), tipo: z.string() })).default([]),
+})
+
 export const MangaIncompleteZ = z.object({
      key_manga: z.number(),
      titulo: z.string(),
@@ -59,4 +83,5 @@ export const MangaIncompleteZ = z.object({
 export type MangaSchema = z.infer<typeof MangaZ>
 export type MangaCompleteSchema = z.infer<typeof MangaCompleteZ>
 export type MangaCreateSchema = z.infer<typeof MangaCreateZ>
+export type MangaUpdateSchema = z.infer<typeof MangaUpdateZ>
 export type MangaIncompleteSchema = z.infer<typeof MangaIncompleteZ>
