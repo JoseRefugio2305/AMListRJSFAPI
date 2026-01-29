@@ -3,6 +3,11 @@ export function parseStringNumber(numString: string) {
      return Number.isNaN(numparse) || numparse <= 0 ? 0 : numparse;
 }
 
+export function parseFloatStringNumber(numString: string) {
+     const numparse = parseFloat(numString);
+     return Number.isNaN(numparse) || numparse <= 0 ? 0 : numparse;
+}
+
 export function isNumber(numString:string){
      return /^\d+$/.test(numString.trim())
 }

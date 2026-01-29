@@ -2,15 +2,15 @@ import * as z from "zod";
 import { StatusViewEnum } from "../types/animeTypes";
 
 export const AnimeImagesSharedZ = z.object({
-  img_sm: z.string(),
-  img: z.string(),
-  img_l: z.string(),
+  img_sm: z.url(),
+  img: z.url(),
+  img_l: z.url(),
 });
 
 export const MangaImagesSharedZ = z.object({
-  img_sm: z.string(),
-  img: z.string(),
-  img_l: z.string(),
+  img_sm: z.url(),
+  img: z.url(),
+  img_l: z.url(),
 });
 
 export const AnimeRelAdpZ = z.object({
@@ -41,3 +41,4 @@ export const StatusViewZ = z.enum(StatusViewEnum);
 
 export type AnimeRelAdpSchema = z.infer<typeof AnimeRelAdpZ>;
 export type MangaRelAdpSchema = z.infer<typeof MangaRelAdpZ>;
+export type AnimeImagesSharedSchema = z.infer<typeof AnimeImagesSharedZ>;

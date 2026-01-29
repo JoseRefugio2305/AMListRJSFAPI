@@ -11,10 +11,11 @@ import { AdminProtectedRoute } from "./components/Auth/AdminProtectedRoute.tsx";
 import { ScrollTop } from "./components/Layout/ScrollTop.tsx";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
-const AnimePage = lazy(() => import("./pages/AnimePage.tsx"));
-const AnimeDetailsPage = lazy(() => import("./pages/AnimeDetailsPage.tsx"));
-const MangaPage = lazy(() => import("./pages/MangaPage.tsx"));
-const MangaDetailsPage = lazy(() => import("./pages/MangaDetailsPage.tsx"));
+const AnimePage = lazy(() => import("./pages/Anime/AnimePage.tsx"));
+const AnimeDetailsPage = lazy(() => import("./pages/Anime/AnimeDetailsPage.tsx"));
+const AnimeEditPage = lazy(() => import("./pages/Anime/AnimeEditPage.tsx"));
+const MangaPage = lazy(() => import("./pages/Manga/MangaPage.tsx"));
+const MangaDetailsPage = lazy(() => import("./pages/Manga/MangaDetailsPage.tsx"));
 const ExplorePage = lazy(() => import("./pages/Explore/ExplorePage.tsx"));
 const ExploreAnimesPage = lazy(
    () => import("./pages/Explore/ExploreAnimesPage.tsx")
@@ -162,6 +163,14 @@ function App() {
                   element={
                      <AdminProtectedRoute redirectTo="/">
                         <DashboardAutoresListPage />
+                     </AdminProtectedRoute>
+                  }
+               />
+               <Route
+                  path="/anime/:key_anime/edit"
+                  element={
+                     <AdminProtectedRoute redirectTo="/">
+                        <AnimeEditPage />
                      </AdminProtectedRoute>
                   }
                />
