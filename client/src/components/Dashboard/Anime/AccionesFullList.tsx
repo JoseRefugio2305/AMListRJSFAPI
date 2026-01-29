@@ -38,9 +38,7 @@ export function AccionesFullList({
                placement="right"
             >
                <Link
-                  to={`/anime/${getTitleForLink(anime.titulo)}/${
-                     anime.key_anime
-                  }`} //TODO: Crear pagina d edicion de anime
+                  to={`/anime/${anime.key_anime}/edit`}
                   target="_blank"
                   className="text-white font-bold text-sm m-1 bg-yellow-400 rounded-full px-3 py-3 flex w-fit"
                >
