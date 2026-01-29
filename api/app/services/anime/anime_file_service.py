@@ -2,7 +2,7 @@ from fastapi import UploadFile, HTTPException, status, File
 import json
 
 from app.core.logging import get_logger
-from app.core.utils import validate_file_animes
+from app.core.utils import validate_file_animes, time_now_formatted
 from app.schemas.anime import AnimeCreateSchema, DictTipoAnime, ResponseUpdAllMALSchema
 from app.models.anime_model import AnimeModel
 
@@ -36,6 +36,7 @@ class AnimeFileService:
                     titulo=anime.get("name"),
                     link_p=anime.get("link"),
                     tipo=DictTipoAnime.get(anime.get("type", "Anime")),
+                    fechaAdicion=time_now_formatted(True),
                 ).model_dump()
                 for anime in json_data.get("data")
             ]

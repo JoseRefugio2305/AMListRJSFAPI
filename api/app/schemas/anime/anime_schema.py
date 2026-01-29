@@ -25,6 +25,7 @@ class AnimeCreateSchema(BaseModel):
         ...
     )  # La conversion posterior es necesaria para que al serializar antes de insertar no de errores al intentar serializar HttpUrl como string
     tipo: TipoAnimeEnum = Field(TipoAnimeEnum.anime)
+    fechaAdicion: str = ""
 
 
 # Schema para la consulta de animes que tienen su informacion incompleta
