@@ -38,9 +38,7 @@ export function AccionesFullList({
                placement="right"
             >
                <Link
-                  to={`/manga/${getTitleForLink(manga.titulo)}/${
-                     manga.key_manga
-                  }`} //TODO: Crear pagina d edicion de manga
+                  to={`/manga/${manga.key_manga}/edit`}
                   target="_blank"
                   className="text-white font-bold text-sm m-1 bg-yellow-400 rounded-full px-3 py-3 flex w-fit"
                >

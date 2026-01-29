@@ -190,10 +190,10 @@ export default function MangaEditPage() {
                         <Breadcrumbs
                            items={[
                               { label: "Home", to: "/" },
-                              { label: "Anime", to: "/anime" },
+                              { label: "Manga", to: "/manga" },
                               {
-                                 label: "Editar Anime",
-                                 to: `/anime/${getTitleForLink(
+                                 label: "Editar Manga",
+                                 to: `/manga/${getTitleForLink(
                                     mangaData.titulo
                                  )}/${mangaData.key_manga}`,
                               },
