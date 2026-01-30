@@ -129,3 +129,28 @@ export async function updateManga(payload: MangaUpdateSchema, mangaId: string): 
 
      return response
 }
+
+export async function updateMangaFromMAL(mangaId: string): Promise<ResponseUpdCrtAnime> {
+     const response: ResponseUpdCrtAnime = await axiosInstance.get(`/dashboard/manga/update_from_mal/${mangaId}`)
+          .then((resp) => {
+               const parsed = ResponseUpdCrtAnimeZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, message: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    ...resp.data
+               }
+          })
+          .catch((error) => {
+               console.error(error)
+               return {
+                    message: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+
+     return response
+}
