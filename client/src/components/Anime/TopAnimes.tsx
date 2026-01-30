@@ -43,8 +43,8 @@ export function TopAnimes() {
                      <p className="text-7xl font-bold ml-[30%]">{idx + 1}</p>
                   </div>
                   <LazyLoadImage
-                     // src={anime.animeImages.img}
-                     src="default_image.jpg"
+                     src={anime.animeImages.img}
+                     // src="default_image.jpg"
                      alt={cutText(anime.titulo, 35)}
                      className="h-25 w-20 rounded-xl"
                   />

@@ -23,8 +23,8 @@ export const AnimeListCard = (anime: AnimeSchema) => {
          <div className="flex flex-col sm:flex-row md:items-start p-4 gap-4">
             <div className="flex w-full md:w-[30%] items-center justify-center">
                <LazyLoadImage
-                  //    src={anime.animeImages.img}
-                  src="default_image.jpg"
+                  src={anime.animeImages.img}
+                  // src="default_image.jpg"
                   alt={anime.titulo}
                   className="w-[70%] sm:w-[60%] md:w-[45%] rounded-2xl"
                />

@@ -23,8 +23,8 @@ export const MangaListCard = (manga: MangaSchema) => {
          <div className="flex flex-col sm:flex-row md:items-start p-4 gap-4">
             <div className="flex w-full md:w-[30%] items-center justify-center">
                <LazyLoadImage
-                  //    src={manga.animeImages.img}
-                  src="default_image.jpg"
+                  src={manga.mangaImages.img}
+                  // src="default_image.jpg"
                   alt={manga.titulo}
                   className="w-[70%] sm:w-[60%] md:w-[45%] rounded-2xl"
                />

@@ -43,8 +43,8 @@ export function TopMangas() {
                      <p className="text-7xl font-bold ml-[30%]">{idx + 1}</p>
                   </div>
                   <LazyLoadImage
-                     //  src={manga.mangaImages.img}
-                     src="default_image.jpg"
+                     src={manga.mangaImages.img}
+                     // src="default_image.jpg"
                      alt={cutText(manga.titulo, 35)}
                      className="h-25 w-20 rounded-xl"
                   />

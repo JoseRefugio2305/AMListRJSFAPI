@@ -29,8 +29,8 @@ export const AnimeCard = (anime: AnimeSchema) => {
                />
                <LazyLoadImage
                   height={315}
-                  // src={anime.animeImages.img}
-                  src="default_image.jpg"
+                  src={anime.animeImages.img}
+                  // src="default_image.jpg"
                   alt={cutText(anime.titulo, 35)}
                   className="img-card"
                />

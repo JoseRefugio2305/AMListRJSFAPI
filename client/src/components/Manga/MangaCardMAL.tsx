@@ -18,8 +18,8 @@ export function MangaCardMAL({
       <div className="w-full  border-b border-t hover:bg-gray-400 duration-300 hover:scale-95 dark:hover:bg-gray-600 hover:border-0 hover:rounded-2xl hover:text-white">
          <div className="flex flex-col sm:flex-row md:items-start p-4 gap-3">
             <LazyLoadImage
-               // src={manga.image ?? "default_image.jpg"}
-               src="default_image.jpg"
+               src={manga.image ?? "default_image.jpg"}
+               // src="default_image.jpg"
                alt={manga.titulo}
                className=" w-[20%] h-[60%] rounded-2xl"
             />

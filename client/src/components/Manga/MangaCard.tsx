@@ -29,8 +29,8 @@ export const MangaCard = (manga: MangaSchema) => {
                />
                <LazyLoadImage
                   height={315}
-                  // src={manga.mangaImages.img}
-                  src="default_image.jpg"
+                  src={manga.mangaImages.img}
+                  // src="default_image.jpg"
                   alt={cutText(manga.titulo, 35)}
                   className="img-card"
                />
