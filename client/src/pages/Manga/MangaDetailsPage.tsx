@@ -69,8 +69,8 @@ export default function MangaDetailsPage() {
                   <div className="flex flex-col sm:flex-row w-full p-0">
                      <section className="w-full flex flex-col items-center mb-4 gap-3">
                         <LazyLoadImage
-                           src={"/default_image.jpg"}
-                           // src={mangaDetails.animeImages.img}
+                           // src={"/default_image.jpg"}
+                           src={mangaDetails.mangaImages.img}
                            alt={cutText(mangaDetails.titulo, 50)}
                            className="w-[50%] rounded-2xl shadow-2xl"
                         />
