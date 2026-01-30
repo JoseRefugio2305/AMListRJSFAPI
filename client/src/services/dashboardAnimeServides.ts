@@ -151,3 +151,28 @@ export async function updateAnime(payload: AnimeUpdateSchema, animeId: string): 
 
      return response
 }
+
+export async function updateAnimeFromMAL(animeId: string): Promise<ResponseUpdCrtAnime> {
+     const response: ResponseUpdCrtAnime = await axiosInstance.get(`/dashboard/anime/update_from_mal/${animeId}`)
+          .then((resp) => {
+               const parsed = ResponseUpdCrtAnimeZ.safeParse(resp.data)
+               if (!parsed.success) {
+                    console.error("Datos invalidos desde el servidor.")
+                    return { is_success: false, message: "Datos invalidos desde el servidor." };
+               }
+               return {
+                    is_success: true,
+                    ...resp.data
+               }
+          })
+          .catch((error) => {
+               console.error(error)
+               return {
+                    message: getMessageError(error),
+                    is_success: false,
+               }
+          })
+
+
+     return response
+}

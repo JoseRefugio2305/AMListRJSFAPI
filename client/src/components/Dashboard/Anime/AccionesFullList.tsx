@@ -4,6 +4,7 @@ import { Link } from "react-router";
 import { getTitleForLink } from "../../../utils/common";
 import { PencilIcon, SquareArrowOutUpRightIcon } from "lucide-react";
 import { BtnDeleteAnime } from "./BtnDeleteAnime";
+import { BtnUpdateFromMAL } from "./BtnUpdateFromMAL";
 
 interface AccionesFullListProps {
    anime: AnimeSchema;
@@ -16,8 +17,8 @@ export function AccionesFullList({
 }: AccionesFullListProps) {
    return (
       <>
-         <div className="flex flex-row justify-center gap-3">
-            <Tooltip
+         <div className="flex flex-col justify-center gap-3">
+            <div className="flex flex-row justify-center gap-3"><Tooltip
                content="Visitar Detalles de Anime"
                animation="duration-150"
                placement="right"
@@ -44,6 +45,16 @@ export function AccionesFullList({
                >
                   <PencilIcon />
                </Link>
+            </Tooltip></div>
+            <div className="flex flex-row justify-center gap-3"><Tooltip
+               content="Actualizar Información del Anime con MAL"
+               animation="duration-150"
+               placement="right"
+            >
+               <BtnUpdateFromMAL
+                  animeId={anime.id}
+                  animeTitulo={anime.titulo}
+               />
             </Tooltip>
             <Tooltip
                content="Eliminar el Anime"
@@ -55,7 +66,9 @@ export function AccionesFullList({
                   animeTitulo={anime.titulo}
                   callBackDel={callBackDel}
                />
-            </Tooltip>
+            </Tooltip></div>
+            
+            
          </div>
       </>
    );
