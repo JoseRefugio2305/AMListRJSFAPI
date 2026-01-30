@@ -49,7 +49,7 @@ class MangaJikanService:
             MangaMALSearch(
                 id_MAL=manga.get("mal_id"),
                 linkMAL=manga.get("url"),
-                image=manga.get("images").get("jpg").get("small_image_url"),
+                image=manga.get("images").get("jpg").get("image_url"),
                 titulo=manga.get("title"),
                 tipo=manga.get("type") if manga.get("type") else "Manga",
             )

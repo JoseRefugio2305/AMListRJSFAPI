@@ -51,7 +51,7 @@ class AnimeJikanService:
             AnimeMALSearch(
                 id_MAL=anime.get("mal_id"),
                 linkMAL=anime.get("url"),
-                image=anime.get("images").get("jpg").get("small_image_url"),
+                image=anime.get("images").get("jpg").get("image_url"),
                 titulo=anime.get("title"),
                 tipo=anime.get("type") if anime.get("type") else "Anime",
             )
