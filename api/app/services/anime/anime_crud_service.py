@@ -46,8 +46,10 @@ class AnimeCRUDService:
                         "user": ObjectId(user.id),
                         "active": data.active,
                         "statusView": data.statusView,
+                    },
+                    "$setOnInsert": {
                         "fechaAdicion": nowTS,
-                    }
+                    },
                 },
                 upsert=True,
             )  # Actualizamos el registro o insertamos en caso de que no exista la relacion
@@ -158,6 +160,7 @@ class AnimeCRUDService:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="No se encontro el anime a eliminar",
                 )
+            await UTAFavsModel.delete_many({"anime": ObjectId(anime_id)})
             return ResponseUpdCrtAnime(message="Anime eliminado correctamente")
         except HTTPException:
             raise HTTPException(
@@ -188,7 +191,8 @@ class AnimeCRUDService:
             return RespUpdMALAnimeSchema(
                 message="Genero Creado Correctamente", is_success=True
             )
-        except:
+        except Exception as e:
+            logger.error(f"Error: {e}", exc_info=True)
             return RespUpdMALAnimeSchema(
                 message="Ocurrio un error al intentar agregar el genero",
                 is_success=False,
@@ -216,7 +220,8 @@ class AnimeCRUDService:
                 message="Estudio de animacion agregado correctamente",
                 is_success=True,
             )
-        except:
+        except Exception as e:
+            logger.error(f"Error: {e}", exc_info=True)
             return RespUpdMALAnimeSchema(
                 message="Ocurrio un error al intentar agregar el estudio de animacion",
                 is_success=False,

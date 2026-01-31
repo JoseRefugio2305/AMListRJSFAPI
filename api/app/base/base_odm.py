@@ -69,3 +69,7 @@ class BaseODMModel:
     @classmethod
     async def delete_one(cls, filter: dict):
         return await cls._collection().delete_one(filter)
+
+    @classmethod
+    async def delete_many(cls, filter: dict):
+        return await cls._collection().delete_many(filter)

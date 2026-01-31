@@ -1,6 +1,7 @@
 from fastapi import HTTPException, status
 from typing import Optional
 from bson.objectid import ObjectId
+import asyncio
 
 from app.models.anime_model import AnimeModel
 from app.schemas.anime import (
@@ -193,6 +194,7 @@ class AnimeJikanService:
                 )
                 # Agregamos la respuesta
                 responses.append(resp)
+                await asyncio.sleep(1.1)
             logger.debug(responses)
             success_count = sum(
                 1 for r in responses if r.is_success

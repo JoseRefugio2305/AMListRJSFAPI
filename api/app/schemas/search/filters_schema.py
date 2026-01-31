@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field, BeforeValidator
+import re
 from typing import Optional, Annotated, List
 from .filters_enum import (
     EmisionFilterEnum,
@@ -35,9 +36,9 @@ class FilterSchema(BaseModel):
     statusView: StatusViewEnum = StatusViewEnum.ninguno
     tiposAnime: List[TipoAnimeEnum] = [TipoAnimeEnum.desconocido]
     tiposManga: List[TipoMangaEnum] = [TipoMangaEnum.desconocido]
-    tituloBusq: Annotated[Optional[str], BeforeValidator(str_trim_lower)] = Field(
-        default="", max_length=20
-    )
+    tituloBusq: Annotated[
+        Optional[str], BeforeValidator(str_trim_lower), BeforeValidator(re.escape)
+    ] = Field(default="", max_length=20)
     animeEstudios: List[int] = []
     mangaEditoriales: List[int] = []
     mangaAutores: List[int] = []
@@ -51,9 +52,9 @@ class FilterSchema(BaseModel):
 class UserListFilterSchema(BaseModel):
     limit: int = Field(20, ge=1, le=20)
     page: int = Field(1, ge=1)
-    txtSearch: Annotated[Optional[str], BeforeValidator(str_trim_lower)] = Field(
-        default="", max_length=20
-    )
+    txtSearch: Annotated[
+        Optional[str], BeforeValidator(str_trim_lower), BeforeValidator(re.escape)
+    ] = Field(default="", max_length=20)
     userType: UserTypeEnum = UserTypeEnum.todos
     is_active: ActiveUserEnum = ActiveUserEnum.todos
     orderBy: OrderByEnum = OrderByEnum.asc
@@ -64,9 +65,9 @@ class UserListFilterSchema(BaseModel):
 class FilterGSAESchema(BaseModel):
     limit: int = Field(20, ge=1, le=20)
     page: int = Field(1, ge=1)
-    txtSearch: Annotated[Optional[str], BeforeValidator(str_trim_lower)] = Field(
-        default="", max_length=20
-    )
+    txtSearch: Annotated[
+        Optional[str], BeforeValidator(str_trim_lower), BeforeValidator(re.escape)
+    ] = Field(default="", max_length=20)
     orderBy: OrderByEnum = OrderByEnum.asc
     orderField: FieldOrdGSAEEnum = FieldOrdGSAEEnum.id_MAL
 

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends
+import asyncio
 
 from app.core.security import optional_current_user
 from app.core.logging import get_logger
@@ -20,6 +21,21 @@ logger = get_logger(__name__)
 # Creamos el router con el prefijo y la tag de la documentacion
 routerSearch = APIRouter(prefix="/search", tags=["search"])
 
+# asyncio.gather debe recibir coroutinas de ahi que se extraiga la logica a funciones que son coroutinas
+# de no hacerse esto generaba errores cuando solo se queria hacer buscqueda de animes o mangas
+async def _get_animes(filters: FilterSchema, user: UserLogRespSchema):
+    if (filters.tipoContenido == TipoContenidoEnum.todos 
+        or filters.tipoContenido == TipoContenidoEnum.anime):
+        return await AnimeService.get_all(filters, user)
+    return AnimeSearchSchema(listaAnimes=[], totalAnimes=0)
+
+
+async def _get_mangas(filters: FilterSchema, user: UserLogRespSchema):
+    if (filters.tipoContenido == TipoContenidoEnum.todos 
+        or filters.tipoContenido == TipoContenidoEnum.manga):
+        return await MangaService.get_all(filters, user)
+    return MangaSearchSchema(listaMangas=[], totalMangas=0)
+
 
 # Ruta para recibir peticiones de busqueda con filtros mas completos
 @routerSearch.post("/", response_model=SearchAllSchema)
@@ -28,22 +44,20 @@ async def do_search(
 ):
     ##Primero evaluamos si por los filtros indica que quiere hacer busqueda de anime o manga
 
-    resultsAnimes = (
-        await AnimeService.get_all(filters, user)
-        if (
-            filters.tipoContenido == TipoContenidoEnum.todos
-            or filters.tipoContenido == TipoContenidoEnum.anime
-        )
-        else AnimeSearchSchema(listaAnimes=[], totalAnimes=0)
+    resultsAnimes, resultsMangas = await asyncio.gather(
+        _get_animes(filters, user),
+        _get_mangas(filters, user),
+        return_exceptions=True
     )
-    resultsMangas = (
-        await MangaService.get_all(filters, user)
-        if (
-            filters.tipoContenido == TipoContenidoEnum.todos
-            or filters.tipoContenido == TipoContenidoEnum.manga
-        )
-        else MangaSearchSchema(listaMangas=[], totalMangas=0)
-    )
+    
+    # Manejar excepciones
+    if isinstance(resultsAnimes, Exception):
+        logger.error(f"Error en búsqueda de animes: {resultsAnimes}")
+        resultsAnimes = AnimeSearchSchema(listaAnimes=[], totalAnimes=0)
+    if isinstance(resultsMangas, Exception):
+        logger.error(f"Error en búsqueda de mangas: {resultsMangas}")
+        resultsMangas = MangaSearchSchema(listaMangas=[], totalMangas=0)
+    
     return SearchAllSchema(
         listaAnimes=resultsAnimes.listaAnimes,
         totalAnimes=resultsAnimes.totalAnimes,

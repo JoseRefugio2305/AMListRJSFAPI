@@ -79,7 +79,9 @@ class UserService:
     async def change_username(
         new_username_data: PayloadUsernameSchema, user: UserLogRespSchema
     ) -> PayloadUsernameSchema:
-
+        # Revisamos si el antiguo username(el actual) en el payload es igual al actual
+        if new_username_data.old_name != user.name:
+            raise HTTPException(status_code=400, detail="Username actual incorrecto")
         # Primero verificamos si no existe otro usuario que coincida con el nuevo nombre de usuario
         is_exists = await UserModel.find_by_email(
             email="",
@@ -108,6 +110,9 @@ class UserService:
     async def change_email(
         new_emaildata: PayloadEmailSchema, user: UserLogRespSchema
     ) -> ResponseEmailSchema:
+        # Revisamos si el email antiguo(actual) en el payload es igual al actual
+        if new_emaildata.old_email != user.email:
+            raise HTTPException(status_code=400, detail="Email actual incorrecto")
         # Primero revisamos si no existe otro ususario con el mismo email al que se quiere atualizar
         is_exists = await UserModel.find_by_email(
             email=new_emaildata.new_email, username="", tipoactive=ActiveUserEnum.todos

@@ -81,7 +81,7 @@ async def optional_current_user(
 def require_admin(
     user: UserLogRespSchema = (Depends(get_current_user)),
 ) -> UserLogRespSchema:
-    rol = int(user.rol | RolEnum.base_user)
+    rol = int(user.rol or RolEnum.base_user)
     if rol != RolEnum.admin:  # Rol 1 es para administradores, 0 para usuario normal
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN, detail="Permiso denegado"

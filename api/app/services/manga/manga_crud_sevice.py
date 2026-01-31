@@ -45,8 +45,10 @@ class MangaCRUDService:
                         "user": ObjectId(user.id),
                         "active": data.active,
                         "statusView": data.statusView,
+                    },
+                    "$setOnInsert": {
                         "fechaAdicion": nowTS,
-                    }
+                    },
                 },
                 upsert=True,
             )  # Actualizamos el registro o insertamos en caso de que no exista la relacion
@@ -155,6 +157,7 @@ class MangaCRUDService:
                     status_code=status.HTTP_404_NOT_FOUND,
                     detail="No se encontro el manga a eliminar",
                 )
+            await UTManFavsModel.delete_many({"manga": ObjectId(manga_id)})
             return ResponseUpdCrtManga(message="Manga eliminado correctamente")
         except HTTPException:
             raise HTTPException(
@@ -187,7 +190,8 @@ class MangaCRUDService:
                 message="Editorial de manga agregada correctamente",
                 is_success=True,
             )
-        except:
+        except Exception as e:
+            logger.error(f"Error: {e}", exc_info=True)
             return RespUpdMALAnimeSchema(
                 message="Ocurrio un error al intentar agregar la Editorial de manga",
                 is_success=False,
@@ -216,7 +220,8 @@ class MangaCRUDService:
                 message="Autor de manga agregado correctamente",
                 is_success=True,
             )
-        except:
+        except Exception as e:
+            logger.error(f"Error: {e}", exc_info=True)
             return RespUpdMALAnimeSchema(
                 message="Ocurrio un error al intentar agregar el Autor de manga",
                 is_success=False,

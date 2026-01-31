@@ -52,7 +52,7 @@ class JikanService:
 
         # logger.debug(animedata)
         # logger.debug("       ")
-
+        fecha = animedata.get("aired", {}).get("from")
         dict_anime = {
             "id_MAL": id_MAL,
             "linkMAL": animedata.get("url"),
@@ -74,7 +74,7 @@ class JikanService:
             "descripcion": animedata.get("synopsis"),
             "emision": 1 if animedata.get("airing") else 0,
             "episodios": animedata.get("episodes"),
-            "fechaEmision": animedata.get("aired", {}).get("from").split("T")[0],
+            "fechaEmision": fecha.split("T")[0] if fecha else None,
             "generos": [
                 {
                     "id_MAL": gen.get("mal_id"),
@@ -141,8 +141,9 @@ class JikanService:
 
         mangadata = mangadata.get("data")
 
-        logger.debug(mangadata)
+        # logger.debug(mangadata)
         # logger.debug("       ")
+        fechaComienzoPub = mangadata.get("published", {}).get("from")
         dict_manga = {
             "id_MAL": id_MAL,
             "linkMAL": mangadata.get("url"),
@@ -165,9 +166,9 @@ class JikanService:
             "publicando": 1 if mangadata.get("publishing") else 0,
             "capitulos": mangadata.get("chapters"),
             "volumenes": mangadata.get("volumes"),
-            "fechaComienzoPub": mangadata.get("published", {})
-            .get("from")
-            .split("T")[0],
+            "fechaComienzoPub": (
+                fechaComienzoPub.split("T")[0] if fechaComienzoPub else None
+            ),
             "fechaFinPub": (
                 mangadata.get("published", {}).get("to").split("T")[0]
                 if mangadata.get("published", {}).get(

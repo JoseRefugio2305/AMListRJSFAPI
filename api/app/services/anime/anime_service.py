@@ -112,6 +112,7 @@ class AnimeService:
         return dict_to_anime_schema(anime, True if user else False, True)
 
     # Obtener los animes que no estan actualizados con su informaicon de MAL
+    @staticmethod
     async def get_incomplete_animes(
         filters: FilterSchema, ready_to_mal: ReadyToMALEnum = ReadyToMALEnum.todos
     ) -> SearchAnimeIncompleteSchema:
