@@ -6,7 +6,7 @@ from app.schemas.auth import RolEnum
 class EmisionFilterEnum(IntEnum):
     finalizado = 0
     emision = 1  # En los mangas esto seria publicando
-    pusado = 2  # En hiatus manga
+    pausado = 2  # En hiatus manga
     todos = 3
 
 

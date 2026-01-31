@@ -27,7 +27,7 @@ async def lifespan(app: FastAPI):
         yield  # Ejecucion de la aplicacion
     except Exception as e:
         logger.error(
-            f"Ocurrió un erro critico en la aplicación: ({str(e)}))", exc_info=True
+            f"Ocurrió un erro critico en la aplicación: ({str(e)})", exc_info=True
         )
         raise e
     finally:

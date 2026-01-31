@@ -23,7 +23,7 @@ class SearchService:
         lista_generos = objects_id_list_to_str(await GeneroModel.find({}))
         lista_studios = objects_id_list_to_str(await StudioModel.find({}))
         lista_editoriales = objects_id_list_to_str(await EditorialModel.find({}))
-        litsa_autores = objects_id_list_to_str(await AuthorModel.find({}))
+        lista_autores = objects_id_list_to_str(await AuthorModel.find({}))
 
         return FiltersListAdvancedSearch(
             genresList=[
@@ -40,6 +40,6 @@ class SearchService:
             ],
             autoresList=[
                 AutoresMRelSchema(nombre=gl["nombre"], id_MAL=gl["id_MAL"])
-                for gl in litsa_autores
+                for gl in lista_autores
             ],
         )

@@ -24,7 +24,7 @@ from app.schemas.common.genres import CreateGenreSchema
 from app.core.utils import objects_id_list_to_str, ObjectIdStr
 from app.core.database import filtrado_info_incompleta
 from app.services.jikan_service import JikanService
-from .manga_crud_sevice import MangaCRUDService
+from .manga_crud_service import MangaCRUDService
 from app.services.anime import AnimeCRUDService
 
 from app.core.logging import get_logger
