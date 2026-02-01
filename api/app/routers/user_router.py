@@ -26,6 +26,13 @@ logger = get_logger(__name__)
 routerUser = APIRouter(prefix="/user", tags=["user"])
 
 
+async def resolve_target_user(username, user):
+    # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
+    if not user or user.name != username:
+        return await UserService.get_UserInfo(username)
+    return user
+
+
 # Obtener informacion de perfil propio
 @routerUser.get("/me/", response_model=UserLogRespSchema)
 async def me(user: UserLogRespSchema = Depends(get_current_user)):
@@ -39,12 +46,8 @@ async def profile(
     username: UsernameType,
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
-    if user:
-        if user.name != username:
-            user = await UserService.get_UserInfo(username)
-    else:
-        user = await UserService.get_UserInfo(username)
+
+    user = await resolve_target_user(username, user)
 
     user.access_token = ""
     user = user.model_dump()
@@ -59,12 +62,7 @@ async def estadisticas(
     tipoStats: TypeStatisticEnum = TypeStatisticEnum.a_m_favs,
     user: UserLogRespSchema = Depends(optional_current_user),
 ) -> FavsCountSchema:
-    # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
-    if user:
-        if user.name != username:
-            user = await UserService.get_UserInfo(username)
-    else:
-        user = await UserService.get_UserInfo(username)
+    user = await resolve_target_user(username, user)
     # Si queremos el conteo de favoritos
     if tipoStats == TypeStatisticEnum.a_m_favs:
         conteoFavoritos = await StatsService.get_count_favs(user)
@@ -81,12 +79,7 @@ async def get_anime_list(
     filters: FilterSchema = FilterSchema(),
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
-    if user:
-        if user.name != username:
-            user = await UserService.get_UserInfo(username)
-    else:
-        user = await UserService.get_UserInfo(username)
+    user = await resolve_target_user(username, user)
 
     animeList = await AnimeService.get_all(filters, user)
 
@@ -100,12 +93,7 @@ async def get_manga_list(
     filters: FilterSchema = FilterSchema(),
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    # Si el usuario esta logeado hay qye verificar si su username coincide con el que busca, si no coincide hay que obtener la informacion de este otro usuario
-    if user:
-        if user.name != username:
-            user = await UserService.get_UserInfo(username)
-    else:
-        user = await UserService.get_UserInfo(username)
+    user = await resolve_target_user(username, user)
 
     mangaList = await MangaService.get_all(filters, user)
 
