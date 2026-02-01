@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, HttpUrl, AfterValidator, AliasChoices
 from typing import Optional, Annotated, List
-from .images import AnimeImagesSchema, MangaImagesSchema
+from .images import MediaImagesSchema
 from app.core.utils import httpurl_to_str, ObjectIdStr
 
 
@@ -13,7 +13,7 @@ class AnimeRelationsSchema(BaseModel):
 # Esquema para relaciones completas del anime
 class AnimeRelFullSchema(AnimeRelationsSchema):
     key_anime: int = Field(..., ge=1)
-    animeImages: AnimeImagesSchema
+    animeImages: MediaImagesSchema
 
 
 # Relacion completa de animes con otros animes
@@ -31,7 +31,7 @@ class AnimeRelTypeIncompleteSchema(BaseModel):
 # Esquema para las adaptaciones
 class AnimeAdapFullSchema(AnimeRelationsSchema):
     key_manga: int = Field(..., ge=1)
-    mangaImages: MangaImagesSchema
+    mangaImages: MediaImagesSchema
 
 
 # Relacion de adaptaciones del manga
@@ -43,7 +43,7 @@ class AdaptacionSchema(BaseModel):
 # Schema para la relacion de adaptacion completa para consulta especifica del manga
 class AdaptacionFullSchema(AdaptacionSchema):
     key_anime: int = Field(..., ge=1)
-    animeImages: AnimeImagesSchema
+    animeImages: MediaImagesSchema
 
 
 # Relaciones del manga
@@ -55,7 +55,7 @@ class MangaRelationsSchema(BaseModel):
 # Schema para relacion completa cuando se consulte un anime especifico
 class MangaRelFullSchema(MangaRelationsSchema):
     key_manga: int = Field(..., ge=1)
-    mangaImages: MangaImagesSchema
+    mangaImages: MediaImagesSchema
 
 
 # Relacion completa de mangas con otros mangas

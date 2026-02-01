@@ -10,7 +10,7 @@ from app.schemas.common.relations import (
     MangaRelTypeFullSchema,
     MangaRelTypeIncompleteSchema,
 )
-from app.schemas.common.images import MangaImagesSchema
+from app.schemas.common.images import MediaImagesSchema
 from app.schemas.common.genres import GenreARelSchema
 from app.schemas.anime import AnimeMALSearch, EstadoEmEnum, StatusViewEnum
 from app.core.utils import httpurl_to_str, ObjectIdStr
@@ -35,7 +35,7 @@ class MangaIncompleteSchema(MangaCreateSchema):
 # Manga
 class MangaSchema(MangaCreateSchema):
     id: ObjectIdStr
-    mangaImages: MangaImagesSchema
+    mangaImages: MediaImagesSchema
     calificacion: float = Field(ge=0, le=10)
     descripcion: str
     publicando: EstadoEmEnum
@@ -66,7 +66,7 @@ class MangaUpdateSchema(MangaCreateSchema):
     titulo: Optional[str] = None
     link_p: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     tipo: Optional[TipoMangaEnum] = None
-    mangaImages: Optional[MangaImagesSchema] = None
+    mangaImages: Optional[MediaImagesSchema] = None
     calificacion: Optional[float] = Field(default=0, ge=0, le=10)
     descripcion: Optional[str] = None
     publicando: Optional[EstadoEmEnum] = None

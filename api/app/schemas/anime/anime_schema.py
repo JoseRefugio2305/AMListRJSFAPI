@@ -9,7 +9,7 @@ from app.schemas.common.relations import (
     AnimeRelTypeFullSchema,
     AnimeRelTypeIncompleteSchema,
 )
-from app.schemas.common.images import AnimeImagesSchema
+from app.schemas.common.images import MediaImagesSchema
 from app.schemas.common.genres import GenreARelSchema
 from app.core.utils import httpurl_to_str, ObjectIdStr
 
@@ -47,7 +47,7 @@ class RespUpdMALAnimeSchema(ResponseUpdCrtAnime):
 # Anime
 class AnimeSchema(AnimeCreateSchema):
     id: ObjectIdStr
-    animeImages: AnimeImagesSchema
+    animeImages: MediaImagesSchema
     calificacion: float = Field(ge=0, le=10)
     descripcion: str
     emision: EstadoEmEnum
@@ -76,7 +76,7 @@ class AnimeUpdateSchema(AnimeCreateSchema):
     titulo: Optional[str] = None
     link_p: Optional[Annotated[HttpUrl, AfterValidator(httpurl_to_str)]] = None
     tipo: Optional[TipoAnimeEnum] = None
-    animeImages: Optional[AnimeImagesSchema] = None
+    animeImages: Optional[MediaImagesSchema] = None
     calificacion: Optional[float] = Field(default=0, ge=0, le=10)
     descripcion: Optional[str] = None
     emision: Optional[EstadoEmEnum] = None
