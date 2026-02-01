@@ -11,11 +11,15 @@ from app.schemas.auth import (
     ResponseEmailSchema,
     PayloadPassSchema,
     ResponseNewPassSchema,
-    RolEnum,
 )
 from app.schemas.search import ActiveUserEnum, UserListFilterSchema, UserTypeEnum
 from app.schemas.auth import UserListSchema, PayloadActiveStateSchema
-from app.core.utils import object_id_to_str, objects_id_list_to_str, UsernameType
+from app.core.utils import (
+    object_id_to_str,
+    objects_id_list_to_str,
+    UsernameType,
+    dict_to_user_schema,
+)
 from app.services.auth_service import verify_pass, get_pass_hash
 from app.core.database import apply_paginacion_ordenacion
 from app.core.security import create_access_token
@@ -23,20 +27,6 @@ from app.core.security import create_access_token
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
-
-
-def dict_to_user_schema(userInfo: dict) -> UserLogRespSchema:
-    return UserLogRespSchema(
-        id=userInfo.get("_id") or userInfo.get("id") or userInfo.get("Id"),
-        name=userInfo.get("name"),
-        email=userInfo.get("email"),
-        rol=userInfo.get("rol", RolEnum.base_user),
-        is_active=userInfo.get("is_active", True),
-        profile_pic=userInfo.get("profile_pic"),
-        created_date=userInfo.get("created_date"),
-        show_statistics=userInfo.get("show_statistics"),
-        access_token="",
-    )
 
 
 class UserService:
@@ -53,7 +43,7 @@ class UserService:
         if not userInfo:  # Si no se encontro informacion
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        return dict_to_user_schema(userInfo)
+        return dict_to_user_schema(userInfo, "")
 
     # Cambio de goto de perfil
     @staticmethod
@@ -231,7 +221,7 @@ class UserService:
             total=totalUsers,
             page=userFilters.page,
             totalPages=math.ceil(totalUsers / userFilters.limit),
-            userList=[dict_to_user_schema(userInfo) for userInfo in results],
+            userList=[dict_to_user_schema(userInfo, "") for userInfo in results],
         )
 
     # Cambiar el estado activo de un usuario

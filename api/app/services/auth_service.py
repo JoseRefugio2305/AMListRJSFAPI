@@ -4,7 +4,12 @@ from passlib.context import CryptContext
 from app.models.user_model import UserModel
 from app.schemas.auth import UserRegSchema, UserLogRespSchema, RolEnum
 from app.schemas.search import ActiveUserEnum
-from app.core.utils import object_id_to_str, str_trim_lower, time_now_formatted
+from app.core.utils import (
+    object_id_to_str,
+    str_trim_lower,
+    time_now_formatted,
+    dict_to_user_schema,
+)
 from app.core.security import create_access_token
 from app.core.logging import get_logger
 
@@ -61,17 +66,7 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
     accessToken = create_access_token(
         subject=createdUser.get("email")
     )  # Creamos el accesstoken usando el email como sujeto de de identificacion
-    return UserLogRespSchema(
-        id=createdUser.get("_id") or createdUser.get("id") or createdUser.get("Id"),
-        name=createdUser.get("name"),
-        email=createdUser.get("email"),
-        rol=createdUser.get("rol", RolEnum.base_user),
-        is_active=createdUser.get("is_active", True),
-        profile_pic=createdUser.get("profile_pic"),
-        created_date=createdUser.get("created_date"),
-        show_statistics=createdUser.get("show_statistics"),
-        access_token=accessToken,
-    )
+    return dict_to_user_schema(createdUser, accessToken)
 
 
 # Verificamos que las credenciales sean correctas
@@ -86,14 +81,4 @@ async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
     if not hashed or not verify_pass(password, hashed):
         return None
 
-    return UserLogRespSchema(
-        id=user.get("_id") or user.get("id") or user.get("Id"),
-        name=user.get("name"),
-        email=user.get("email"),
-        rol=user.get("rol", RolEnum.base_user),
-        is_active=user.get("is_active", True),
-        profile_pic=user.get("profile_pic"),
-        created_date=user.get("created_date"),
-        show_statistics=user.get("show_statistics"),
-        access_token="",  # Sera actualizado antes de retornar la informacion
-    )
+    return dict_to_user_schema(user, "")
