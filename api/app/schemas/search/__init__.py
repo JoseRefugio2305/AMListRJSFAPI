@@ -3,6 +3,7 @@ from .filters_schema import (
     UserListFilterSchema,
     FilterGSAESchema,
     FiltersListAdvancedSearch,
+    MAX_LIMIT,
 )
 from .filters_enum import (
     TipoContenidoEnum,
@@ -58,4 +59,5 @@ __all__ = [
     "FieldOrdGSAEEnum",
     "FilterGSAESchema",
     "FiltersListAdvancedSearch",
+    "MAX_LIMIT",
 ]

@@ -24,10 +24,12 @@ from app.schemas.common.relations import (
 )
 from app.core.utils import str_trim_lower
 
+MAX_LIMIT = 20
+
 
 # Schema de los filtros de paginado y busqueda
 class FilterSchema(BaseModel):
-    limit: int = Field(20, ge=1, le=20)
+    limit: int = Field(MAX_LIMIT, ge=1, le=MAX_LIMIT)
     page: int = Field(1, ge=1)
     emision: EmisionFilterEnum = (
         EmisionFilterEnum.todos
@@ -50,7 +52,7 @@ class FilterSchema(BaseModel):
 
 # Schema de filtros para busqueda de usuarios en dashboard
 class UserListFilterSchema(BaseModel):
-    limit: int = Field(20, ge=1, le=20)
+    limit: int = Field(MAX_LIMIT, ge=1, le=MAX_LIMIT)
     page: int = Field(1, ge=1)
     txtSearch: Annotated[
         Optional[str], BeforeValidator(str_trim_lower), BeforeValidator(re.escape)
@@ -63,7 +65,7 @@ class UserListFilterSchema(BaseModel):
 
 # Schema de filtros de busqueda de generos, estudios de animacion, editoriales y autores
 class FilterGSAESchema(BaseModel):
-    limit: int = Field(20, ge=1, le=20)
+    limit: int = Field(MAX_LIMIT, ge=1, le=MAX_LIMIT)
     page: int = Field(1, ge=1)
     txtSearch: Annotated[
         Optional[str], BeforeValidator(str_trim_lower), BeforeValidator(re.escape)

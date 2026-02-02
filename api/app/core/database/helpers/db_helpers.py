@@ -1,11 +1,7 @@
 from typing import Optional, List, Dict, Any
 from bson.objectid import ObjectId
 
-from app.schemas.search import (
-    EmisionFilterEnum,
-    OrderByEnum,
-    FieldOrdEnum,
-)
+from app.schemas.search import EmisionFilterEnum, OrderByEnum, FieldOrdEnum, MAX_LIMIT
 from app.schemas.anime import TipoAnimeEnum, StatusViewEnum
 from app.schemas.manga import TipoMangaEnum
 
@@ -112,13 +108,13 @@ def filtrado_info_incompleta(is_to_update: bool = False) -> List[Dict[str, Any]]
 
 # Limitacion, paginado y ordenacion de la informacion
 def apply_paginacion_ordenacion(
-    limit: int = 20,
+    limit: int = MAX_LIMIT,
     pagina: int = 1,
     ordBy: OrderByEnum = OrderByEnum.asc,
     ordField: str = "",
     is_anime: bool = True,
 ) -> List[Dict[str, Any]]:
-
+    limit = min(limit, MAX_LIMIT)
     # Si se pretende ordenar por el key de la coleccion,  se debe identificar si es de animes o mangas
     if ordField == FieldOrdEnum.key:
         ordField = "key_anime" if is_anime else "key_manga"
