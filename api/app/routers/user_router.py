@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 
 from app.services.user_services import UserService
 from app.services.anime import AnimeService
@@ -17,6 +17,7 @@ from app.schemas.auth import (
 from app.schemas.search import FilterSchema, AnimeSearchSchema, MangaSearchSchema
 from app.schemas.stats import FavsCountSchema, TypeStatisticEnum
 from app.services.stats_service import StatsService
+from app.core.security.rate_limiter import limiter
 from app.core.logging import get_logger
 
 
@@ -42,7 +43,9 @@ async def me(user: UserLogRespSchema = Depends(get_current_user)):
 
 # Obtener informacion de otro perfil de usuario
 @routerUser.get("/{username}", response_model=UserLogRespSchema)
+@limiter.limit("60/minute")
 async def profile(
+    request: Request,
     username: UsernameType,
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
@@ -57,7 +60,9 @@ async def profile(
 
 # Obtencion de estadisticas del usuario
 @routerUser.get("/stats/{username}", response_model=FavsCountSchema)
+@limiter.limit("60/minute")
 async def estadisticas(
+    request: Request,
     username: UsernameType,
     tipoStats: TypeStatisticEnum = TypeStatisticEnum.a_m_favs,
     user: UserLogRespSchema = Depends(optional_current_user),
@@ -74,7 +79,9 @@ async def estadisticas(
 
 # Lista de animes favoritos de un usuario especifico
 @routerUser.post("/anime_list/{username}", response_model=AnimeSearchSchema)
+@limiter.limit("30/minute")
 async def get_anime_list(
+    request: Request,
     username: UsernameType,
     filters: FilterSchema = FilterSchema(),
     user: UserLogRespSchema = Depends(optional_current_user),
@@ -88,7 +95,9 @@ async def get_anime_list(
 
 # Lista de mangas favoritos de un usuario especifico
 @routerUser.post("/manga_list/{username}", response_model=MangaSearchSchema)
+@limiter.limit("30/minute")
 async def get_manga_list(
+    request: Request,
     username: UsernameType,
     filters: FilterSchema = FilterSchema(),
     user: UserLogRespSchema = Depends(optional_current_user),

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from app.core.security import get_current_user, optional_current_user
 from app.core.logging import get_logger
@@ -7,6 +7,7 @@ from app.schemas.auth import UserLogRespSchema
 from app.schemas.manga import MangaSchema, MangaFavPayloadSchema
 from app.schemas.anime import AniFavRespSchema
 from app.services.manga import MangaService, MangaCRUDService
+from app.core.security.rate_limiter import limiter
 
 logger = get_logger(__name__)
 
@@ -16,8 +17,11 @@ routerManga = APIRouter(prefix="/manga", tags=["manga"])
 
 # Listado general de mangas, paginado
 @routerManga.post("/", response_model=MangaSearchSchema)
+@limiter.limit("30/minute")
 async def manga_page(
-    filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
+    request: Request,
+    filters: FilterSchema,
+    user: UserLogRespSchema = Depends(optional_current_user),
 ):
     mangas = await MangaService.get_all(filters, user)
     return mangas.model_dump()
@@ -25,8 +29,11 @@ async def manga_page(
 
 # Mangas en publicacion
 @routerManga.post("/publicando/", response_model=MangaSearchSchema)
+@limiter.limit("30/minute")
 async def mangas_publicando(
-    filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
+    request: Request,
+    filters: FilterSchema,
+    user: UserLogRespSchema = Depends(optional_current_user),
 ):
     filters.emision = EmisionFilterEnum.emision
     mangas_pub = await MangaService.get_all(filters, user)
@@ -37,7 +44,9 @@ async def mangas_publicando(
 # Detalles de manga
 @routerManga.get("/{key_manga}", response_model=MangaSchema)
 async def manga_details(
-    key_manga: int, user: UserLogRespSchema = Depends(optional_current_user)
+    request: Request,
+    key_manga: int,
+    user: UserLogRespSchema = Depends(optional_current_user),
 ):
     manga = await MangaService.get_manga_by_id(key_manga, user)
     return manga.model_dump()

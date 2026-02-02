@@ -1,8 +1,9 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Request
 
 from app.schemas.auth import UserRegLogSchema, UserLogRespSchema
 from app.services.auth_service import register_user, auth_user
 from app.core.security import create_access_token
+from app.core.security.rate_limiter import limiter
 from app.core.logging import get_logger
 
 # Creamos el router con el prefijo y la tag de la documentacion
@@ -15,7 +16,8 @@ log = get_logger(__name__)
 @routerAuth.post(
     "/register", response_model=UserLogRespSchema, status_code=status.HTTP_201_CREATED
 )
-async def register(payload: UserRegLogSchema):
+@limiter.limit("3/hour")
+async def register(request: Request, payload: UserRegLogSchema):
     try:
         # Registramos usuario
         created = await register_user(payload.name, payload.email, payload.password)
@@ -27,7 +29,8 @@ async def register(payload: UserRegLogSchema):
 
 # Ruta de inicio de sesion
 @routerAuth.post("/login", response_model=UserLogRespSchema)
-async def login(payload: UserRegLogSchema):
+@limiter.limit("5/minute")
+async def login(request: Request, payload: UserRegLogSchema):
     # Revisamos si el usuario existe y que sus credenciales sean correctas
     user = await auth_user(payload.email, payload.password)
     if not user:  # Si no es asi, retornamos el error

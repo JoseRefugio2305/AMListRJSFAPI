@@ -2,6 +2,8 @@ from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 from app.core.database import connect_mongo, close_mongo
 from app.core.config import settings
@@ -13,6 +15,7 @@ from app.routers import (
     user_router,
     dashboard,
 )
+from app.core.security.rate_limiter import limiter
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -53,11 +56,16 @@ async def root():
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.ORIGINS_CORS,
-    allow_credentials=True,  #Permitimos cookies y headers de autorizacion
+    allow_credentials=True,  # Permitimos cookies y headers de autorizacion
     allow_methods=["*"],  # Permitimos metodos HTTP (GET, POST, PUT, DELETE, etc.)
-    allow_headers=["*"],  # Permitimos todos los headers 
+    allow_headers=["*"],  # Permitimos todos los headers
 )
 
+
+# Agregamos el limiter
+app.state.limiter = limiter
+# Excepciones de limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Registro de rutas
 app.include_router(auth_router.routerAuth)

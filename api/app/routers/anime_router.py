@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Request
 
 from app.core.security import get_current_user, optional_current_user
 from app.services.anime import AnimeService, AnimeCRUDService
 from app.schemas.search import FilterSchema, EmisionFilterEnum, AnimeSearchSchema
 from app.schemas.anime import AnimeSchema, AniFavPayloadSchema, AniFavRespSchema
 from app.schemas.auth import UserLogRespSchema
+from app.core.security.rate_limiter import limiter
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -15,8 +16,11 @@ routerAnime = APIRouter(prefix="/anime", tags=["anime"])
 
 # Listado general de animes, paginado
 @routerAnime.post("/", response_model=AnimeSearchSchema)
+@limiter.limit("50/minute")
 async def anime_page(
-    filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
+    request: Request,
+    filters: FilterSchema,
+    user: UserLogRespSchema = Depends(optional_current_user),
 ):
     animes = await AnimeService.get_all(filters, user)
 
@@ -25,8 +29,11 @@ async def anime_page(
 
 # Animes en emision
 @routerAnime.post("/emision/", response_model=AnimeSearchSchema)
+@limiter.limit("50/minute")
 async def animes_emision(
-    filters: FilterSchema, user: UserLogRespSchema = Depends(optional_current_user)
+    request: Request,
+    filters: FilterSchema,
+    user: UserLogRespSchema = Depends(optional_current_user),
 ):
     filters.emision = EmisionFilterEnum.emision
     animes_emision = await AnimeService.get_all(filters, user)
@@ -36,8 +43,11 @@ async def animes_emision(
 
 # Detalles de anime
 @routerAnime.get("/{key_anime}", response_model=AnimeSchema)
+@limiter.limit("100/minute")
 async def anime_details(
-    key_anime: int, user: UserLogRespSchema = Depends(optional_current_user)
+    request: Request,
+    key_anime: int,
+    user: UserLogRespSchema = Depends(optional_current_user),
 ):
     anime = await AnimeService.get_anime_by_id(key_anime, user)
     return anime.model_dump()
