@@ -7,6 +7,10 @@ from app.core.logging import get_logger
 logger = get_logger(__name__)
 
 
+def get_jikan_client():
+    return Jikan4SNEK()
+
+
 def get_genres_am(genres_list: List[Dict]) -> List[Dict]:
     list_genres = []
     for gen in genres_list:
@@ -28,7 +32,7 @@ class JikanService:
     async def search_mal(
         titulo: str, tipo: TipoContMALEnum = TipoContMALEnum.anime
     ) -> Dict:
-        jikan = Jikan4SNEK()
+        jikan = get_jikan_client()
         results = []
         # Realizamos la busqueda dependiendo del tipo de contenido
         if TipoContMALEnum.anime == tipo:
@@ -40,7 +44,7 @@ class JikanService:
     # Obtener la informacion completa de un anime
     @staticmethod
     async def get_data_anime(id_MAL: int) -> Dict:
-        jikan = Jikan4SNEK()
+        jikan = get_jikan_client()
         animedata = await jikan.get(
             id_MAL, entry="full"
         ).anime()  # Obtenemos toda la informacion dle anime
@@ -131,7 +135,7 @@ class JikanService:
 
     @staticmethod
     async def get_data_manga(id_MAL: int) -> Dict:
-        jikan = Jikan4SNEK()
+        jikan = get_jikan_client()
         mangadata = await jikan.get(
             id_MAL, entry="full"
         ).manga()  # Obtenemos toda la informacion del manga
