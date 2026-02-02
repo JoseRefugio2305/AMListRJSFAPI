@@ -37,6 +37,9 @@ axiosInstance.interceptors.response.use(
 
           } else if (error.response.status === 404) {
                window.location.href = "/404-not-found";
+          } else if (error.response && error.response.status === 429) {//Peticiones excedidas
+               console.log(error)
+               error.response.data.message = `Lo sentimos excediste e número de peticiones permitidas.\n${error.response.data.error || ""}`
           } else if (error.response && error.response.status === 500) {//Si hubo un error del servidor
                error.response.data.message = "Error al procesar la petición"
           }
