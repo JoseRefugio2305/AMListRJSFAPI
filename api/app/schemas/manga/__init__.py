@@ -6,6 +6,7 @@ from .manga_schema import (
     RespUpdMALMangaSchema,
     MangaMALSearch,
     MangaIncompleteSchema,
+    PayloadMangaIDMAL,
 )
 from .manga_enums import TipoMangaEnum
 from .manga_fav import MangaFavPayloadSchema, MangaFavsSchema
@@ -21,4 +22,5 @@ __all__ = [
     "RespUpdMALMangaSchema",
     "MangaMALSearch",
     "MangaIncompleteSchema",
+    "PayloadMangaIDMAL",
 ]

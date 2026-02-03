@@ -97,3 +97,9 @@ class RespUpdMALMangaSchema(ResponseUpdCrtManga):
 # Esquema para las respuestas de mangas en MAL por titulo
 class MangaMALSearch(AnimeMALSearch):
     tipo: str = "Manga"
+
+
+# Asignar id_MAL a un manga
+class PayloadMangaIDMAL(BaseModel):
+    id: ObjectIdStr
+    id_MAL: int = Field(..., ge=1)

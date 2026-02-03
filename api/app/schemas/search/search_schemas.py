@@ -35,6 +35,12 @@ class PayloadSearchAnimeMAL(BaseModel):
         ..., min_length=4
     )
 
+# Payload busqueda de manga en MAL por titulo
+class PayloadSearchMangaMAL(BaseModel):
+    tit_search: Annotated[str, BeforeValidator(str_trim_lower)] = Field(
+        ..., min_length=4
+    )
+
 
 # Respuesta de busqueda de anime en MAL por titulo
 class ResponseSearchAnimeMAL(BaseModel):

@@ -3,10 +3,14 @@ from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from app.services.manga import MangaService, MangaJikanService, MangaCRUDService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
-from app.schemas.anime import PayloadAnimeIDMAL
-from app.schemas.manga import MangaCreateSchema, MangaUpdateSchema, ResponseUpdCrtManga
+from app.schemas.manga import (
+    MangaCreateSchema,
+    MangaUpdateSchema,
+    ResponseUpdCrtManga,
+    PayloadMangaIDMAL,
+)
 from app.schemas.search import (
-    PayloadSearchAnimeMAL,
+    PayloadSearchMangaMAL,
     ResponseSearchMangaMAL,
     SearchMangaIncompleteSchema,
     ReadyToMALEnum,
@@ -63,14 +67,14 @@ async def delete(manga_id: ObjectIdStr):
 
 # Buscar anime en MAL por su titulo
 @routerDashManga.post("/search_on_mal/", response_model=ResponseSearchMangaMAL)
-async def search_on_mal(payload: PayloadSearchAnimeMAL):
+async def search_on_mal(payload: PayloadSearchMangaMAL):
     listAnimes = await MangaJikanService.search_manga_mal(payload)
     return listAnimes.model_dump()
 
 
 # Asignar un ID MAL  a un manga
 @routerDashManga.post("/assign_id_mal/", response_model=ResponseUpdCrtManga)
-async def assign_id_mal(payload: PayloadAnimeIDMAL):
+async def assign_id_mal(payload: PayloadMangaIDMAL):
     response = await MangaJikanService.assign_id_mal_manga(payload)
     return response.model_dump()
 

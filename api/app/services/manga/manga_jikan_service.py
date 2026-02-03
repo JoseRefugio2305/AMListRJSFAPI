@@ -8,14 +8,14 @@ from app.schemas.manga import (
     MangaUpdateSchema,
     ResponseUpdCrtManga,
     MangaMALSearch,
+    PayloadMangaIDMAL,
 )
 from app.schemas.anime import (
-    PayloadAnimeIDMAL,
     ResponseUpdAllMALSchema,
     RespUpdMALAnimeSchema,
 )
 from app.schemas.search import (
-    PayloadSearchAnimeMAL,
+    PayloadSearchMangaMAL,
     ResponseSearchMangaMAL,
     TipoContMALEnum,
 )
@@ -37,7 +37,7 @@ class MangaJikanService:
     # Buscar manga en MAL
     @staticmethod
     async def search_manga_mal(
-        payload: PayloadSearchAnimeMAL,
+        payload: PayloadSearchMangaMAL,
     ) -> ResponseSearchMangaMAL:
         ##Realizamos la busqueda
         results = await JikanService.search_mal(
@@ -62,7 +62,7 @@ class MangaJikanService:
 
     # Asignar un idMAL a un manga
     @staticmethod
-    async def assign_id_mal_manga(payload: PayloadAnimeIDMAL) -> ResponseUpdCrtManga:
+    async def assign_id_mal_manga(payload: PayloadMangaIDMAL) -> ResponseUpdCrtManga:
         # Reviamos si existe un manga con el mismo idmal que queremos asignar
         existing_manga = await MangaModel.find_by_idmal(payload.id_MAL)
         if existing_manga:
