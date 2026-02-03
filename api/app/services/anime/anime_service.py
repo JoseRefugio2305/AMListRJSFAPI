@@ -8,7 +8,6 @@ from app.models.studio_model import StudioModel
 from app.schemas.anime import AnimeSchema
 from app.schemas.common.relations import StudiosSchema
 from app.schemas.common.genres import GenreSchema
-from .anime_utils import dict_to_anime_schema, dict_to_incomplete_anime
 from app.schemas.search import (
     AnimeSearchSchema,
     FilterSchema,
@@ -19,7 +18,12 @@ from app.schemas.search import (
     SearchStudiosSchema,
 )
 from app.schemas.auth import UserLogRespSchema
-from app.core.utils import object_id_to_str, objects_id_list_to_str
+from app.core.utils import (
+    object_id_to_str,
+    objects_id_list_to_str,
+    to_anime,
+    to_incomplete_anime,
+)
 from app.core.database import (
     lookup_user_favorites,
     filtro_emision,
@@ -77,9 +81,7 @@ class AnimeService:
         )
 
         return AnimeSearchSchema(
-            listaAnimes=[
-                dict_to_anime_schema(r, True if user else False, False) for r in results
-            ],
+            listaAnimes=[to_anime(r, True if user else False, False) for r in results],
             pageA=filters.page,
             totalPagesA=math.ceil(totalAnimes / filters.limit),
             totalAnimes=totalAnimes,
@@ -109,7 +111,7 @@ class AnimeService:
         anime = object_id_to_str(
             results[0]
         )  # Agregate retorna por defecto una lista, por lo cual se debe de tomar el primer elemento, si no da resultados, seria un elemento vacio
-        return dict_to_anime_schema(anime, True if user else False, True)
+        return to_anime(anime, True if user else False, True)
 
     # Obtener los animes que no estan actualizados con su informaicon de MAL
     @staticmethod
@@ -153,7 +155,7 @@ class AnimeService:
             else []
         )
 
-        results = [dict_to_incomplete_anime(a) for a in results]
+        results = [to_incomplete_anime(a) for a in results]
 
         logger.debug(pipeline)
 

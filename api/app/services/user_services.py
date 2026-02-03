@@ -18,7 +18,7 @@ from app.core.utils import (
     object_id_to_str,
     objects_id_list_to_str,
     UsernameType,
-    dict_to_user_schema,
+    to_user,
 )
 from app.services.auth_service import verify_pass, get_pass_hash
 from app.core.database import apply_paginacion_ordenacion
@@ -43,7 +43,7 @@ class UserService:
         if not userInfo:  # Si no se encontro informacion
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        return dict_to_user_schema(userInfo, "")
+        return to_user(userInfo, "")
 
     # Cambio de goto de perfil
     @staticmethod
@@ -221,7 +221,7 @@ class UserService:
             total=totalUsers,
             page=userFilters.page,
             totalPages=math.ceil(totalUsers / userFilters.limit),
-            userList=[dict_to_user_schema(userInfo, "") for userInfo in results],
+            userList=[to_user(userInfo, "") for userInfo in results],
         )
 
     # Cambiar el estado activo de un usuario

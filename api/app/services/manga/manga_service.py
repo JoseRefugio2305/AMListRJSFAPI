@@ -2,7 +2,6 @@ from fastapi import HTTPException, status
 from typing import Optional
 import math
 
-from .manga_utils import dict_to_manga_schema, dict_to_incomplete_manga
 from app.models.manga_model import MangaModel
 from app.models.editorial_model import EditorialModel
 from app.models.author_model import AuthorModel
@@ -18,7 +17,12 @@ from app.schemas.search import (
     SearchAutoresSchema,
 )
 from app.schemas.auth import UserLogRespSchema
-from app.core.utils import object_id_to_str, objects_id_list_to_str
+from app.core.utils import (
+    object_id_to_str,
+    objects_id_list_to_str,
+    to_manga,
+    to_incomplete_manga,
+)
 from app.core.database import (
     lookup_user_favorites,
     filtro_emision,
@@ -75,7 +79,7 @@ class MangaService:
 
         return MangaSearchSchema(
             listaMangas=[
-                dict_to_manga_schema(r, True if user else False, False) for r in results
+                to_manga(r, True if user else False, False) for r in results
             ],
             pageM=filters.page,
             totalPagesM=math.ceil(totalMangas / filters.limit),
@@ -107,7 +111,7 @@ class MangaService:
         manga = object_id_to_str(
             results[0]
         )  # Agregate retorna por defecto una lista, por lo cual se debe de tomar el primer elemento, si no da resultados, seria un elemento vacio
-        return dict_to_manga_schema(manga, True if user else False, True)
+        return to_manga(manga, True if user else False, True)
 
     # Obtener los mangas incompletos
     @staticmethod
@@ -152,7 +156,7 @@ class MangaService:
             else []
         )
 
-        results = [dict_to_incomplete_manga(a) for a in results]
+        results = [to_incomplete_manga(a) for a in results]
 
         logger.debug(results)
         return SearchMangaIncompleteSchema(

@@ -8,7 +8,13 @@ from .validations import (
     validate_file_animes,
     UsernameType,
 )
-from .user_utils import dict_to_user_schema
+from .mappers import (
+    to_anime,
+    to_incomplete_anime,
+    to_incomplete_manga,
+    to_manga,
+    to_user,
+)
 
 __all__ = [
     "time_now_formatted",
@@ -19,5 +25,9 @@ __all__ = [
     "ObjectIdStr",
     "validate_file_animes",
     "UsernameType",
-    "dict_to_user_schema",
+    "to_anime",
+    "to_incomplete_anime",
+    "to_incomplete_manga",
+    "to_manga",
+    "to_user",
 ]

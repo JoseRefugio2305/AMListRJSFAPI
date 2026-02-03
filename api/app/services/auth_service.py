@@ -8,7 +8,7 @@ from app.core.utils import (
     object_id_to_str,
     str_trim_lower,
     time_now_formatted,
-    dict_to_user_schema,
+    to_user,
 )
 from app.core.security import create_access_token
 from app.core.logging import get_logger
@@ -66,7 +66,7 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
     accessToken = create_access_token(
         subject=createdUser.get("email")
     )  # Creamos el accesstoken usando el email como sujeto de de identificacion
-    return dict_to_user_schema(createdUser, accessToken)
+    return to_user(createdUser, accessToken)
 
 
 # Verificamos que las credenciales sean correctas
@@ -81,4 +81,4 @@ async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
     if not hashed or not verify_pass(password, hashed):
         return None
 
-    return dict_to_user_schema(user, "")
+    return to_user(user, "")
