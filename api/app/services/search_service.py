@@ -5,11 +5,8 @@ from app.schemas.common.relations import (
     EditorialMRelSchema,
     AutoresMRelSchema,
 )
-from app.models.genero_model import GeneroModel
-from app.models.studio_model import StudioModel
-from app.models.editorial_model import EditorialModel
-from app.models.author_model import AuthorModel
 from app.core.utils import objects_id_list_to_str
+from app.repositories.search import SearchRepository
 
 
 def dict_to_search_schema(dictFilter: dict) -> dict:
@@ -20,10 +17,14 @@ class SearchService:
     # Obtener los generos, autores, estudios de animacion y editoriales de manga para los filtros en la busqueda
     @staticmethod
     async def get_filters() -> FiltersListAdvancedSearch:
-        lista_generos = objects_id_list_to_str(await GeneroModel.find({}))
-        lista_studios = objects_id_list_to_str(await StudioModel.find({}))
-        lista_editoriales = objects_id_list_to_str(await EditorialModel.find({}))
-        lista_autores = objects_id_list_to_str(await AuthorModel.find({}))
+        lista_generos, lista_studios, lista_editoriales, lista_autores = (
+            await SearchRepository.get_filers()
+        )
+
+        lista_generos = objects_id_list_to_str(lista_generos)
+        lista_studios = objects_id_list_to_str(lista_studios)
+        lista_editoriales = objects_id_list_to_str(lista_editoriales)
+        lista_autores = objects_id_list_to_str(lista_autores)
 
         return FiltersListAdvancedSearch(
             genresList=[
