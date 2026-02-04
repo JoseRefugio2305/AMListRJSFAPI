@@ -1,9 +1,7 @@
 from fastapi import HTTPException, status
 from typing import Optional
-from bson.objectid import ObjectId
 import asyncio
 
-from app.models.manga_model import MangaModel
 from app.schemas.manga import (
     MangaUpdateSchema,
     ResponseUpdCrtManga,
@@ -22,11 +20,10 @@ from app.schemas.search import (
 from app.schemas.common.relations import CreateAutorSchema, CreateEditorialSchema
 from app.schemas.common.genres import CreateGenreSchema
 from app.core.utils import objects_id_list_to_str, ObjectIdStr
-from app.core.database import filtrado_info_incompleta
 from app.services.jikan_service import JikanService
 from .manga_crud_service import MangaCRUDService
-from app.services.anime import AnimeCRUDService
-
+from app.repositories.shared import GenreRepository
+from app.repositories.manga import MangaCRUDRepository, MangaRepository
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -64,7 +61,7 @@ class MangaJikanService:
     @staticmethod
     async def assign_id_mal_manga(payload: PayloadMangaIDMAL) -> ResponseUpdCrtManga:
         # Reviamos si existe un manga con el mismo idmal que queremos asignar
-        existing_manga = await MangaModel.find_by_idmal(payload.id_MAL)
+        existing_manga = await MangaRepository.get_manga_by_id_MAL(payload.id_MAL)
         if existing_manga:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -73,10 +70,8 @@ class MangaJikanService:
 
         # Si no existe un anime con el mismo id mal, asignamos al actual
         try:
-            mangaUpd = await MangaModel.update_one(
-                {"_id": ObjectId(payload.id)},
-                {"$set": {"id_MAL": payload.id_MAL}},
-                False,
+            mangaUpd = await MangaCRUDRepository.update_id_mal_manga(
+                payload.id, payload.id_MAL
             )
 
             return ResponseUpdCrtManga(
@@ -109,9 +104,7 @@ class MangaJikanService:
         # Si solo se esta actualizando un manga, entonces primero se revisa si este existe
         if not is_all:
             # Revisamos si existe un manga con el id indicado y que tenga su id_MAL registrado, de no tenerlo no se puede actualizar su informacion
-            is_exists = await MangaModel.find_one(
-                {"_id": ObjectId(mangaId), "id_MAL": {"$not": {"$eq": None}}}
-            )
+            is_exists = await MangaRepository.get_manga_to_update_mal(mangaId)
             logger.debug(is_exists)
             if not is_exists:
                 return RespUpdMALAnimeSchema(
@@ -144,7 +137,7 @@ class MangaJikanService:
             )
             # Ahora hay que insertar generos, editoriales o autores de manga  nuevos que tenga el manga recien actualizado
             for genero in n_generos:
-                rg = await AnimeCRUDService.create_genre(
+                rg = await GenreRepository.create_genre(
                     CreateGenreSchema(
                         nombre=genero.get("nombre"),
                         id_MAL=genero.get("id_MAL"),
@@ -153,7 +146,7 @@ class MangaJikanService:
                     )
                 )
             for editorial in n_editoriales:
-                re = await MangaCRUDService.create_editorial(
+                re = await MangaCRUDRepository.create_editorial(
                     CreateEditorialSchema(
                         nombre=editorial.get("nombre"),
                         id_MAL=editorial.get("id_MAL"),
@@ -163,7 +156,7 @@ class MangaJikanService:
                 )
 
             for autor in n_autores:
-                ra = await MangaCRUDService.create_author(
+                ra = await MangaCRUDRepository.create_author(
                     CreateAutorSchema(
                         nombre=autor.get("nombre"),
                         id_MAL=autor.get("id_MAL"),
@@ -190,7 +183,7 @@ class MangaJikanService:
             responses = []
             # Obtenemos los mangas que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
             mangas_to_upd = objects_id_list_to_str(
-                await MangaModel.aggregate(filtrado_info_incompleta(True))
+                await MangaRepository.get_all_ready_to_mal()
             )
 
             for mtu in mangas_to_upd:

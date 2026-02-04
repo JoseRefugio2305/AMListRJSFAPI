@@ -14,10 +14,10 @@ from ..pipeline_builders.common import (
     filtrado_tipos,
     apply_paginacion_ordenacion,
     filtrado_gsae,
+    filtrado_info_incompleta,
 )
 from app.models.anime_model import AnimeModel
 from app.models.studio_model import StudioModel
-from ..pipeline_builders.common import filtrado_info_incompleta
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)

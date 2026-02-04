@@ -2,9 +2,7 @@ from fastapi import HTTPException, status
 from typing import Optional
 import math
 
-from app.models.manga_model import MangaModel
-from app.models.editorial_model import EditorialModel
-from app.models.author_model import AuthorModel
+from app.repositories.manga import MangaRepository
 from app.schemas.manga import MangaSchema
 from app.schemas.common.relations import AutorSchema, EditorialSchema
 from app.schemas.search import (
@@ -18,21 +16,10 @@ from app.schemas.search import (
 )
 from app.schemas.auth import UserLogRespSchema
 from app.core.utils import (
-    object_id_to_str,
     objects_id_list_to_str,
     to_manga,
     to_incomplete_manga,
 )
-from app.core.database import (
-    lookup_user_favorites,
-    filtro_emision,
-    filtrado_tipos,
-    filtrado_busqueda_avanzada_manga,
-    apply_paginacion_ordenacion,
-    get_full_manga,
-    filtrado_gsae,
-)
-
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -44,43 +31,11 @@ class MangaService:
     async def get_all(
         filters: FilterSchema, user: Optional[UserLogRespSchema] = None
     ) -> MangaSearchSchema:
-        pipeline = [
-            {
-                "$match": {"linkMAL": {"$not": {"$eq": None}}},
-            },
-            *filtrado_tipos(filters.tiposManga, False),
-            *filtro_emision(filters.emision, "publicando"),
-            *filtrado_busqueda_avanzada_manga(filters),
-            *lookup_user_favorites(
-                user.id if user else None,
-                "manga",
-                "utmanfavs",
-                filters.onlyFavs,
-                filters.statusView,
-            ),
-        ]
-
-        # Obtenemos el conteo de los animes que concuerdan con la busqueda
-        totalMangas = await MangaModel.aggregate([*pipeline, {"$count": "totalMangas"}])
-
-        totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                filters.limit, filters.page, filters.orderBy, filters.orderField, False
-            )
-        )
-        results = (
-            objects_id_list_to_str(await MangaModel.aggregate(pipeline))
-            if totalMangas
-            > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
-            else []
-        )
+        user_id = user.id if user else None
+        results, totalMangas = await MangaRepository.find_all_filtered(filters, user_id)
 
         return MangaSearchSchema(
-            listaMangas=[
-                to_manga(r, True if user else False, False) for r in results
-            ],
+            listaMangas=[to_manga(r, True if user else False, False) for r in results],
             pageM=filters.page,
             totalPagesM=math.ceil(totalMangas / filters.limit),
             totalMangas=totalMangas,
@@ -91,26 +46,15 @@ class MangaService:
     async def get_manga_by_id(
         key_manga: int, user: Optional[UserLogRespSchema] = None
     ) -> MangaSchema:
-        pipeline = [
-            {
-                "$match": {"key_manga": key_manga},
-            },
-            *get_full_manga(),
-            *lookup_user_favorites(
-                user.id if user else None, "manga", "utmanfavs", False, 5
-            ),
-        ]
-        logger.debug(pipeline)
-        results = await MangaModel.aggregate(pipeline)
+        user_id = user.id if user else None
+        manga = await MangaRepository.get_manga_by_key(key_manga, user_id)
 
-        if len(results) == 0:
+        if not manga:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Manga no encontrado",
             )
-        manga = object_id_to_str(
-            results[0]
-        )  # Agregate retorna por defecto una lista, por lo cual se debe de tomar el primer elemento, si no da resultados, seria un elemento vacio
+
         return to_manga(manga, True if user else False, True)
 
     # Obtener los mangas incompletos
@@ -118,42 +62,8 @@ class MangaService:
     async def get_incomplete_mangas(
         filters: FilterSchema, ready_to_mal: ReadyToMALEnum = ReadyToMALEnum.todos
     ) -> SearchMangaIncompleteSchema:
-        # Verificamos si quiere solo los listos para actualizarse a mal, es decir, aquellos con un id_MAL ya asignado
-        q_r_to_mal = [
-            {"linkMAL": {"$eq": None}},
-            (
-                {"id_MAL": {"$not": {"$eq": None}}}
-                if ready_to_mal == ReadyToMALEnum.listo
-                else (
-                    {"id_MAL": {"$eq": None}}
-                    if ready_to_mal == ReadyToMALEnum.no_listo
-                    else {}
-                )
-            ),
-        ]
-
-        pipeline = [
-            {"$match": {"$and": q_r_to_mal}},
-            *filtrado_tipos(filters.tiposManga, False),
-            *filtrado_busqueda_avanzada_manga(filters),
-        ]
-        logger.debug(pipeline)
-
-        # Obtenemos el conteo de los mangas que tienen su informacion incompleta
-        totalMangas = await MangaModel.aggregate([*pipeline, {"$count": "totalMangas"}])
-
-        totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                filters.limit, filters.page, filters.orderBy, filters.orderField, False
-            )
-        )
-        results = (
-            objects_id_list_to_str(await MangaModel.aggregate(pipeline))
-            if totalMangas
-            > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
-            else []
+        results, totalMangas = await MangaRepository.find_all_incomplete_filtered(
+            filters, ready_to_mal
         )
 
         results = [to_incomplete_manga(a) for a in results]
@@ -169,29 +79,8 @@ class MangaService:
     # Busqueda de editoriales de manga
     @staticmethod
     async def editoriales_list(filters: FilterGSAESchema) -> SearchEditorialsSchema:
-        pipeline = [filtrado_gsae(filters.txtSearch, True)]
-        logger.debug(pipeline)
-        editoriales = objects_id_list_to_str(
-            await EditorialModel.aggregate(
-                [
-                    *pipeline,
-                    *apply_paginacion_ordenacion(
-                        filters.limit,
-                        filters.page,
-                        filters.orderBy,
-                        filters.orderField,
-                        False,
-                    ),
-                ]
-            )
-        )
-        totalEditoriales = await EditorialModel.aggregate(
-            [*pipeline, {"$count": "totalEditoriales"}]
-        )
-        totalEditoriales = (
-            totalEditoriales[0]["totalEditoriales"] if len(totalEditoriales) > 0 else 0
-        )
-
+        editoriales, totalEditoriales = await MangaRepository.get_editorials(filters)
+        editoriales = objects_id_list_to_str(editoriales)
         list_Editorials = [
             EditorialSchema(
                 nombre=edt.get("nombre"),
@@ -214,26 +103,8 @@ class MangaService:
     # Busqueda de autores de manga
     @staticmethod
     async def autores_list(filters: FilterGSAESchema) -> SearchAutoresSchema:
-        pipeline = [filtrado_gsae(filters.txtSearch, True)]
-        logger.debug(pipeline)
-        autores = objects_id_list_to_str(
-            await AuthorModel.aggregate(
-                [
-                    *pipeline,
-                    *apply_paginacion_ordenacion(
-                        filters.limit,
-                        filters.page,
-                        filters.orderBy,
-                        filters.orderField,
-                        False,
-                    ),
-                ]
-            )
-        )
-        totalAutores = await AuthorModel.aggregate(
-            [*pipeline, {"$count": "totalAutores"}]
-        )
-        totalAutores = totalAutores[0]["totalAutores"] if len(totalAutores) > 0 else 0
+        autores, totalAutores = await MangaRepository.get_authors(filters)
+        autores = objects_id_list_to_str(autores)
 
         list_Autores = [
             AutorSchema(
