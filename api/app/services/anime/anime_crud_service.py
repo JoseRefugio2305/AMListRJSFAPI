@@ -9,11 +9,9 @@ from app.schemas.anime import (
     RespUpdMALAnimeSchema,
 )
 from app.schemas.common.relations import CreateStudioSchema
-from app.schemas.common.genres import CreateGenreSchema
 from app.schemas.auth import UserLogRespSchema
 from app.core.utils import time_now_formatted, ObjectIdStr
 from app.repositories.anime import AnimeRepository, AnimeCRUDRepository
-from app.repositories.shared import GenreRepository
 from app.repositories.favorites.favorites_repository import FavoritesRepository
 from app.core.logging import get_logger
 
@@ -123,22 +121,6 @@ class AnimeCRUDService:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Error al intentar eliminar el anime",
-            )
-
-    # Insertar/Actualizar genero
-    @staticmethod
-    async def create_genre(genre: CreateGenreSchema) -> RespUpdMALAnimeSchema:
-        try:
-            # Si encuentra el genero actualiza la informacion, si no lo encuentra al insertar agrega el id_MAL y la fecha de adicion
-            new_genre = await GenreRepository.create_genre(genre)
-            return RespUpdMALAnimeSchema(
-                message="Genero Creado Correctamente", is_success=True
-            )
-        except Exception as e:
-            logger.error(f"Error: {e}", exc_info=True)
-            return RespUpdMALAnimeSchema(
-                message="Ocurrio un error al intentar agregar el genero",
-                is_success=False,
             )
 
     # Insertar/Actualizar Estudios de animacion

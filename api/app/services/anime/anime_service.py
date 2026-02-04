@@ -4,14 +4,12 @@ import math
 
 from app.schemas.anime import AnimeSchema
 from app.schemas.common.relations import StudiosSchema
-from app.schemas.common.genres import GenreSchema
 from app.schemas.search import (
     AnimeSearchSchema,
     FilterSchema,
     SearchAnimeIncompleteSchema,
     ReadyToMALEnum,
     FilterGSAESchema,
-    SearchGenresSchema,
     SearchStudiosSchema,
 )
 from app.schemas.auth import UserLogRespSchema
@@ -21,7 +19,6 @@ from app.core.utils import (
     to_incomplete_anime,
 )
 from app.repositories.anime import AnimeRepository
-from app.repositories.shared.genre_repository import GenreRepository
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -75,32 +72,6 @@ class AnimeService:
             totalAnimes=totalAnimes,
             totalPages=math.ceil(totalAnimes / filters.limit),
             page=filters.page,
-        )
-
-    # Busqueda de generos
-    @staticmethod
-    async def genres_list(filters: FilterGSAESchema) -> SearchGenresSchema:
-        generos, totalGeneros = await GenreRepository.get_genres(filters)
-
-        generos = objects_id_list_to_str(generos)
-
-        list_generos = [
-            GenreSchema(
-                nombre=gen.get("nombre"),
-                id=gen.get("_id") or gen.get("id") or gen.get("Id"),
-                id_MAL=gen.get("id_MAL"),
-                nombre_mal=gen.get("nombre_mal"),
-                linkMAL=gen.get("linkMAL"),
-                fechaAdicion=gen.get("fechaAdicion"),
-            )
-            for gen in generos
-        ]
-
-        return SearchGenresSchema(
-            lista=list_generos,
-            total=totalGeneros,
-            page=filters.page,
-            totalPages=math.ceil(totalGeneros / filters.limit),
         )
 
     # Busqueda de estudios de animacion

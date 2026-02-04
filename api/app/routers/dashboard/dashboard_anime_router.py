@@ -14,6 +14,7 @@ from app.services.anime import (
     AnimeFileService,
     AnimeCRUDService,
 )
+from app.services.shared import GenreService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
 from app.schemas.anime import (
@@ -21,7 +22,7 @@ from app.schemas.anime import (
     ResponseUpdCrtAnime,
     AnimeUpdateSchema,
     PayloadAnimeIDMAL,
-    ResponseUpdAllMALSchema
+    ResponseUpdAllMALSchema,
 )
 from app.schemas.search import (
     PayloadSearchAnimeMAL,
@@ -138,7 +139,7 @@ async def upload_file(file: UploadFile = File(...)):
 # Busqueda y filtrado de generos
 @routerDashAnime.post("/genres_list/", response_model=SearchGenresSchema)
 async def get_genres(payload: FilterGSAESchema):
-    response = await AnimeService.genres_list(payload)
+    response = await GenreService.genres_list(payload)
     return response.model_dump()
 
 
