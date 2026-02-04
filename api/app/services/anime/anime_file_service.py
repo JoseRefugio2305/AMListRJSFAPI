@@ -4,7 +4,7 @@ import json
 from app.core.logging import get_logger
 from app.core.utils import validate_file_animes, time_now_formatted
 from app.schemas.anime import AnimeCreateSchema, DictTipoAnime, ResponseUpdAllMALSchema
-from app.models.anime_model import AnimeModel
+from app.repositories.anime import AnimeRepository, AnimeFileRepository
 
 logger = get_logger(__name__)
 
@@ -43,20 +43,15 @@ class AnimeFileService:
 
             array_key_anime = [a.get("key_anime") for a in animes]
 
-            # Revisamos los animes cuyos key_anime coinciden con alguno de los que queremos agregar
-            existing_animes = await AnimeModel.aggregate(
-                [
-                    {"$match": {"key_anime": {"$in": array_key_anime}}},
-                    {"$project": {"_id": 0, "key_anime": 1}},
-                ]
-            )
             # Creamos una lista con los key_anime que ya existen
-            key_list = [aex.get("key_anime") for aex in existing_animes]
+            key_list = await AnimeRepository.find_keys_in_list(array_key_anime)
             # Filtrado
             animes = [a for a in animes if a.get("key_anime") not in key_list]
             # Insercion de los animes, solo si hay para llevarlo a cabo
             inserted_animes = (
-                await AnimeModel.insert_many(animes) if len(animes) > 0 else []
+                await AnimeFileRepository.bulk_insert_animes(animes)
+                if len(animes) > 0
+                else []
             )
             logger.debug(inserted_animes)
 

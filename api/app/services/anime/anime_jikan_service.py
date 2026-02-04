@@ -1,9 +1,7 @@
 from fastapi import HTTPException, status
 from typing import Optional
-from bson.objectid import ObjectId
 import asyncio
 
-from app.models.anime_model import AnimeModel
 from app.schemas.anime import (
     AnimeUpdateSchema,
     ResponseUpdCrtAnime,
@@ -26,8 +24,8 @@ from app.core.utils import (
 )
 from app.services.jikan_service import JikanService
 from .anime_crud_service import AnimeCRUDService
-from app.core.database import filtrado_info_incompleta
-
+from app.repositories.anime import AnimeRepository, AnimeCRUDRepository
+from app.repositories.shared import GenreRepository
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -66,7 +64,7 @@ class AnimeJikanService:
     @staticmethod
     async def assign_id_mal_anime(payload: PayloadAnimeIDMAL) -> ResponseUpdCrtAnime:
         # Reviamos si existe un anime con el mismo idmal que queremos asignar
-        existing_anime = await AnimeModel.find_one({"id_MAL": payload.id_MAL})
+        existing_anime = await AnimeRepository.get_anime_by_id_MAL(payload.id_MAL)
         if existing_anime:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -75,10 +73,8 @@ class AnimeJikanService:
 
         # Si no existe un anime con el mismo id mal, asignamos al actual
         try:
-            animeUpd = await AnimeModel.update_one(
-                {"_id": ObjectId(payload.id)},
-                {"$set": {"id_MAL": payload.id_MAL}},
-                False,
+            animeUpd = await AnimeCRUDRepository.update_id_mal_anime(
+                payload.id, payload.id_MAL
             )
 
             return ResponseUpdCrtAnime(
@@ -111,18 +107,15 @@ class AnimeJikanService:
         # Si solo se esta actualizando un anime, entonces primero se revisa si este existe
         if not is_all:
             # Revisamos si existe un anime con el id indicado y que tenga su id_MAL registrado, de no tenerlo no se puede actualizar su informacion
-            is_exists = await AnimeModel.find_one(
-                {"_id": ObjectId(animeId), "id_MAL": {"$not": {"$eq": None}}}
-            )
+            is_exists = await AnimeRepository.get_anime_to_update_mal(animeId)
             logger.debug(is_exists)
             if not is_exists:
                 return RespUpdMALAnimeSchema(
                     message="No se encontro el anime a actualizar o no tiene asignado un id_MAL aun",
                     is_success=False,
                 )
-            id_MAL = is_exists.get(
-                "id_MAL"
-            )  # Al encontrarlo actualizamos el id mal del anime para lo que sigue
+            # Al encontrarlo actualizamos el id mal del anime para lo que sigue
+            id_MAL = is_exists.get("id_MAL")
             key_anime = is_exists.get("key_anime")
 
         try:
@@ -145,7 +138,7 @@ class AnimeJikanService:
             )
             # Ahora hay que insertar generos o estudios de animacion nuevos que tenga el anime recien actualizado
             for genero in n_generos:
-                rg = await AnimeCRUDService.create_genre(
+                rg = await GenreRepository.create_genre(
                     CreateGenreSchema(
                         nombre=genero.get("nombre"),
                         id_MAL=genero.get("id_MAL"),
@@ -154,7 +147,7 @@ class AnimeJikanService:
                     )
                 )
             for studio in n_studios:
-                re = await AnimeCRUDService.create_studio(
+                re = await AnimeCRUDRepository.create_studio(
                     CreateStudioSchema(
                         nombre=studio.get("nombre"),
                         id_MAL=studio.get("id_MAL"),
@@ -181,7 +174,7 @@ class AnimeJikanService:
             responses = []
             # Obtenemos los animes que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
             animes_to_upd = objects_id_list_to_str(
-                await AnimeModel.aggregate(filtrado_info_incompleta(True))
+                await AnimeRepository.get_all_ready_to_mal()
             )
 
             for atu in animes_to_upd:
