@@ -43,20 +43,36 @@ class AnimeRepository:
                 filters.statusView,
             ),
         ]
-        # Obtenemos el conteo de los animes que concuerdan con la busqueda
-        totalAnimes = await AnimeModel.aggregate([*pipeline, {"$count": "totalAnimes"}])
 
-        totalAnimes = totalAnimes[0]["totalAnimes"] if len(totalAnimes) > 0 else 0
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                filters.limit, filters.page, filters.orderBy, filters.orderField, True
-            )
-        )
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalAnimes"}],
+                    "animes": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            True,
+                        ),
+                    ],
+                }
+            }
+        ]
 
         logger.debug(pipeline)
+
+        results = await AnimeModel.aggregate(pipeline)
+        totalAnimes = (
+            results[0]["totales"][0]["totalAnimes"]
+            if len(results[0]["totales"]) > 0
+            else 0
+        )
+
         results = (
-            await AnimeModel.aggregate(pipeline)
+            results[0]["animes"]
             if totalAnimes
             > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
             else []
@@ -114,19 +130,34 @@ class AnimeRepository:
             *filtrado_tipos(filters.tiposAnime, True),
             *filtrado_busqueda_avanzada_anime(filters),
         ]
-        # Obtenemos el conteo de los animes que tienen su informacion incompleta
-        totalAnimes = await AnimeModel.aggregate([*pipeline, {"$count": "totalAnimes"}])
 
-        totalAnimes = totalAnimes[0]["totalAnimes"] if len(totalAnimes) > 0 else 0
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                filters.limit, filters.page, filters.orderBy, filters.orderField, True
-            )
-        )
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalAnimes"}],
+                    "animes_incomplete": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            True,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
+        results = await AnimeModel.aggregate(pipeline)
+
+        totalAnimes = (
+            results[0]["totales"][0]["totalAnimes"]
+            if len(results[0]["totales"]) > 0
+            else 0
+        )
         results = (
-            await AnimeModel.aggregate(pipeline)
+            results[0]["animes_incomplete"]
             if totalAnimes
             > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
             else []
@@ -141,26 +172,33 @@ class AnimeRepository:
     @staticmethod
     async def get_studios(filters: FilterGSAESchema):
         pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalStudios"}],
+                    "studios": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
-        studios = await StudioModel.aggregate(
-            [
-                *pipeline,
-                *apply_paginacion_ordenacion(
-                    filters.limit,
-                    filters.page,
-                    filters.orderBy,
-                    filters.orderField,
-                    False,
-                ),
-            ]
+        results = await StudioModel.aggregate(pipeline)
+
+        totalStudios = (
+            results[0]["totales"][0]["totalStudios"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
 
-        totalStudios = await StudioModel.aggregate(
-            [*pipeline, {"$count": "totalStudios"}]
-        )
-        totalStudios = totalStudios[0]["totalStudios"] if len(totalStudios) > 0 else 0
-
-        return studios, totalStudios
+        return results[0]["studios"], totalStudios
 
     @staticmethod
     async def is_exists_to_update(anime_id: ObjectIdStr, payload: AnimeUpdateSchema):

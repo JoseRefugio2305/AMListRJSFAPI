@@ -15,25 +15,32 @@ class GenreRepository:
     @staticmethod
     async def get_genres(filters: FilterGSAESchema):
         pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalGeneros"}],
+                    "generos": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
-        generos = await GeneroModel.aggregate(
-            [
-                *pipeline,
-                *apply_paginacion_ordenacion(
-                    filters.limit,
-                    filters.page,
-                    filters.orderBy,
-                    filters.orderField,
-                    False,
-                ),
-            ]
+        results = await GeneroModel.aggregate(pipeline)
+        totalGeneros = (
+            results[0]["totales"][0]["totalGeneros"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
-        totalGeneros = await GeneroModel.aggregate(
-            [*pipeline, {"$count": "totalGeneros"}]
-        )
-        totalGeneros = totalGeneros[0]["totalGeneros"] if len(totalGeneros) > 0 else 0
 
-        return generos, totalGeneros
+        return results[0]["generos"], totalGeneros
 
     @staticmethod
     async def create_genre(genre: CreateGenreSchema):

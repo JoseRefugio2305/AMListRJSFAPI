@@ -48,24 +48,33 @@ class UserRepository:
             query_active.append({"rol": userFilters.userType})
         # Preparamos la consulta base
         pipeline = [{"$match": {"$and": query_active}}] if len(query_active) > 0 else []
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalUsers"}],
+                    "usuarios": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            userFilters.limit,
+                            userFilters.page,
+                            userFilters.orderBy,
+                            userFilters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
         # Realizamos conteo
-        totalUsers = await UserModel.aggregate([*pipeline, {"$count": "totalUsers"}])
-        totalUsers = totalUsers[0]["totalUsers"] if len(totalUsers) > 0 else 0
-
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                userFilters.limit,
-                userFilters.page,
-                userFilters.orderBy,
-                userFilters.orderField,
-                False,
-            )
+        results = await UserModel.aggregate(pipeline)
+        totalUsers = (
+            results[0]["totales"][0]["totalUsers"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
-
         results = (
-            await UserModel.aggregate(pipeline)
+            results[0]["usuarios"]
             if totalUsers
             > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
             else []

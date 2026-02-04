@@ -22,7 +22,6 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
-
 class MangaRepository:
     @staticmethod
     async def find_all_filtered(
@@ -43,21 +42,34 @@ class MangaRepository:
                 filters.statusView,
             ),
         ]
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalMangas"}],
+                    "mangas": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
 
-        # Obtenemos el conteo de los animes que concuerdan con la busqueda
-        totalMangas = await MangaModel.aggregate([*pipeline, {"$count": "totalMangas"}])
+        results = await MangaModel.aggregate(pipeline)
 
-        totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
-
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                filters.limit, filters.page, filters.orderBy, filters.orderField, False
-            )
+        totalMangas = (
+            results[0]["totales"][0]["totalMangas"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
 
         results = (
-            await MangaModel.aggregate(pipeline)
+            results[0]["mangas"]
             if totalMangas
             > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
             else []
@@ -150,20 +162,37 @@ class MangaRepository:
             *filtrado_tipos(filters.tiposManga, False),
             *filtrado_busqueda_avanzada_manga(filters),
         ]
+
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalMangas"}],
+                    "mangas_incomplete": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
 
         # Obtenemos el conteo de los mangas que tienen su informacion incompleta
-        totalMangas = await MangaModel.aggregate([*pipeline, {"$count": "totalMangas"}])
+        results = await MangaModel.aggregate(pipeline)
 
-        totalMangas = totalMangas[0]["totalMangas"] if len(totalMangas) > 0 else 0
-        # Aplicamos la limitacion a la busqueda
-        pipeline.extend(
-            apply_paginacion_ordenacion(
-                filters.limit, filters.page, filters.orderBy, filters.orderField, False
-            )
+        totalMangas = (
+            results[0]["totales"][0]["totalMangas"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
+
         results = (
-            await MangaModel.aggregate(pipeline)
+            results[0]["mangas_incomplete"]
             if totalMangas
             > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
             else []
@@ -174,49 +203,60 @@ class MangaRepository:
     @staticmethod
     async def get_editorials(filters: FilterGSAESchema):
         pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalEditoriales"}],
+                    "editoriales": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
-        editoriales = await EditorialModel.aggregate(
-            [
-                *pipeline,
-                *apply_paginacion_ordenacion(
-                    filters.limit,
-                    filters.page,
-                    filters.orderBy,
-                    filters.orderField,
-                    False,
-                ),
-            ]
-        )
+        results = await EditorialModel.aggregate(pipeline)
 
-        totalEditoriales = await EditorialModel.aggregate(
-            [*pipeline, {"$count": "totalEditoriales"}]
-        )
         totalEditoriales = (
-            totalEditoriales[0]["totalEditoriales"] if len(totalEditoriales) > 0 else 0
+            results[0]["totales"][0]["totalEditoriales"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
 
-        return editoriales, totalEditoriales
+        return results[0]["editoriales"], totalEditoriales
 
     @staticmethod
     async def get_authors(filters: FilterGSAESchema):
         pipeline = [filtrado_gsae(filters.txtSearch, True)]
+        pipeline = [
+            {
+                "$facet": {
+                    "totales": [*pipeline, {"$count": "totalAutores"}],
+                    "autores": [
+                        *pipeline,
+                        *apply_paginacion_ordenacion(
+                            filters.limit,
+                            filters.page,
+                            filters.orderBy,
+                            filters.orderField,
+                            False,
+                        ),
+                    ],
+                }
+            }
+        ]
         logger.debug(pipeline)
-        autores = await AuthorModel.aggregate(
-            [
-                *pipeline,
-                *apply_paginacion_ordenacion(
-                    filters.limit,
-                    filters.page,
-                    filters.orderBy,
-                    filters.orderField,
-                    False,
-                ),
-            ]
+        results = await AuthorModel.aggregate(pipeline)
+        totalAutores = (
+            results[0]["totales"][0]["totalAutores"]
+            if len(results[0]["totales"]) > 0
+            else 0
         )
 
-        totalAutores = await AuthorModel.aggregate(
-            [*pipeline, {"$count": "totalAutores"}]
-        )
-        totalAutores = totalAutores[0]["totalAutores"] if len(totalAutores) > 0 else 0
-
-        return autores, totalAutores
+        return results[0]["autores"], totalAutores
