@@ -1,5 +1,6 @@
 from typing import Optional, List
-from pymongo import ReturnDocument
+
+RETURN_AFTER = True
 
 
 # El siguiente es nuestro ODM base que nos permitira el manejar las consultas a Mongo como si fuesen objetos, y a su vez, nos permitira el realizar consultas haciendo uso de pipelines
@@ -57,7 +58,7 @@ class BaseODMModel:
             filter,
             {"$set": update},
             upsert=upsert,
-            return_document=ReturnDocument.AFTER,
+            return_document=RETURN_AFTER,
         )
 
     # Consultas con pipeline
