@@ -1,7 +1,7 @@
 from typing import Optional
 from passlib.context import CryptContext
 
-from app.models.user_model import UserModel
+from app.repositories.auth import AuthRepository
 from app.schemas.auth import UserRegSchema, UserLogRespSchema, RolEnum
 from app.schemas.search import ActiveUserEnum
 from app.core.utils import (
@@ -32,7 +32,7 @@ def verify_pass(plain: str, hashed: str) -> bool:
 # egistrar usuario en BDD
 async def register_user(name: str, email: str, password: str) -> UserLogRespSchema:
     # Revisamos si ya existe un usuario en BDD con ese email
-    isExists = await UserModel.find_by_email(email=email, username=name)
+    isExists = await AuthRepository.find_by_email(email=email, username=name)
     if isExists:  # Si existe marcamos el error
         msg = ""
         if str_trim_lower(isExists.get("email")) == str_trim_lower(email):
@@ -56,16 +56,10 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
         show_statistics=0,
     )
 
-    insertedId = await UserModel.insert_one(dataNU.model_dump())  # Insertamos
-    log.info(f"Usuario registrado: {insertedId}")
+    createdUser = await AuthRepository.insert_user(dataNU, email)
 
-    createdUser = object_id_to_str(
-        await UserModel.find_by_email(email=email)
-    )  # Obtenemos la informacion del usuario registrado y hacemos la conversion a str del objectid
-
-    accessToken = create_access_token(
-        subject=createdUser.get("email")
-    )  # Creamos el accesstoken usando el email como sujeto de de identificacion
+    # Creamos el accesstoken usando el email como sujeto de de identificacion
+    accessToken = create_access_token(subject=createdUser.get("email"))
     return to_user(createdUser, accessToken)
 
 
@@ -73,7 +67,9 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
 async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
     # Se revisa si el usuario existe y que su contrasena corresponda al hash, de no pasar alguna de las comprobaciones retorna none, si la pasa retorna la info del usuario
     user = object_id_to_str(
-        await UserModel.find_by_email(email=email, tipoactive=ActiveUserEnum.activo)
+        await AuthRepository.find_by_email(
+            email=email, tipoactive=ActiveUserEnum.activo
+        )
     )
     if not user:
         return None
