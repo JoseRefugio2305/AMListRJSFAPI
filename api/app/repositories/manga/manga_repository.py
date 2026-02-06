@@ -79,7 +79,7 @@ class MangaRepository:
         return results, totalMangas
 
     @staticmethod
-    async def get_manga_by_key(key_manga: int, user_id: ObjectIdStr | None = None):
+    async def get_by_key(key_manga: int, user_id: ObjectIdStr | None = None):
         pipeline = [
             {
                 "$match": {"key_manga": key_manga},
@@ -95,15 +95,15 @@ class MangaRepository:
         return result[0] if len(result) > 0 else None
 
     @staticmethod
-    async def get_manga_by_id(manga_id: ObjectIdStr):
+    async def get_by_id(manga_id: ObjectIdStr):
         return await MangaModel.find_one(MangaModel.id == ObjectId(manga_id))
 
     @staticmethod
-    async def get_manga_by_id_MAL(id_MAL: int):
+    async def get_by_id_MAL(id_MAL: int):
         return await MangaModel.find_one(MangaModel.id_MAL == id_MAL)
 
     @staticmethod
-    async def get_manga_to_update_mal(manga_id: ObjectIdStr):
+    async def get_to_update_mal(manga_id: ObjectIdStr):
         return await MangaModel.find_one(
             MangaModel.id == ObjectId(manga_id), MangaModel.id_MAL != None
         )

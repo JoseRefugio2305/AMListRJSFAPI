@@ -61,7 +61,7 @@ class MangaJikanService:
     @staticmethod
     async def assign_id_mal_manga(payload: PayloadMangaIDMAL) -> ResponseUpdCrtManga:
         # Reviamos si existe un manga con el mismo idmal que queremos asignar
-        existing_manga = await MangaRepository.get_manga_by_id_MAL(payload.id_MAL)
+        existing_manga = await MangaRepository.get_by_id_MAL(payload.id_MAL)
         if existing_manga:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -70,7 +70,7 @@ class MangaJikanService:
 
         # Si no existe un anime con el mismo id mal, asignamos al actual
         try:
-            mangaUpd = await MangaCRUDRepository.update_id_mal_manga(
+            mangaUpd = await MangaCRUDRepository.update_id_mal(
                 payload.id, payload.id_MAL
             )
 
@@ -104,7 +104,7 @@ class MangaJikanService:
         # Si solo se esta actualizando un manga, entonces primero se revisa si este existe
         if not is_all:
             # Revisamos si existe un manga con el id indicado y que tenga su id_MAL registrado, de no tenerlo no se puede actualizar su informacion
-            is_exists = await MangaRepository.get_manga_to_update_mal(mangaId)
+            is_exists = await MangaRepository.get_to_update_mal(mangaId)
             logger.debug(is_exists)
             if not is_exists:
                 return RespUpdMALAnimeSchema(

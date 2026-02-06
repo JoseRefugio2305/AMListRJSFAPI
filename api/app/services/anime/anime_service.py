@@ -42,11 +42,11 @@ class AnimeService:
 
     # Detalles del anime
     @staticmethod
-    async def get_anime_by_id(
+    async def get_by_id(
         key_anime: int, user: Optional[UserLogRespSchema] = None
     ) -> AnimeSchema:
         user_id = user.id if user else None
-        anime = await AnimeRepository.get_anime_by_key(key_anime, user_id)
+        anime = await AnimeRepository.get_by_key(key_anime, user_id)
 
         if not anime:
             raise HTTPException(

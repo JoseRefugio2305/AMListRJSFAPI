@@ -80,7 +80,7 @@ class AnimeRepository:
         return results, totalAnimes
 
     @staticmethod
-    async def get_anime_by_key(key_anime: int, user_id: ObjectIdStr | None = None):
+    async def get_by_key(key_anime: int, user_id: ObjectIdStr | None = None):
         pipeline = [
             {
                 "$match": {"key_anime": key_anime},
@@ -94,15 +94,15 @@ class AnimeRepository:
         return result[0] if len(result) > 0 else None
 
     @staticmethod
-    async def get_anime_by_id(anime_id: ObjectIdStr):
+    async def get_by_id(anime_id: ObjectIdStr):
         return await AnimeModel.find_one(AnimeModel.id == ObjectId(anime_id))
 
     @staticmethod
-    async def get_anime_by_id_MAL(id_MAL: int):
+    async def get_by_id_MAL(id_MAL: int):
         return await AnimeModel.find_one(AnimeModel.id_MAL == id_MAL)
 
     @staticmethod
-    async def get_anime_to_update_mal(anime_id: ObjectIdStr):
+    async def get_to_update_mal(anime_id: ObjectIdStr):
         return await AnimeModel.find_one(
             AnimeModel.id == ObjectId(anime_id), AnimeModel.id_MAL != None
         )

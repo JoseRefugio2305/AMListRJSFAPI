@@ -24,7 +24,7 @@ class MangaCRUDService:
         data: MangaFavPayloadSchema, user: UserLogRespSchema
     ) -> AniFavRespSchema:
         # Antes de actualizar o insertar la relacion se verifica que sea un anime existente
-        manga = await MangaRepository.get_manga_by_id(data.mangaId)
+        manga = await MangaRepository.get_by_id(data.mangaId)
         if not manga:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -47,7 +47,7 @@ class MangaCRUDService:
     @staticmethod
     async def create_manga(payload: MangaCreateSchema) -> ResponseUpdCrtManga:
         # Revisamos primero si no existe un manga con el mismo key
-        existing_manga = await MangaRepository.get_manga_by_key(payload.key_manga, None)
+        existing_manga = await MangaRepository.get_by_key(payload.key_manga, None)
         if existing_manga:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -59,7 +59,7 @@ class MangaCRUDService:
             manga_to_create = payload.model_dump()
             manga_to_create["fechaAdicion"] = time_now_formatted(True)
             # Creamos el nuevo Manga
-            insertedId = await MangaCRUDRepository.create_manga(manga_to_create)
+            insertedId = await MangaCRUDRepository.create(manga_to_create)
             logger.info(f"Manga registrado: {insertedId}")
             return ResponseUpdCrtManga(message="Manga creado correctamente")
         except HTTPException:
@@ -88,7 +88,7 @@ class MangaCRUDService:
             data = payload.model_dump(
                 exclude_unset=True
             )  # Obtenemos solo los campos que traen algun valor diferente de None
-            mangaUpd = await MangaCRUDRepository.update_manga(manga_id, data)
+            mangaUpd = await MangaCRUDRepository.update(manga_id, data)
             if not mangaUpd:  # Si no se encuntra el manga a actualizar
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -106,7 +106,7 @@ class MangaCRUDService:
     async def delete_manga(manga_id: ObjectIdStr) -> ResponseUpdCrtManga:
         try:
             # Eliminamos el manga si existe
-            deleted_manga = await MangaCRUDRepository.delete_manga(manga_id)
+            deleted_manga = await MangaCRUDRepository.delete(manga_id)
             if not deleted_manga:  # Si no se encuntra el manga a eliminar
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,

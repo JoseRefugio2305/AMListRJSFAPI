@@ -48,7 +48,7 @@ async def manga_details(
     key_manga: int,
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    manga = await MangaService.get_manga_by_id(key_manga, user)
+    manga = await MangaService.get_by_id(key_manga, user)
     return manga.model_dump()
 
 

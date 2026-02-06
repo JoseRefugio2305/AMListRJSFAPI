@@ -13,24 +13,24 @@ logger = get_logger(__name__)
 
 class AnimeCRUDRepository:
     @staticmethod
-    async def create_anime(anime_to_create: AnimeCreateSchema):
+    async def create(anime_to_create: AnimeCreateSchema):
         insertedId = await AnimeModel.insert_one(AnimeModel(**anime_to_create))
         return insertedId
 
     @staticmethod
-    async def update_anime(anime_id: ObjectIdStr, data: dict):
+    async def update(anime_id: ObjectIdStr, data: dict):
         anime_updated = await AnimeModel.find_one(AnimeModel.id == ObjectId(anime_id))
         await anime_updated.update({"$set": data})
         return anime_updated
 
     @staticmethod
-    async def update_id_mal_anime(anime_id: ObjectIdStr, id_MAL: int):
+    async def update_id_mal(anime_id: ObjectIdStr, id_MAL: int):
         anime_updated = await AnimeModel.find_one(AnimeModel.id == ObjectId(anime_id))
         await anime_updated.update({"$set": {"id_MAL": id_MAL}})
         return anime_updated
 
     @staticmethod
-    async def delete_anime(anime_id: ObjectIdStr):
+    async def delete(anime_id: ObjectIdStr):
         anime_deleted = await AnimeModel.find_one(
             AnimeModel.id == ObjectId(anime_id)
         ).delete()

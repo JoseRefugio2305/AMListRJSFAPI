@@ -64,7 +64,7 @@ class AnimeJikanService:
     @staticmethod
     async def assign_id_mal_anime(payload: PayloadAnimeIDMAL) -> ResponseUpdCrtAnime:
         # Reviamos si existe un anime con el mismo idmal que queremos asignar
-        existing_anime = await AnimeRepository.get_anime_by_id_MAL(payload.id_MAL)
+        existing_anime = await AnimeRepository.get_by_id_MAL(payload.id_MAL)
         if existing_anime:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -73,7 +73,7 @@ class AnimeJikanService:
 
         # Si no existe un anime con el mismo id mal, asignamos al actual
         try:
-            animeUpd = await AnimeCRUDRepository.update_id_mal_anime(
+            animeUpd = await AnimeCRUDRepository.update_id_mal(
                 payload.id, payload.id_MAL
             )
 
@@ -107,7 +107,7 @@ class AnimeJikanService:
         # Si solo se esta actualizando un anime, entonces primero se revisa si este existe
         if not is_all:
             # Revisamos si existe un anime con el id indicado y que tenga su id_MAL registrado, de no tenerlo no se puede actualizar su informacion
-            is_exists = await AnimeRepository.get_anime_to_update_mal(animeId)
+            is_exists = await AnimeRepository.get_to_update_mal(animeId)
             logger.debug(is_exists)
             if not is_exists:
                 return RespUpdMALAnimeSchema(

@@ -14,24 +14,24 @@ logger = get_logger(__name__)
 
 class MangaCRUDRepository:
     @staticmethod
-    async def create_manga(manga_to_create: MangaCreateSchema):
+    async def create(manga_to_create: MangaCreateSchema):
         insertedId = await MangaModel.insert_one(MangaModel(**manga_to_create))
         return insertedId
 
     @staticmethod
-    async def update_manga(manga_id: ObjectIdStr, data: dict):
+    async def update(manga_id: ObjectIdStr, data: dict):
         manga_updated = await MangaModel.find_one(MangaModel.id == ObjectId(manga_id))
         await manga_updated.update({"$set": data})
         return manga_updated
 
     @staticmethod
-    async def update_id_mal_manga(manga_id: ObjectIdStr, id_MAL: int):
+    async def update_id_mal(manga_id: ObjectIdStr, id_MAL: int):
         manga_updated = await MangaModel.find_one(MangaModel.id == ObjectId(manga_id))
         await manga_updated.update({"$set": {"id_MAL": id_MAL}})
         return manga_updated
 
     @staticmethod
-    async def delete_manga(manga_id: ObjectIdStr):
+    async def delete(manga_id: ObjectIdStr):
         # Eliminamos el manga si existe
         manga_deleted = await MangaModel.find_one(
             MangaModel.id == ObjectId(manga_id)

@@ -42,11 +42,11 @@ class MangaService:
 
     # Detalles del anime
     @staticmethod
-    async def get_manga_by_id(
+    async def get_by_id(
         key_manga: int, user: Optional[UserLogRespSchema] = None
     ) -> MangaSchema:
         user_id = user.id if user else None
-        manga = await MangaRepository.get_manga_by_key(key_manga, user_id)
+        manga = await MangaRepository.get_by_key(key_manga, user_id)
 
         if not manga:
             raise HTTPException(

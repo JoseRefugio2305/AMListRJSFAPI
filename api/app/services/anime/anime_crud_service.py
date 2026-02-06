@@ -26,7 +26,7 @@ class AnimeCRUDService:
         data: AniFavPayloadSchema, user: UserLogRespSchema
     ) -> AniFavRespSchema:
         # Antes de actualizar o insertar la relacion se verifica que sea un anime existente
-        anime = await AnimeRepository.get_anime_by_id(data.animeId)
+        anime = await AnimeRepository.get_by_id(data.animeId)
         if not anime:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
@@ -50,7 +50,7 @@ class AnimeCRUDService:
     @staticmethod
     async def create_anime(payload: AnimeCreateSchema) -> ResponseUpdCrtAnime:
         # Verificamso si no existe un anime con el mismo key_anime
-        existing_anime = await AnimeRepository.get_anime_by_key(payload.key_anime, None)
+        existing_anime = await AnimeRepository.get_by_key(payload.key_anime, None)
         if existing_anime:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
@@ -62,7 +62,7 @@ class AnimeCRUDService:
             anime_to_create = payload.model_dump()
             anime_to_create["fechaAdicion"] = time_now_formatted(True)
             # Creamos el nuevo anime
-            insertedId = await AnimeCRUDRepository.create_anime(anime_to_create)
+            insertedId = await AnimeCRUDRepository.create(anime_to_create)
             logger.info(f"Anime registrado: {insertedId}")
             return ResponseUpdCrtAnime(message="Anime creado correctamente")
         except HTTPException:
@@ -91,7 +91,7 @@ class AnimeCRUDService:
             # Actualizamos el anime si existe
             # Obtenemos solo los campos que traen algun valor diferente de None
             data = payload.model_dump(exclude_unset=True)
-            anime_updated = await AnimeCRUDRepository.update_anime(anime_id, data)
+            anime_updated = await AnimeCRUDRepository.update(anime_id, data)
             if not anime_updated:  # Si no se encuntra el anime a actualizar
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,
@@ -109,7 +109,7 @@ class AnimeCRUDService:
     async def delete_anime(anime_id: ObjectIdStr) -> ResponseUpdCrtAnime:
         try:
             # Eliminamos el anime si existe
-            animeDel = await AnimeCRUDRepository.delete_anime(anime_id)
+            animeDel = await AnimeCRUDRepository.delete(anime_id)
             if not animeDel:  # Si no se encuntra el anime a eliminar
                 raise HTTPException(
                     status_code=status.HTTP_404_NOT_FOUND,

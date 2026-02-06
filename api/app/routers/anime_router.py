@@ -49,7 +49,7 @@ async def anime_details(
     key_anime: int,
     user: UserLogRespSchema = Depends(optional_current_user),
 ):
-    anime = await AnimeService.get_anime_by_id(key_anime, user)
+    anime = await AnimeService.get_by_id(key_anime, user)
     return anime.model_dump()
 
 
