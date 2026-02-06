@@ -2,9 +2,10 @@ from typing import Optional
 from fastapi import Depends, HTTPException, status
 
 from app.models.user_model import UserModel
+from app.repositories.auth import AuthRepository
 from app.schemas.auth import UserLogRespSchema, RolEnum
 from app.schemas.search import ActiveUserEnum
-from app.core.utils import object_id_to_str, to_user
+from app.core.utils import object_id_to_str
 from .jwt_handler import verify_access_token, oauth2_scheme
 
 # leg = get_logger(__name__)
@@ -21,7 +22,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserLogRespSc
         )
     # Buscamos al usuario usando el identificador del token, que es email
     user = object_id_to_str(
-        await UserModel.find_by_email(
+        await AuthRepository.find_by_email(
             email=token_data.sub, username="", tipoactive=ActiveUserEnum.activo
         )
     )
@@ -29,7 +30,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> UserLogRespSc
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Usuario no encontrado"
         )
-    return to_user(user, token)
+    return UserModel.to_user(user, token)
 
 
 # Verificar si quien realiza la peticion esta loggeado con un token valido
@@ -46,13 +47,13 @@ async def optional_current_user(
         if not token_data.sub:
             return None
         user = object_id_to_str(
-            await UserModel.find_by_email(
+            await AuthRepository.find_by_email(
                 email=token_data.sub, username="", tipoactive=ActiveUserEnum.activo
             )
         )
         if not user:
             return None
-        return to_user(user, token)
+        return UserModel.to_user(user, token)
     except:
         return None
 
