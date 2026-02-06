@@ -5,7 +5,7 @@ from app.schemas.search import FilterGSAESchema, SearchGenresSchema
 from app.core.utils import objects_id_list_to_str
 from app.repositories.shared.genre_repository import GenreRepository
 from app.schemas.common.genres import CreateGenreSchema
-from app.schemas.anime import RespUpdMALAnimeSchema
+from app.schemas.common.responses import RespUpdMALSchema
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -40,16 +40,16 @@ class GenreService:
 
     # Insertar/Actualizar genero
     @staticmethod
-    async def create_genre(genre: CreateGenreSchema) -> RespUpdMALAnimeSchema:
+    async def create_genre(genre: CreateGenreSchema) -> RespUpdMALSchema:
         try:
             # Si encuentra el genero actualiza la informacion, si no lo encuentra al insertar agrega el id_MAL y la fecha de adicion
             new_genre = await GenreRepository.create_genre(genre)
-            return RespUpdMALAnimeSchema(
+            return RespUpdMALSchema(
                 message="Genero Creado Correctamente", is_success=True
             )
         except Exception as e:
             logger.error(f"Error: {e}", exc_info=True)
-            return RespUpdMALAnimeSchema(
+            return RespUpdMALSchema(
                 message="Ocurrio un error al intentar agregar el genero",
                 is_success=False,
             )

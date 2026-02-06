@@ -2,12 +2,11 @@ from fastapi import HTTPException, status
 from typing import Optional
 import asyncio
 
+from app.schemas.common.responses import ResponseUpdCrt, RespUpdMALSchema
 from app.schemas.anime import (
     AnimeUpdateSchema,
-    ResponseUpdCrtAnime,
     AnimeMALSearch,
     PayloadAnimeIDMAL,
-    RespUpdMALAnimeSchema,
     ResponseUpdAllMALSchema,
 )
 from app.schemas.common.relations import CreateStudioSchema
@@ -62,7 +61,7 @@ class AnimeJikanService:
 
     # Asignar el IDMAL al anime
     @staticmethod
-    async def assign_id_mal_anime(payload: PayloadAnimeIDMAL) -> ResponseUpdCrtAnime:
+    async def assign_id_mal_anime(payload: PayloadAnimeIDMAL) -> ResponseUpdCrt:
         # Reviamos si existe un anime con el mismo idmal que queremos asignar
         existing_anime = await AnimeRepository.get_by_id_MAL(payload.id_MAL)
         if existing_anime:
@@ -77,7 +76,7 @@ class AnimeJikanService:
                 payload.id, payload.id_MAL
             )
 
-            return ResponseUpdCrtAnime(
+            return ResponseUpdCrt(
                 message=f"Anime actualizado al ID MAL {payload.id_MAL} correctamente"
             )
         except HTTPException:
@@ -103,27 +102,27 @@ class AnimeJikanService:
         id_MAL: Optional[int] = None,
         key_anime: Optional[int] = None,
         is_all: bool = False,
-    ) -> RespUpdMALAnimeSchema:
+    ) -> RespUpdMALSchema:
         # Si solo se esta actualizando un anime, entonces primero se revisa si este existe
         if not is_all:
             # Revisamos si existe un anime con el id indicado y que tenga su id_MAL registrado, de no tenerlo no se puede actualizar su informacion
             is_exists = await AnimeRepository.get_to_update_mal(animeId)
-            logger.debug(is_exists)
             if not is_exists:
-                return RespUpdMALAnimeSchema(
+                return RespUpdMALSchema(
                     message="No se encontro el anime a actualizar o no tiene asignado un id_MAL aun",
                     is_success=False,
                 )
             # Al encontrarlo actualizamos el id mal del anime para lo que sigue
-            id_MAL = is_exists.get("id_MAL")
-            key_anime = is_exists.get("key_anime")
+            id_MAL = is_exists.id_MAL
+            key_anime = is_exists.key_anime
 
         try:
             # Buscamos la informacion
             animeMAL = await JikanService.get_data_anime(id_MAL)
+            logger.debug(animeMAL)
             # Si no se encuentra nada
             if not animeMAL:
-                return RespUpdMALAnimeSchema(
+                return RespUpdMALSchema(
                     message=f"Error al intentar obtener la informacion del anime con id_MAL {id_MAL} desde MAL",
                     is_success=False,
                 )
@@ -156,13 +155,16 @@ class AnimeJikanService:
                     )
                 )
 
-            return RespUpdMALAnimeSchema(
+            return RespUpdMALSchema(
                 message=f"Anime con key_anime {key_anime} Actualizado Correctamente",
                 is_success=True,
             )
         except Exception as e:
-            logger.error(str(e),exc_info=True,)
-            return RespUpdMALAnimeSchema(
+            logger.error(
+                str(e),
+                exc_info=True,
+            )
+            return RespUpdMALSchema(
                 message=f"Ocurrio un error al intentar actualizar la informacion en el anime con key_anime {key_anime}",
                 is_success=False,
             )

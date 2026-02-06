@@ -139,13 +139,13 @@ class JikanService:
         mangadata = await jikan.get(
             id_MAL, entry="full"
         ).manga()  # Obtenemos toda la informacion del manga
+        logger.debug(mangadata)
 
         if "data" not in mangadata:
             return None
 
         mangadata = mangadata.get("data")
 
-        # logger.debug(mangadata)
         # logger.debug("       ")
         fechaComienzoPub = mangadata.get("published", {}).get("from")
         dict_manga = {

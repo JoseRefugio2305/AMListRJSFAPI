@@ -33,17 +33,6 @@ class AnimeIncompleteSchema(AnimeCreateSchema):
     id: ObjectIdStr
     id_MAL: Optional[int] = None
 
-
-# Respuesta anime creado, actualizado
-class ResponseUpdCrtAnime(BaseModel):
-    message: str
-
-
-# Respuesta anime actualizado desde MAL
-class RespUpdMALAnimeSchema(ResponseUpdCrtAnime):
-    is_success: bool
-
-
 # Anime
 class AnimeSchema(AnimeCreateSchema):
     id: ObjectIdStr

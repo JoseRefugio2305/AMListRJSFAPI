@@ -17,9 +17,9 @@ from app.services.anime import (
 from app.services.shared import GenreService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
+from app.schemas.common.responses import ResponseUpdCrt
 from app.schemas.anime import (
     AnimeCreateSchema,
-    ResponseUpdCrtAnime,
     AnimeUpdateSchema,
     PayloadAnimeIDMAL,
     ResponseUpdAllMALSchema,
@@ -47,7 +47,7 @@ routerDashAnime = APIRouter(
 # Creacion del anime
 @routerDashAnime.post(
     "/create/",
-    response_model=ResponseUpdCrtAnime,
+    response_model=ResponseUpdCrt,
     status_code=status.HTTP_201_CREATED,
 )
 async def create(
@@ -59,7 +59,7 @@ async def create(
 
 
 # Actualizacion del anime
-@routerDashAnime.put("/update/{anime_id}", response_model=ResponseUpdCrtAnime)
+@routerDashAnime.put("/update/{anime_id}", response_model=ResponseUpdCrt)
 async def update(
     anime_id: ObjectIdStr,
     payload: AnimeUpdateSchema = None,
@@ -74,7 +74,7 @@ async def update(
 
 
 # Eliminar anime
-@routerDashAnime.delete("/delete/{anime_id}", response_model=ResponseUpdCrtAnime)
+@routerDashAnime.delete("/delete/{anime_id}", response_model=ResponseUpdCrt)
 async def delete(
     anime_id: ObjectIdStr,
 ):
@@ -92,7 +92,7 @@ async def search_mal(
 
 
 # Asignar un ID MAL  a un anime
-@routerDashAnime.post("/assign_id_mal/", response_model=ResponseUpdCrtAnime)
+@routerDashAnime.post("/assign_id_mal/", response_model=ResponseUpdCrt)
 async def assign_id_mal(
     payload: PayloadAnimeIDMAL,
 ):

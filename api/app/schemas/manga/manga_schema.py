@@ -83,17 +83,6 @@ class MangaUpdateSchema(MangaCreateSchema):
     adaptaciones: Optional[List[AdaptacionSchema]] = None
     titulos_alt: Optional[List[AltTitlesSchema]] = None
 
-
-# Respuesta manga creado, actualizado
-class ResponseUpdCrtManga(BaseModel):
-    message: str
-
-
-# Respuesta manga actualizado desde MAL
-class RespUpdMALMangaSchema(ResponseUpdCrtManga):
-    is_success: bool
-
-
 # Esquema para las respuestas de mangas en MAL por titulo
 class MangaMALSearch(AnimeMALSearch):
     tipo: str = "Manga"

@@ -2,16 +2,13 @@ from fastapi import HTTPException, status
 from typing import Optional
 import asyncio
 
+from app.schemas.common.responses import ResponseUpdCrt, RespUpdMALSchema
 from app.schemas.manga import (
     MangaUpdateSchema,
-    ResponseUpdCrtManga,
     MangaMALSearch,
     PayloadMangaIDMAL,
 )
-from app.schemas.anime import (
-    ResponseUpdAllMALSchema,
-    RespUpdMALAnimeSchema,
-)
+from app.schemas.anime import ResponseUpdAllMALSchema
 from app.schemas.search import (
     PayloadSearchMangaMAL,
     ResponseSearchMangaMAL,
@@ -59,7 +56,7 @@ class MangaJikanService:
 
     # Asignar un idMAL a un manga
     @staticmethod
-    async def assign_id_mal_manga(payload: PayloadMangaIDMAL) -> ResponseUpdCrtManga:
+    async def assign_id_mal_manga(payload: PayloadMangaIDMAL) -> ResponseUpdCrt:
         # Reviamos si existe un manga con el mismo idmal que queremos asignar
         existing_manga = await MangaRepository.get_by_id_MAL(payload.id_MAL)
         if existing_manga:
@@ -74,7 +71,7 @@ class MangaJikanService:
                 payload.id, payload.id_MAL
             )
 
-            return ResponseUpdCrtManga(
+            return ResponseUpdCrt(
                 message=f"Manga actualizado al ID MAL {payload.id_MAL} correctamente"
             )
         except HTTPException:
@@ -100,28 +97,27 @@ class MangaJikanService:
         id_MAL: Optional[int] = None,
         key_manga: Optional[int] = None,
         is_all: bool = False,
-    ) -> RespUpdMALAnimeSchema:
+    ) -> RespUpdMALSchema:
         # Si solo se esta actualizando un manga, entonces primero se revisa si este existe
         if not is_all:
             # Revisamos si existe un manga con el id indicado y que tenga su id_MAL registrado, de no tenerlo no se puede actualizar su informacion
             is_exists = await MangaRepository.get_to_update_mal(mangaId)
-            logger.debug(is_exists)
             if not is_exists:
-                return RespUpdMALAnimeSchema(
+                return RespUpdMALSchema(
                     message="No se encontro el manga a actualizar o no tiene asignado un id_MAL aun",
                     is_success=False,
                 )
-            id_MAL = is_exists.get(
-                "id_MAL"
-            )  # Al encontrarlo actualizamos el id mal del manga para lo que sigue
-            key_manga = is_exists.get("key_manga")
+            logger.debug("Encontre el manga")
+            id_MAL = is_exists.id_MAL  # Al encontrarlo actualizamos el id mal del manga para lo que sigue
+            key_manga = is_exists.key_manga
 
         try:
             # Buscamos la informacion
             mangaMAL = await JikanService.get_data_manga(id_MAL)
+            logger.debug(mangaMAL)
             # Si no se encuentra nada
             if not mangaMAL:
-                return RespUpdMALAnimeSchema(
+                return RespUpdMALSchema(
                     message=f"Error al intentar obtener la informacion del manga con id_MAL {id_MAL} desde MAL",
                     is_success=False,
                 )
@@ -165,13 +161,13 @@ class MangaJikanService:
                     )
                 )
 
-            return RespUpdMALAnimeSchema(
+            return RespUpdMALSchema(
                 message=f"Manga con key_manga {key_manga} Actualizado Correctamente",
                 is_success=True,
             )
         except Exception as e:
             logger.debug(str(e))
-            return RespUpdMALAnimeSchema(
+            return RespUpdMALSchema(
                 message=f"Ocurrio un error al intentar actualizar la informacion del manga con key_manga {key_manga}",
                 is_success=False,
             )
