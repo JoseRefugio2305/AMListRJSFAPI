@@ -64,7 +64,7 @@ class AnimeRepository:
 
         logger.debug(pipeline)
 
-        results = await AnimeModel.aggregate(pipeline)
+        results = await AnimeModel.aggregate(pipeline).to_list()
         totalAnimes = (
             results[0]["totales"][0]["totalAnimes"]
             if len(results[0]["totales"]) > 0
@@ -90,22 +90,23 @@ class AnimeRepository:
                 user_id if user_id else None, "anime", "utafavs", False, 5
             ),
         ]
-        result = await AnimeModel.aggregate(pipeline)
+        result = await AnimeModel.aggregate(pipeline).to_list()
         return result[0] if len(result) > 0 else None
 
     @staticmethod
     async def get_anime_by_id(anime_id: ObjectIdStr):
-        return await AnimeModel.find_by_id(ObjectId(anime_id))
+        return await AnimeModel.find_one(AnimeModel.id == ObjectId(anime_id))
 
     @staticmethod
     async def get_anime_by_id_MAL(id_MAL: int):
-        return await AnimeModel.find_one({"id_MAL": id_MAL})
+        return await AnimeModel.find_one(AnimeModel.id_MAL == id_MAL)
 
     @staticmethod
     async def get_anime_to_update_mal(anime_id: ObjectIdStr):
         return await AnimeModel.find_one(
-            {"_id": ObjectId(anime_id), "id_MAL": {"$not": {"$eq": None}}}
+            AnimeModel.id == ObjectId(anime_id), AnimeModel.id_MAL != None
         )
+        # {"_id": ObjectId(anime_id), "id_MAL": {"$not": {"$eq": None}}}
 
     @staticmethod
     async def find_all_incomplete_filtered(
@@ -149,7 +150,10 @@ class AnimeRepository:
             }
         ]
         logger.debug(pipeline)
-        results = await AnimeModel.aggregate(pipeline)
+        results = await AnimeModel.aggregate(pipeline).to_list()
+
+        logger.debug("Beanie")
+        logger.debug(results)
 
         totalAnimes = (
             results[0]["totales"][0]["totalAnimes"]
@@ -167,7 +171,7 @@ class AnimeRepository:
 
     @staticmethod
     async def get_all_ready_to_mal():
-        return await AnimeModel.aggregate(filtrado_info_incompleta(True))
+        return await AnimeModel.aggregate(filtrado_info_incompleta(True)).to_list()
 
     @staticmethod
     async def get_studios(filters: FilterGSAESchema):
@@ -190,7 +194,7 @@ class AnimeRepository:
             }
         ]
         logger.debug(pipeline)
-        results = await StudioModel.aggregate(pipeline)
+        results = await StudioModel.aggregate(pipeline).to_list()
 
         totalStudios = (
             results[0]["totales"][0]["totalStudios"]
@@ -224,7 +228,7 @@ class AnimeRepository:
                     }
                 }
             ]
-        )
+        ).to_list()
 
         return result and len(result) > 0
 
@@ -234,5 +238,5 @@ class AnimeRepository:
             {"$match": {"key_anime": {"$in": key_list}}},
             {"$project": {"_id": 0, "key_anime": 1}},
         ]
-        results = await AnimeModel.aggregate(pipeline)
+        results = await AnimeModel.aggregate(pipeline).to_list()
         return [r.get("key_anime") for r in results]

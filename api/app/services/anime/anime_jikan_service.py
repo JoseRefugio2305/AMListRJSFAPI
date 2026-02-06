@@ -161,7 +161,7 @@ class AnimeJikanService:
                 is_success=True,
             )
         except Exception as e:
-            logger.debug(str(e))
+            logger.error(str(e),exc_info=True,)
             return RespUpdMALAnimeSchema(
                 message=f"Ocurrio un error al intentar actualizar la informacion en el anime con key_anime {key_anime}",
                 is_success=False,

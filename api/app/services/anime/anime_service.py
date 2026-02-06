@@ -13,12 +13,9 @@ from app.schemas.search import (
     SearchStudiosSchema,
 )
 from app.schemas.auth import UserLogRespSchema
-from app.core.utils import (
-    objects_id_list_to_str,
-    to_anime,
-    to_incomplete_anime,
-)
+from app.core.utils import objects_id_list_to_str
 from app.repositories.anime import AnimeRepository
+from app.models.anime_model import AnimeModel
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -35,7 +32,9 @@ class AnimeService:
         results, totalAnimes = await AnimeRepository.find_all_filtered(filters, user_id)
 
         return AnimeSearchSchema(
-            listaAnimes=[to_anime(r, user is not None, False) for r in results],
+            listaAnimes=[
+                AnimeModel.to_anime(r, user is not None, False) for r in results
+            ],
             pageA=filters.page,
             totalPagesA=math.ceil(totalAnimes / filters.limit),
             totalAnimes=totalAnimes,
@@ -54,7 +53,7 @@ class AnimeService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Anime no encontrado",
             )
-        return to_anime(anime, user is not None, True)
+        return AnimeModel.to_anime(anime, user is not None, True)
 
     # Obtener los animes que no estan actualizados con su informaicon de MAL
     @staticmethod
@@ -65,7 +64,7 @@ class AnimeService:
             filters, ready_to_mal
         )
 
-        results = [to_incomplete_anime(a) for a in results]
+        results = [AnimeModel.to_incomplete_anime(a) for a in results]
 
         return SearchAnimeIncompleteSchema(
             listaAnimes=results,
