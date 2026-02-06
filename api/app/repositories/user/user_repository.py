@@ -67,7 +67,7 @@ class UserRepository:
         ]
         logger.debug(pipeline)
         # Realizamos conteo
-        results = await UserModel.aggregate(pipeline)
+        results = await UserModel.aggregate(pipeline).to_list()
         totalUsers = (
             results[0]["totales"][0]["totalUsers"]
             if len(results[0]["totales"]) > 0
@@ -86,10 +86,8 @@ class UserRepository:
     async def update_prof_pic(
         prof_pic_data: PayloadProfPicSchema, user_id: ObjectIdStr
     ):
-        new_pp = await UserModel.update_one(
-            {"_id": ObjectId(user_id)},
-            {"$set": {"profile_pic": prof_pic_data.profile_pic}},
-            False,
+        new_pp = await UserModel.find_one(UserModel.id == ObjectId(user_id)).update(
+            {"$set": {"profile_pic": prof_pic_data.profile_pic}}
         )
 
         return new_pp
@@ -98,27 +96,23 @@ class UserRepository:
     async def change_username(
         new_username_data: PayloadUsernameSchema, user_id: ObjectIdStr
     ):
-        new_username = await UserModel.update_one(
-            {"_id": ObjectId(user_id)},
-            {"$set": {"name": new_username_data.new_name}},
-            False,
-        )
+        new_username = await UserModel.find_one(
+            UserModel.id == ObjectId(user_id)
+        ).update({"$set": {"name": new_username_data.new_name}})
 
         return new_username
 
     @staticmethod
     async def change_email(new_emaildata: PayloadEmailSchema, user_id: ObjectIdStr):
-        new_email = await UserModel.update_one(
-            {"_id": ObjectId(user_id)},
-            {"$set": {"email": new_emaildata.new_email}},
-            False,
+        new_email = await UserModel.find_one(UserModel.id == ObjectId(user_id)).update(
+            {"$set": {"email": new_emaildata.new_email}}
         )
         return new_email
 
     @staticmethod
     async def change_pass(new_pass_hash: str, user_id: ObjectIdStr):
-        new_pass = await UserModel.update_one(
-            {"_id": ObjectId(user_id)}, {"$set": {"password": new_pass_hash}}, False
+        new_pass = await UserModel.find_one(UserModel.id == ObjectId(user_id)).update(
+            {"$set": {"password": new_pass_hash}}
         )
 
         return new_pass
@@ -127,9 +121,7 @@ class UserRepository:
     async def change_status_active(
         payload: PayloadActiveStateSchema,
     ):
-        user_active = await UserModel.find_and_update(
-            {"_id": ObjectId(payload.userId)},
-            {"is_active": payload.is_active},
-            upsert=False,
-        )
+        user_active = await UserModel.find_one(
+            UserModel.id == ObjectId(payload.userId)
+        ).update({"is_active": payload.is_active})
         return user_active

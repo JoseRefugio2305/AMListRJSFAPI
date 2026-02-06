@@ -15,15 +15,15 @@ class AuthRepository:
         username: Optional[str] = None,
         tipoactive: ActiveUserEnum = ActiveUserEnum.todos,
     ):
-        return await UserModel.find_by_email(
-            email=email, username=username, tipoactive=tipoactive
-        )
+        return await UserModel.find_one({"$or": [{"email": email}, {"name": username}]})
 
     @staticmethod
     async def insert_user(data_n_user: UserRegSchema, email: str):
-        inserted_id = await UserModel.insert_one(data_n_user.model_dump())  # Insertamos
+        inserted_id = await UserModel.insert_one(
+            UserModel(**data_n_user.model_dump())
+        )  # Insertamos
         logger.info(f"Usuario registrado: {inserted_id}")
 
-        created_user = await UserModel.find_by_email(email=email)
+        created_user = await UserModel.find_one(UserModel.email == email)
 
         return created_user

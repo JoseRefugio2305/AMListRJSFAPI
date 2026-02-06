@@ -2,13 +2,13 @@ from typing import Optional
 from passlib.context import CryptContext
 
 from app.repositories.auth import AuthRepository
+from app.models.user_model import UserModel
 from app.schemas.auth import UserRegSchema, UserLogRespSchema, RolEnum
 from app.schemas.search import ActiveUserEnum
 from app.core.utils import (
     object_id_to_str,
     str_trim_lower,
     time_now_formatted,
-    to_user,
 )
 from app.core.security import create_access_token
 from app.core.logging import get_logger
@@ -35,11 +35,11 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
     isExists = await AuthRepository.find_by_email(email=email, username=name)
     if isExists:  # Si existe marcamos el error
         msg = ""
-        if str_trim_lower(isExists.get("email")) == str_trim_lower(email):
-            log.warning(f"El ususario {email} ya existe {isExists.get("email")}")
+        if str_trim_lower(isExists.email) == str_trim_lower(email):
+            log.warning(f"El ususario {email} ya existe {isExists.email}")
             msg = "Email"
-        elif str_trim_lower(isExists.get("name")) == str_trim_lower(name):
-            log.warning(f"El ususario {name} ya existe {isExists.get("name")}")
+        elif str_trim_lower(isExists.name) == str_trim_lower(name):
+            log.warning(f"El ususario {name} ya existe {isExists.name}")
             msg = "username"
         raise ValueError(f"Ya existe un usuario registrado con ese {msg}")
     hashedPass = get_pass_hash(password)
@@ -60,7 +60,7 @@ async def register_user(name: str, email: str, password: str) -> UserLogRespSche
 
     # Creamos el accesstoken usando el email como sujeto de de identificacion
     accessToken = create_access_token(subject=createdUser.get("email"))
-    return to_user(createdUser, accessToken)
+    return UserModel.to_user(createdUser.model_dump(), accessToken)
 
 
 # Verificamos que las credenciales sean correctas
@@ -77,4 +77,4 @@ async def auth_user(email: str, password: str) -> Optional[UserLogRespSchema]:
     if not hashed or not verify_pass(password, hashed):
         return None
 
-    return to_user(user, "")
+    return UserModel.to_user(user, "")

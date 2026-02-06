@@ -16,12 +16,12 @@ from app.core.utils import (
     object_id_to_str,
     objects_id_list_to_str,
     UsernameType,
-    to_user,
 )
 from app.services.auth_service import verify_pass, get_pass_hash
 from app.core.security import create_access_token
 from app.repositories.auth import AuthRepository
 from app.repositories.user import UserRepository
+from app.models.user_model import UserModel
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -41,7 +41,7 @@ class UserService:
         if not userInfo:  # Si no se encontro informacion
             raise HTTPException(status_code=404, detail="Usuario no encontrado")
 
-        return to_user(userInfo, "")
+        return UserModel.to_user(userInfo, "")
 
     # Cambio de goto de perfil
     @staticmethod
@@ -129,7 +129,7 @@ class UserService:
         )
 
         # Si la contraseña no es correcta
-        if not verify_pass(new_passdata.old_pass, old_pass_hash.get("password")):
+        if not verify_pass(new_passdata.old_pass, old_pass_hash.password):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Contraseña incorrecta. ",
@@ -158,7 +158,7 @@ class UserService:
             total=totalUsers,
             page=userFilters.page,
             totalPages=math.ceil(totalUsers / userFilters.limit),
-            userList=[to_user(userInfo, "") for userInfo in results],
+            userList=[UserModel.to_user(userInfo, "") for userInfo in results],
         )
 
     # Cambiar el estado activo de un usuario
