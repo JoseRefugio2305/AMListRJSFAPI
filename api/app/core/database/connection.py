@@ -1,6 +1,7 @@
 from pymongo import AsyncMongoClient
 from pymongo.database import Database
-from pymongo.errors import DuplicateKeyError
+from beanie import init_beanie
+
 from app.core.config import settings  # Configuraciones de la aplicacion
 from app.core.logging import get_logger
 
@@ -8,6 +9,31 @@ logger = get_logger(__name__)
 
 client: AsyncMongoClient | None = None
 db: Database | None = None
+
+
+def get_document_models():
+    # La lista de inportaciones se hace aqui para evitar importaciones circulares
+    from app.models.anime_model import AnimeModel
+    from app.models.manga_model import MangaModel
+    from app.models.user_model import UserModel
+    from app.models.utafavs_model import UTAFavsModel
+    from app.models.utmanfavs_model import UTManFavsModel
+    from app.models.genero_model import GeneroModel
+    from app.models.studio_model import StudioModel
+    from app.models.author_model import AuthorModel
+    from app.models.editorial_model import EditorialModel
+
+    return [
+        AnimeModel,
+        MangaModel,
+        UserModel,
+        UTAFavsModel,
+        UTManFavsModel,
+        GeneroModel,
+        StudioModel,
+        AuthorModel,
+        EditorialModel,
+    ]
 
 
 # Conexion con base de datos
@@ -18,7 +44,11 @@ async def connect_mongo():
         try:
             client = AsyncMongoClient(settings.MONGO_URI)
             db = client[settings.MONGO_DB_NAME]
-            await ensure_indexes(db)
+
+            # Inicializacion de Beanie
+            await init_beanie(database=db, document_models=get_document_models())
+            logger.info("Beanie inicializado correctamente")
+
             logger.info(
                 f"Se realizó la conexión a la base de datos de mongodb: ({settings.MONGO_DB_NAME})",
             )
@@ -40,58 +70,4 @@ async def close_mongo():
         except Exception as e:
             logger.warning(
                 f"Error al cerrar la conexión MongoDB: {str(e)}", exc_info=True
-            )
-
-
-# Creacion de indices
-async def ensure_indexes(db: Database):
-    indexes = [
-        (db.animes, [("key_anime", 1)], {"unique": True, "background": True}),
-        (db.mangas, [("key_manga", 1)], {"unique": True, "background": True}),
-        (
-            db.animes,
-            [("id_MAL", 1)],
-            {"unique": True, "sparse": True, "background": True},
-        ),
-        (
-            db.mangas,
-            [("id_MAL", 1)],
-            {"unique": True, "sparse": True, "background": True},
-        ),
-        (
-            db.generos,
-            [("id_MAL", 1)],
-            {"unique": True, "sparse": True, "background": True},
-        ),
-        (
-            db.autors,
-            [("id_MAL", 1)],
-            {"unique": True, "sparse": True, "background": True},
-        ),
-        (
-            db.editorials,
-            [("id_MAL", 1)],
-            {"unique": True, "sparse": True, "background": True},
-        ),
-        (
-            db.studios,
-            [("id_MAL", 1)],
-            {"unique": True, "sparse": True, "background": True},
-        ),
-        (db.users, [("email", 1)], {"unique": True, "background": True}),
-        (db.users, [("name", 1)], {"unique": True, "background": True}),
-        (db.utafavs, [("anime", 1), ("user", 1)], {"background": True}),
-        (db.utmanfavs, [("manga", 1), ("user", 1)], {"background": True}),
-    ]
-    # Recorremos cada indice para ejecutar su creacion y procesar si hay algun error
-    for collection, index_spec, index_opts in indexes:
-        try:
-            await collection.create_index(index_spec, **index_opts)
-        except DuplicateKeyError:
-            # indice ya existe, continuar sin error
-            pass
-        except Exception as e:
-            # Otros errores se registran pero no impiden el inicio
-            logger.warning(
-                f"Error al crear índice {index_spec} en {collection.name}: {str(e)}"
             )
