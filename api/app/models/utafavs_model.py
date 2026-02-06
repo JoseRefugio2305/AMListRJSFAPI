@@ -15,11 +15,8 @@ class UTAFavsModel(Document):
         name = "utafavs"
         indexes = [
             IndexModel(
-                [("anime", ASCENDING)],
+                [("anime", ASCENDING), ("user", ASCENDING)],
                 name="anime_user_rel_idx",
-            ),
-            IndexModel(
-                [("user", ASCENDING)],
-                name="user_anime_rel_idx",
-            ),
+                unique=True,
+            )
         ]
