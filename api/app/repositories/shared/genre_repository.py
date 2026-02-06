@@ -33,7 +33,7 @@ class GenreRepository:
             }
         ]
         logger.debug(pipeline)
-        results = await GeneroModel.aggregate(pipeline)
+        results = await GeneroModel.aggregate(pipeline).to_list()
         totalGeneros = (
             results[0]["totales"][0]["totalGeneros"]
             if len(results[0]["totales"]) > 0
@@ -45,20 +45,17 @@ class GenreRepository:
     @staticmethod
     async def create_genre(genre: CreateGenreSchema):
         # Si encuentra el genero actualiza la informacion, si no lo encuentra al insertar agrega el id_MAL y la fecha de adicion
-        new_genre = await GeneroModel.update_one(
-            {"id_MAL": genre.id_MAL},
+        new_genre = await GeneroModel.find_one(
+            GeneroModel.id_MAL == genre.id_MAL
+        ).upsert(
             {
                 "$set": {
                     "nombre": genre.nombre,
                     "nombre_mal": genre.nombre_mal,
                     "linkMAL": genre.linkMAL,
-                },
-                "$setOnInsert": {
-                    "fechaAdicion": time_now_formatted(True),
-                    "id_MAL": genre.id_MAL,
-                },
+                }
             },
-            True,
+            on_insert=GeneroModel(**genre.model_dump()),
         )
 
         return new_genre
