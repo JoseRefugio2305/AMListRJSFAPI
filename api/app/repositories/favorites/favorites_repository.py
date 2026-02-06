@@ -12,8 +12,10 @@ class FavoritesRepository:
     async def change_status_fav_anime(
         data: AniFavPayloadSchema, user: UserLogRespSchema, nowTS: str
     ):
-        updated = await UTAFavsModel.update_one(
-            {"user": ObjectId(user.id), "anime": ObjectId(data.animeId)},
+        updated = await UTAFavsModel.find_one(
+            UTAFavsModel.user == ObjectId(user.id),
+            UTAFavsModel.anime == ObjectId(data.animeId),
+        ).upsert(
             {
                 "$set": {
                     "anime": ObjectId(data.animeId),
@@ -21,11 +23,14 @@ class FavoritesRepository:
                     "active": data.active,
                     "statusView": data.statusView,
                 },
-                "$setOnInsert": {
-                    "fechaAdicion": nowTS,
-                },
             },
-            upsert=True,
+            on_insert=UTAFavsModel(
+                anime=ObjectId(data.animeId),
+                user=ObjectId(user.id),
+                active=data.active,
+                statusView=data.statusView,
+                fechaAdicion=nowTS,
+            ),
         )  # Actualizamos el registro o insertamos en caso de que no exista la relacion
 
         return updated
@@ -34,19 +39,24 @@ class FavoritesRepository:
     async def change_status_fav_manga(
         data: MangaFavPayloadSchema, user: UserLogRespSchema, nowTS: str
     ):
-        updated = await UTManFavsModel.update_one(
-            {"user": ObjectId(user.id), "manga": ObjectId(data.mangaId)},
+        updated = await UTManFavsModel.find_one(
+            UTManFavsModel.user == ObjectId(user.id),
+            UTManFavsModel.manga == ObjectId(data.mangaId),
+        ).upsert(
             {
                 "$set": {
                     "manga": ObjectId(data.mangaId),
                     "user": ObjectId(user.id),
                     "active": data.active,
                     "statusView": data.statusView,
-                },
-                "$setOnInsert": {
-                    "fechaAdicion": nowTS,
-                },
+                }
             },
-            upsert=True,
+            on_insert=UTManFavsModel(
+                manga=ObjectId(data.mangaId),
+                user=ObjectId(user.id),
+                active=data.active,
+                statusView=data.statusView,
+                fechaAdicion=nowTS,
+            ),
         )  # Actualizamos el registro o insertamos en caso de que no exista la relacion
         return updated

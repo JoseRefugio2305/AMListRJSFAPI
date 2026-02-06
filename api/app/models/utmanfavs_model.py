@@ -1,11 +1,25 @@
-from app.base.base_odm import BaseODMModel
-from bson.objectid import ObjectId
+from beanie import Document,PydanticObjectId
+from pymongo import IndexModel, ASCENDING
+
+from app.schemas.anime import StatusViewEnum
 
 
-class UTManFavsModel(BaseODMModel):
-    collection_name = "utmanfavs"
+class UTManFavsModel(Document):
+    user: PydanticObjectId
+    manga: PydanticObjectId
+    active: bool
+    statusView: StatusViewEnum
+    fechaAdicion: str
 
-    # Busqueda de un documento en el que el usuario haya marcado un manga como favorito en algun momento, sin importar que este se haya desmarcado
-    @classmethod
-    async def find_by_uid_mid(cls, userid: ObjectId, mangaId: ObjectId):
-        return await cls.find_one({"manga": mangaId, "user": userid})
+    class Settings:
+        name = "utmanfavs"
+        indexes = [
+            IndexModel(
+                [("manga", ASCENDING)],
+                name="manga_user_rel_idx",
+            ),
+            IndexModel(
+                [("user", ASCENDING)],
+                name="user_manga_rel_idx",
+            ),
+        ]

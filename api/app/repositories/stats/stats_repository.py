@@ -29,7 +29,7 @@ class StatsRepository:
                 {"$project": {"_id": 0, "statusView": "$_id", "conteo": 1}},
                 {"$sort": {"statusView": 1}},
             ]
-        )
+        ).to_list()
         conteo_animes = await UTAFavsModel.aggregate(
             [
                 {"$match": {"$and": [{"user": ObjectId(user_id)}, {"active": True}]}},
@@ -37,9 +37,9 @@ class StatsRepository:
                 {"$project": {"_id": 0, "statusView": "$_id", "conteo": 1}},
                 {"$sort": {"statusView": 1}},
             ]
-        )
+        ).to_list()
 
-        return conteo_animes, conteo_mangas
+        return conteo_mangas, conteo_animes
 
     @staticmethod
     async def get_stats(
@@ -62,7 +62,7 @@ class StatsRepository:
                         "utafavs",
                         "tipoanimes",
                     )
-                )
+                ).to_list()
                 tiposManga = await MangaModel.aggregate(
                     statsTipo(
                         only_Favs,
@@ -71,19 +71,19 @@ class StatsRepository:
                         "utmanfavs",
                         "tipomangas",
                     )
-                )
+                ).to_list()
             case TypeStatisticEnum.generos:
                 porGenero = await GeneroModel.aggregate(
                     statsGenero(only_Favs, user.id if user else None)
-                )
+                ).to_list()
             case TypeStatisticEnum.studios:
                 topStudios = await StudioModel.aggregate(
                     topEstudios(only_Favs, user.id if user else None)
-                )
+                ).to_list()
             case _:
                 topEditorials = await EditorialModel.aggregate(
                     topEditoriales(only_Favs, user.id if user else None)
-                )
+                ).to_list()
         return tiposAnime, tiposManga, porGenero, topEditorials, topStudios
 
     @staticmethod
@@ -175,5 +175,5 @@ class StatsRepository:
                     }
                 },
             ]
-        )
+        ).to_list()
         return conteosGenerales
