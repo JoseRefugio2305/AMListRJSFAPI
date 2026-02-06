@@ -15,69 +15,60 @@ logger = get_logger(__name__)
 class MangaCRUDRepository:
     @staticmethod
     async def create_manga(manga_to_create: MangaCreateSchema):
-        return await MangaModel.insert_one(manga_to_create)
+        insertedId = await MangaModel.insert_one(MangaModel(**manga_to_create))
+        return insertedId
 
     @staticmethod
     async def update_manga(manga_id: ObjectIdStr, data: dict):
-        updated_manga = await MangaModel.find_and_update(
-            {"_id": ObjectId(manga_id)}, data, upsert=False
-        )
-        return updated_manga
+        manga_updated = await MangaModel.find_one(MangaModel.id == ObjectId(manga_id))
+        await manga_updated.update({"$set": data})
+        return manga_updated
 
     @staticmethod
     async def update_id_mal_manga(manga_id: ObjectIdStr, id_MAL: int):
-        anime_updated = await MangaModel.update_one(
-            {"_id": ObjectId(manga_id)},
-            {"$set": {"id_MAL": id_MAL}},
-            False,
-        )
-        return anime_updated
+        manga_updated = await MangaModel.find_one(MangaModel.id == ObjectId(manga_id))
+        await manga_updated.update({"$set": {"id_MAL": id_MAL}})
+        return manga_updated
 
     @staticmethod
     async def delete_manga(manga_id: ObjectIdStr):
         # Eliminamos el manga si existe
-        deleted_manga = await MangaModel.delete_one({"_id": ObjectId(manga_id)})
-        if deleted_manga.deleted_count == 0:  # Si no se encuntra el manga a eliminar
+        manga_deleted = await MangaModel.find_one(
+            MangaModel.id == ObjectId(manga_id)
+        ).delete()
+        if manga_deleted.deleted_count == 0:  # Si no se encuntra el manga a eliminar
             return False
-        await UTManFavsModel.delete_many({"manga": ObjectId(manga_id)})
+        await UTManFavsModel.find(UTManFavsModel.manga == ObjectId(manga_id)).delete()
 
         return True
 
     @staticmethod
     async def create_editorial(editorial: CreateEditorialSchema):
-        new_editorial = await EditorialModel.update_one(
-            {"id_MAL": editorial.id_MAL},
+        new_editorial = await EditorialModel.find_one(
+            EditorialModel.id_MAL == editorial.id_MAL
+        ).upsert(
             {
                 "$set": {
                     "nombre": editorial.nombre,
                     "linkMAL": editorial.linkMAL,
-                },
-                "$setOnInsert": {
-                    "tipo": editorial.tipo,
-                    "fechaAdicion": time_now_formatted(True),
-                    "id_MAL": editorial.id_MAL,
-                },
+                }
             },
-            True,
+            on_insert=EditorialModel(**editorial.model_dump()),
         )
 
         return new_editorial
 
     @staticmethod
     async def create_author(author: CreateAutorSchema):
-        new_author = await AuthorModel.update_one(
-            {"id_MAL": author.id_MAL},
+        new_author = await AuthorModel.find_one(
+            AuthorModel.id_MAL == author.id_MAL
+        ).upsert(
             {
                 "$set": {
                     "nombre": author.nombre,
                     "linkMAL": author.linkMAL,
-                },
-                "$setOnInsert": {
-                    "tipo": author.tipo,
-                    "fechaAdicion": time_now_formatted(True),
-                    "id_MAL": author.id_MAL,
-                },
+                }
             },
-            True,
+            on_insert=AuthorModel(**author.model_dump()),
         )
         return new_author

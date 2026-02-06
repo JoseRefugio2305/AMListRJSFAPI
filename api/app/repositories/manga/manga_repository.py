@@ -22,6 +22,7 @@ from app.core.logging import get_logger
 
 logger = get_logger(__name__)
 
+
 class MangaRepository:
     @staticmethod
     async def find_all_filtered(
@@ -60,7 +61,7 @@ class MangaRepository:
             }
         ]
 
-        results = await MangaModel.aggregate(pipeline)
+        results = await MangaModel.aggregate(pipeline).to_list()
 
         totalMangas = (
             results[0]["totales"][0]["totalMangas"]
@@ -89,27 +90,27 @@ class MangaRepository:
             ),
         ]
         logger.debug(pipeline)
-        result = await MangaModel.aggregate(pipeline)
+        result = await MangaModel.aggregate(pipeline).to_list()
 
         return result[0] if len(result) > 0 else None
 
     @staticmethod
     async def get_manga_by_id(manga_id: ObjectIdStr):
-        return await MangaModel.find_by_id(ObjectId(manga_id))
+        return await MangaModel.find_one(MangaModel.id == ObjectId(manga_id))
 
     @staticmethod
     async def get_manga_by_id_MAL(id_MAL: int):
-        return await MangaModel.find_one({"id_MAL": id_MAL})
+        return await MangaModel.find_one(MangaModel.id_MAL == id_MAL)
 
     @staticmethod
     async def get_manga_to_update_mal(manga_id: ObjectIdStr):
         return await MangaModel.find_one(
-            {"_id": ObjectId(manga_id), "id_MAL": {"$not": {"$eq": None}}}
+            MangaModel.id == ObjectId(manga_id), MangaModel.id_MAL != None
         )
 
     @staticmethod
     async def get_all_ready_to_mal():
-        return await MangaModel.aggregate(filtrado_info_incompleta(True))
+        return await MangaModel.aggregate(filtrado_info_incompleta(True)).to_list()
 
     @staticmethod
     async def is_exists_to_update(manga_id: ObjectIdStr, payload: MangaUpdateSchema):
@@ -135,7 +136,7 @@ class MangaRepository:
                     }
                 }
             ]
-        )
+        ).to_list()
 
         return result and len(result) > 0
 
@@ -183,7 +184,7 @@ class MangaRepository:
         logger.debug(pipeline)
 
         # Obtenemos el conteo de los mangas que tienen su informacion incompleta
-        results = await MangaModel.aggregate(pipeline)
+        results = await MangaModel.aggregate(pipeline).to_list()
 
         totalMangas = (
             results[0]["totales"][0]["totalMangas"]
@@ -221,7 +222,7 @@ class MangaRepository:
             }
         ]
         logger.debug(pipeline)
-        results = await EditorialModel.aggregate(pipeline)
+        results = await EditorialModel.aggregate(pipeline).to_list()
 
         totalEditoriales = (
             results[0]["totales"][0]["totalEditoriales"]
@@ -252,7 +253,7 @@ class MangaRepository:
             }
         ]
         logger.debug(pipeline)
-        results = await AuthorModel.aggregate(pipeline)
+        results = await AuthorModel.aggregate(pipeline).to_list()
         totalAutores = (
             results[0]["totales"][0]["totalAutores"]
             if len(results[0]["totales"]) > 0

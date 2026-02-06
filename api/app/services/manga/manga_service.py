@@ -2,6 +2,7 @@ from fastapi import HTTPException, status
 from typing import Optional
 import math
 
+from app.models.manga_model import MangaModel
 from app.repositories.manga import MangaRepository
 from app.schemas.manga import MangaSchema
 from app.schemas.common.relations import AutorSchema, EditorialSchema
@@ -15,11 +16,7 @@ from app.schemas.search import (
     SearchAutoresSchema,
 )
 from app.schemas.auth import UserLogRespSchema
-from app.core.utils import (
-    objects_id_list_to_str,
-    to_manga,
-    to_incomplete_manga,
-)
+from app.core.utils import objects_id_list_to_str
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -35,7 +32,9 @@ class MangaService:
         results, totalMangas = await MangaRepository.find_all_filtered(filters, user_id)
 
         return MangaSearchSchema(
-            listaMangas=[to_manga(r, True if user else False, False) for r in results],
+            listaMangas=[
+                MangaModel.to_manga(r, True if user else False, False) for r in results
+            ],
             pageM=filters.page,
             totalPagesM=math.ceil(totalMangas / filters.limit),
             totalMangas=totalMangas,
@@ -55,7 +54,7 @@ class MangaService:
                 detail="Manga no encontrado",
             )
 
-        return to_manga(manga, True if user else False, True)
+        return MangaModel.to_manga(manga, True if user else False, True)
 
     # Obtener los mangas incompletos
     @staticmethod
@@ -66,7 +65,7 @@ class MangaService:
             filters, ready_to_mal
         )
 
-        results = [to_incomplete_manga(a) for a in results]
+        results = [MangaModel.to_incomplete_manga(a) for a in results]
 
         logger.debug(results)
         return SearchMangaIncompleteSchema(
