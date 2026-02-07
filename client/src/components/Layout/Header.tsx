@@ -26,7 +26,7 @@ import {
 import { authStore } from "../../store/authStore";
 
 function AvatarSettings() {
-   const { username, logout, prof_pic } = authStore();
+   const { username, logout, prof_pic, rol } = authStore();
    const navigate = useNavigate();
    return (
       <div className="flex md:order-2 dark:text-white">
@@ -54,18 +54,17 @@ function AvatarSettings() {
             >
                Mis Listas
             </DropdownItem>
-            <DropdownItem
-               icon={Bolt}
-               onClick={() => navigate(`user/config`)}
-            >
+            <DropdownItem icon={Bolt} onClick={() => navigate(`user/config`)}>
                Configuración
             </DropdownItem>
-            <DropdownItem
-               icon={ShieldUser}
-               onClick={() => navigate(`dashboard`)}
-            >
-               Dashboard
-            </DropdownItem>
+            {username && rol == 1 && (
+               <DropdownItem
+                  icon={ShieldUser}
+                  onClick={() => navigate(`dashboard`)}
+               >
+                  Dashboard
+               </DropdownItem>
+            )}
             <DropdownItem
                icon={ArrowRightToLine}
                onClick={() => logout(navigate)}

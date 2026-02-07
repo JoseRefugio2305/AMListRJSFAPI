@@ -26,9 +26,10 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
      (response) => response, // si la respuesta es correcta, se devuelve tal cual
      (error) => {
-          if (error.response && error.response.status === 401) {//Error de autorizacion
+          if (error.response && (error.response.status === 401 || error.response.status === 403)) {//Error de autorizacion
                // El token ya no es válido
                sessionStorage.removeItem("token_jwt_url");
+               sessionStorage.removeItem("username");
 
                // Redirigir al login si no se esta en el login
                if (window.location.pathname !== "/login") {
