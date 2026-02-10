@@ -2,13 +2,9 @@ from fastapi import HTTPException, status
 from typing import Optional
 import asyncio
 
+from app.core.tasks.task_manager import task_manager
 from app.schemas.common.responses import ResponseUpdCrt, RespUpdMALSchema
-from app.schemas.anime import (
-    AnimeUpdateSchema,
-    AnimeMALSearch,
-    PayloadAnimeIDMAL,
-    ResponseUpdAllMALSchema,
-)
+from app.schemas.anime import AnimeUpdateSchema, AnimeMALSearch, PayloadAnimeIDMAL
 from app.schemas.common.relations import CreateStudioSchema
 from app.schemas.common.genres import CreateGenreSchema
 from app.schemas.search import (
@@ -87,13 +83,110 @@ class AnimeJikanService:
 
     ##Funcion Wrapper para ejecutar la actualizacion de un anime desde MAL en segundo plano y no pare la ejecutcion
     @staticmethod
-    async def run_update_anime_mal_back(animeId: ObjectIdStr):
-        await AnimeJikanService.update_anime_from_mal(animeId=animeId, is_all=False)
+    async def run_update_anime_mal_back(task_id: str, animeId: ObjectIdStr):
+        try:
+            # Iniciamos tarea
+            task_manager.start_task(task_id)
+            task_manager.update_progress(task_id, 0, 1)
+            if task_manager.is_cancelled(task_id):
+                logger.info(
+                    f"Tarea de actualización de anime con ID {animeId} cancelada: {task_id}"
+                )
+                return
+            try:
+                await AnimeJikanService.update_anime_from_mal(
+                    animeId=animeId, is_all=False
+                )
+                task_manager.increment_success(task_id)
+            except Exception as e:
+                logger.error(
+                    f"Error al actualizar anime con id {animeId}: {str(e)}",
+                    exc_info=True,
+                )
+                task_manager.add_error(
+                    task_id,
+                    f"Error al actualizar anime con id {animeId}: {str(e)}",
+                )
+            task_manager.update_progress(task_id, 1, 1)
+            task_manager.complete_task(
+                task_id,
+                {
+                    "totalAnimes": 1,
+                    "totalActualizados": task_manager.get_task(task_id).success_count,
+                    "totalErrores": task_manager.get_task(task_id).error_count,
+                },
+            )
+        except Exception as e:
+            logger.error(
+                f"Error al actualizar anime con id {animeId}: {str(e)}", exc_info=True
+            )
+            task_manager.fail_task(
+                task_id,
+                f"Error al intentar actualizar el anime con ID  {animeId}: {str(e)}",
+            )
 
     # Wrapper para ejecutar la actualizacion masiva de animes desde MAL y que esto no afecte a la ejecucion de otras peticiones
     @staticmethod
-    async def run_update_all_animes_back():
-        await AnimeJikanService.update_all_animes_from_mal()
+    async def update_all_animes_from_mal_back(task_id: str):
+        try:
+            # Iniciamos tarea
+            task_manager.start_task(task_id)
+            # Obtenemos los animes que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
+            animes_to_upd = objects_id_list_to_str(
+                await AnimeRepository.get_all_ready_to_mal()
+            )
+            # Asignamos el total a la tarea
+            total_to_upd = len(animes_to_upd)
+            task_manager.update_progress(task_id, 0, total_to_upd)
+            # procesamos cada anime incompleto
+            for idx, anime in enumerate(animes_to_upd, start=1):
+                if task_manager.is_cancelled(task_id):
+                    logger.info(
+                        f"Tarea de actualización masiva de animes cancelada: {task_id}"
+                    )
+                    return
+                try:
+                    # Actualizamos informacion
+                    await AnimeJikanService.update_anime_from_mal(
+                        anime.get("_id") or anime.get("id") or anime.get("Id"),
+                        anime.get("id_MAL"),
+                        anime.get("key_anime"),
+                        True,
+                    )
+                    task_manager.increment_success(task_id)
+                except Exception as e:
+                    logger.error(
+                        f"Error al actualizar anime con id {anime.get('_id') or anime.get('id') or anime.get('Id')}: {str(e)}",
+                        exc_info=True,
+                    )
+                    task_manager.add_error(
+                        task_id,
+                        f"Error al actualizar anime con id {anime.get('_id') or anime.get('id') or anime.get('Id')}: {str(e)}",
+                    )
+
+                # Actualizamos progreso tarea
+                task_manager.update_progress(task_id, idx, total_to_upd)
+
+                await asyncio.sleep(1.1)
+
+            # Completamos tarea
+            task_manager.complete_task(
+                task_id,
+                {
+                    "totalAnimes": total_to_upd,
+                    "totalActualizados": task_manager.get_task(task_id).success_count,
+                    "totalErrores": task_manager.get_task(task_id).error_count,
+                },
+            )
+        except Exception as e:
+            task_manager.fail_task(
+                task_id,
+                f"Error al intentar actualizar los animes con información incompleta: {str(e)}",
+            )
+            logger.error(
+                f"Error al intentar actualizar los animes con información incompleta: {str(e)}",
+                exc_info=True,
+            )
 
     # Actualizar un anime sin actualizar con la informacion de MAL
     @staticmethod
@@ -167,41 +260,4 @@ class AnimeJikanService:
             return RespUpdMALSchema(
                 message=f"Ocurrio un error al intentar actualizar la informacion en el anime con key_anime {key_anime}",
                 is_success=False,
-            )
-
-    # Actualizar todos los animes sin actualizar a MAL
-    @staticmethod
-    async def update_all_animes_from_mal() -> ResponseUpdAllMALSchema:
-        try:
-            responses = []
-            # Obtenemos los animes que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
-            animes_to_upd = objects_id_list_to_str(
-                await AnimeRepository.get_all_ready_to_mal()
-            )
-
-            for atu in animes_to_upd:
-                # Actualizamos la informacion
-                resp = await AnimeJikanService.update_anime_from_mal(
-                    atu.get("_id") or atu.get("id") or atu.get("Id"),
-                    atu.get("id_MAL"),
-                    atu.get("key_anime"),
-                    True,
-                )
-                # Agregamos la respuesta
-                responses.append(resp)
-                await asyncio.sleep(1.1)
-            logger.debug(responses)
-            success_count = sum(
-                1 for r in responses if r.is_success
-            )  # Realizamos el conteo de los animes que se actualizaron correctamente
-
-            return ResponseUpdAllMALSchema(
-                message=f"Se llevo a cabo la actualizacion de {success_count} animes",
-                totalToAct=len(responses),
-                totalAct=success_count,
-            )
-        except:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Error al intentar actualizar los animes con informacion incompleta",
             )

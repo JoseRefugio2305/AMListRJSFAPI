@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 
+from app.core.tasks.task_manager import task_manager
 from app.services.manga import MangaService, MangaJikanService, MangaCRUDService
 from app.core.security import require_admin
 from app.core.utils import ObjectIdStr
@@ -82,15 +83,26 @@ async def assign_id_mal(payload: PayloadMangaIDMAL):
 # Actualizar un manga con su informacion desde MAL
 @routerDashManga.get("/update_from_mal/{manga_id}")
 async def update_from_mal(manga_id: ObjectIdStr, backTasks: BackgroundTasks):
-    backTasks.add_task(MangaJikanService.run_update_manga_mal_back, manga_id)
-    return {"message": "Actualización de manga iniciada en background."}
+    task_id = task_manager.create_task(
+        f"Actualización a MAL del manga con ID {manga_id}", 0
+    )
+    backTasks.add_task(MangaJikanService.run_update_manga_mal_back, task_id, manga_id)
+    return {
+        "message": "Actualización de manga iniciada en background.",
+        "task_id": task_id,
+    }
 
 
 # Actualizar todos los mangas que esten incompletos con su informacion desde MAL
 @routerDashManga.get("/update_all_to_mal/")
 async def update_all_from_mal(backTasks: BackgroundTasks):
-    backTasks.add_task(MangaJikanService.run_update_all_mangas_back)
-    return {"message": "Actualización masiva iniciada en background."}
+    task_id = task_manager.create_task("Actualización masiva de mangas a MAL", 0)
+
+    backTasks.add_task(MangaJikanService.update_all_mangas_from_mal_back, task_id)
+    return {
+        "message": "Actualización masiva iniciada en segundo plano.",
+        "task_id": task_id,
+    }
 
 
 # Obtener los mangas que tienen la informacion incompleta (no han sido actualizados a su informacion con MAL)

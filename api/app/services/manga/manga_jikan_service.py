@@ -2,13 +2,13 @@ from fastapi import HTTPException, status
 from typing import Optional
 import asyncio
 
+from app.core.tasks.task_manager import task_manager
 from app.schemas.common.responses import ResponseUpdCrt, RespUpdMALSchema
 from app.schemas.manga import (
     MangaUpdateSchema,
     MangaMALSearch,
     PayloadMangaIDMAL,
 )
-from app.schemas.anime import ResponseUpdAllMALSchema
 from app.schemas.search import (
     PayloadSearchMangaMAL,
     ResponseSearchMangaMAL,
@@ -82,13 +82,110 @@ class MangaJikanService:
 
     # Wrapper para la ejecucion de la actualizacion del manga desde MAL
     @staticmethod
-    async def run_update_manga_mal_back(mangaId: ObjectIdStr):
-        await MangaJikanService.update_manga_from_mal(mangaId=mangaId, is_all=False)
+    async def run_update_manga_mal_back(task_id: str, mangaId: ObjectIdStr):
+        try:
+            # Iniciamos tarea
+            task_manager.start_task(task_id)
+            task_manager.update_progress(task_id, 0, 1)
+            if task_manager.is_cancelled(task_id):
+                logger.info(
+                    f"Tarea de actualización de manga con ID {mangaId} cancelada: {task_id}"
+                )
+                return
+            try:
+                await MangaJikanService.update_manga_from_mal(
+                    mangaId=mangaId, is_all=False
+                )
+                task_manager.increment_success(task_id)
+            except Exception as e:
+                logger.error(
+                    f"Error al actualizar manga con id {mangaId}: {str(e)}",
+                    exc_info=True,
+                )
+                task_manager.add_error(
+                    task_id,
+                    f"Error al actualizar manga con id {mangaId}: {str(e)}",
+                )
+            task_manager.update_progress(task_id, 1, 1)
+            task_manager.complete_task(
+                task_id,
+                {
+                    "totalMangas": 1,
+                    "totalActualizados": task_manager.get_task(task_id).success_count,
+                    "totalErrores": task_manager.get_task(task_id).error_count,
+                },
+            )
+        except Exception as e:
+            logger.error(
+                f"Error al actualizar manga con id {mangaId}: {str(e)}", exc_info=True
+            )
+            task_manager.fail_task(
+                task_id,
+                f"Error al intentar actualizar el manga con ID  {mangaId}: {str(e)}",
+            )
 
     # Wrapper para la ejecucion de la actualizacion masiva de mangas desde MAL
     @staticmethod
-    async def run_update_all_mangas_back():
-        await MangaJikanService.update_all_mangas_from_mal()
+    async def update_all_mangas_from_mal_back(task_id: str):
+        try:
+            # Iniciamos tarea
+            task_manager.start_task(task_id)
+            # Obtenemos los mangas que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
+            mangas_to_upd = objects_id_list_to_str(
+                await MangaRepository.get_all_ready_to_mal()
+            )
+            # Asignamos el total a la tarea
+            total_to_upd = len(mangas_to_upd)
+            task_manager.update_progress(task_id, 0, total_to_upd)
+            # procesamos cada manga incompleto
+            for idx, manga in enumerate(mangas_to_upd, start=1):
+                if task_manager.is_cancelled(task_id):
+                    logger.info(
+                        f"Tarea de actualización masiva de mangas cancelada: {task_id}"
+                    )
+                    return
+                try:
+                    # Actualizamos informacion
+                    await MangaJikanService.update_manga_from_mal(
+                        manga.get("_id") or manga.get("id") or manga.get("Id"),
+                        manga.get("id_MAL"),
+                        manga.get("key_manga"),
+                        True,
+                    )
+                    task_manager.increment_success(task_id)
+                except Exception as e:
+                    logger.error(
+                        f"Error al actualizar manga con id {manga.get('_id') or manga.get('id') or manga.get('Id')}: {str(e)}",
+                        exc_info=True,
+                    )
+                    task_manager.add_error(
+                        task_id,
+                        f"Error al actualizar manga con id {manga.get('_id') or manga.get('id') or manga.get('Id')}: {str(e)}",
+                    )
+
+                # Actualizamos progreso tarea
+                task_manager.update_progress(task_id, idx, total_to_upd)
+
+                await asyncio.sleep(1.1)
+
+            # Completamos tarea
+            task_manager.complete_task(
+                task_id,
+                {
+                    "totalMangas": total_to_upd,
+                    "totalActualizados": task_manager.get_task(task_id).success_count,
+                    "totalErrores": task_manager.get_task(task_id).error_count,
+                },
+            )
+        except Exception as e:
+            task_manager.fail_task(
+                task_id,
+                f"Error al intentar actualizar los mangas con información incompleta: {str(e)}",
+            )
+            logger.error(
+                f"Error al intentar actualizar los mangas con información incompleta: {str(e)}",
+                exc_info=True,
+            )
 
     # Actualizar la informacion de un manga desde MAL
     @staticmethod
@@ -108,7 +205,9 @@ class MangaJikanService:
                     is_success=False,
                 )
             logger.debug("Encontre el manga")
-            id_MAL = is_exists.id_MAL  # Al encontrarlo actualizamos el id mal del manga para lo que sigue
+            id_MAL = (
+                is_exists.id_MAL
+            )  # Al encontrarlo actualizamos el id mal del manga para lo que sigue
             key_manga = is_exists.key_manga
 
         try:
@@ -170,41 +269,4 @@ class MangaJikanService:
             return RespUpdMALSchema(
                 message=f"Ocurrio un error al intentar actualizar la informacion del manga con key_manga {key_manga}",
                 is_success=False,
-            )
-
-    # Actualizar todos los mangas sin actualizar a MAL
-    @staticmethod
-    async def update_all_mangas_from_mal() -> ResponseUpdAllMALSchema:
-        try:
-            responses = []
-            # Obtenemos los mangas que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
-            mangas_to_upd = objects_id_list_to_str(
-                await MangaRepository.get_all_ready_to_mal()
-            )
-
-            for mtu in mangas_to_upd:
-                # Actualizamos la informacion
-                resp = await MangaJikanService.update_manga_from_mal(
-                    mtu.get("_id") or mtu.get("id") or mtu.get("Id"),
-                    mtu.get("id_MAL"),
-                    mtu.get("key_manga"),
-                    True,
-                )
-                # Agregamos la respuesta
-                responses.append(resp)
-                await asyncio.sleep(1.1)
-            logger.debug(responses)
-            success_count = sum(
-                1 for r in responses if r.is_success
-            )  # Realizamos el conteo de los mangas que se actualizaron correctamente
-
-            return ResponseUpdAllMALSchema(
-                message=f"Se llevo a cabo la actualizacion de {success_count} mangas",
-                totalToAct=len(responses),
-                totalAct=success_count,
-            )
-        except:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Error al intentar actualizar los mangas con informacion incompleta",
             )

@@ -8,6 +8,7 @@ from fastapi import (
     BackgroundTasks,
 )
 
+from app.core.tasks.task_manager import task_manager
 from app.services.anime import (
     AnimeService,
     AnimeJikanService,
@@ -105,15 +106,27 @@ async def assign_id_mal(
     "/update_from_mal/{anime_id}",
 )
 async def update_from_mal(anime_id: ObjectIdStr, backTasks: BackgroundTasks):
-    backTasks.add_task(AnimeJikanService.run_update_anime_mal_back, anime_id)
-    return {"message": "Actualización de anime iniciada en background."}
+    task_id = task_manager.create_task(
+        f"Actualización a MAL del anime con ID {anime_id}", 0
+    )
+    backTasks.add_task(AnimeJikanService.run_update_anime_mal_back, task_id, anime_id)
+    return {
+        "message": "Actualización de anime iniciada en background.",
+        "task_id": task_id,
+    }
 
 
 # Actualizar todos los animes que esten incompletos con su informacion desde MAL
 @routerDashAnime.get("/update_all_to_mal/")
 async def update_all_from_mal(backTasks: BackgroundTasks):
-    backTasks.add_task(AnimeJikanService.run_update_all_animes_back)
-    return {"message": "Actualización masiva iniciada en background."}
+
+    task_id = task_manager.create_task("Actualización masiva de animes a MAL", 0)
+
+    backTasks.add_task(AnimeJikanService.update_all_animes_from_mal_back, task_id)
+    return {
+        "message": "Actualización masiva iniciada en segundo plano.",
+        "task_id": task_id,
+    }
 
 
 # Obtener los animes que tienen la informacion incompleta (no hn sido actualizados a su informacion con MAL)

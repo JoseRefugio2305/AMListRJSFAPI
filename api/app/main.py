@@ -76,6 +76,7 @@ app.include_router(user_router.routerUser)
 app.include_router(dashboard.routerDashboard)
 app.include_router(dashboard.routerDashAnime)
 app.include_router(dashboard.routerDashManga)
+app.include_router(dashboard.routerDashTasks)
 
 
 # Manejador de excepciones HTTP
