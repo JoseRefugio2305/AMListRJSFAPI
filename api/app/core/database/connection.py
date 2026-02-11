@@ -2,6 +2,7 @@ from pymongo import AsyncMongoClient
 from pymongo.database import Database
 from beanie import init_beanie
 
+from app.core.redis.client import redis_client  # Cliente redis
 from app.core.config import settings  # Configuraciones de la aplicacion
 from app.core.logging import get_logger
 
@@ -48,6 +49,9 @@ async def connect_mongo():
             # Inicializacion de Beanie
             await init_beanie(database=db, document_models=get_document_models())
             logger.info("Beanie inicializado correctamente")
+
+            #Inicializamos conexion redis si esta habilitado
+            await redis_client.connect()
 
             logger.info(
                 f"Se realizó la conexión a la base de datos de mongodb: ({settings.MONGO_DB_NAME})",
