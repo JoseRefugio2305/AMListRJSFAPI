@@ -16,7 +16,7 @@ routerDashTasks = APIRouter(
 
 @routerDashTasks.get("/{task_id}")
 async def get_task_info(task_id: str):
-    task = task_manager.get_task(task_id)
+    task = await task_manager.get_task(task_id)
     if not task:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -45,7 +45,7 @@ async def get_task_info(task_id: str):
 
 @routerDashTasks.post("/cancel/{task_id}")
 async def cancel_task(task_id: str):
-    is_canceled = task_manager.cancel_task(task_id)
+    is_canceled = await task_manager.cancel_task(task_id)
 
     if not is_canceled:
         raise HTTPException(
@@ -58,5 +58,5 @@ async def cancel_task(task_id: str):
 
 @routerDashTasks.get("/list_all/")
 async def get_all_tasks():
-    tasks = task_manager.get_all_tasks()
-    return {"tasks": list(tasks.values()), "total_tasks": len(tasks)}
+    tasks = await task_manager.get_all_tasks()
+    return {"tasks": list(tasks), "total_tasks": len(tasks)}

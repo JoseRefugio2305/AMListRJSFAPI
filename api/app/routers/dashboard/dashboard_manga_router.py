@@ -83,7 +83,7 @@ async def assign_id_mal(payload: PayloadMangaIDMAL):
 # Actualizar un manga con su informacion desde MAL
 @routerDashManga.get("/update_from_mal/{manga_id}")
 async def update_from_mal(manga_id: ObjectIdStr, backTasks: BackgroundTasks):
-    task_id = task_manager.create_task(
+    task_id = await task_manager.create_task(
         f"Actualización a MAL del manga con ID {manga_id}", 0
     )
     backTasks.add_task(MangaJikanService.run_update_manga_mal_back, task_id, manga_id)
@@ -96,7 +96,7 @@ async def update_from_mal(manga_id: ObjectIdStr, backTasks: BackgroundTasks):
 # Actualizar todos los mangas que esten incompletos con su informacion desde MAL
 @routerDashManga.get("/update_all_to_mal/")
 async def update_all_from_mal(backTasks: BackgroundTasks):
-    task_id = task_manager.create_task("Actualización masiva de mangas a MAL", 0)
+    task_id = await task_manager.create_task("Actualización masiva de mangas a MAL", 0)
 
     backTasks.add_task(MangaJikanService.update_all_mangas_from_mal_back, task_id)
     return {

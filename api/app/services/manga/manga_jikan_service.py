@@ -85,9 +85,9 @@ class MangaJikanService:
     async def run_update_manga_mal_back(task_id: str, mangaId: ObjectIdStr):
         try:
             # Iniciamos tarea
-            task_manager.start_task(task_id)
-            task_manager.update_progress(task_id, 0, 1)
-            if task_manager.is_cancelled(task_id):
+            await task_manager.start_task(task_id)
+            await task_manager.update_progress(task_id, 0, 1)
+            if await task_manager.is_cancelled(task_id):
                 logger.info(
                     f"Tarea de actualización de manga con ID {mangaId} cancelada: {task_id}"
                 )
@@ -96,30 +96,32 @@ class MangaJikanService:
                 await MangaJikanService.update_manga_from_mal(
                     mangaId=mangaId, is_all=False
                 )
-                task_manager.increment_success(task_id)
+                await task_manager.increment_success(task_id)
             except Exception as e:
                 logger.error(
                     f"Error al actualizar manga con id {mangaId}: {str(e)}",
                     exc_info=True,
                 )
-                task_manager.add_error(
+                await task_manager.add_error(
                     task_id,
                     f"Error al actualizar manga con id {mangaId}: {str(e)}",
                 )
-            task_manager.update_progress(task_id, 1, 1)
-            task_manager.complete_task(
+            await task_manager.update_progress(task_id, 1, 1)
+            await task_manager.complete_task(
                 task_id,
                 {
                     "totalMangas": 1,
-                    "totalActualizados": task_manager.get_task(task_id).success_count,
-                    "totalErrores": task_manager.get_task(task_id).error_count,
+                    "totalActualizados": await task_manager.get_task(
+                        task_id
+                    ).success_count,
+                    "totalErrores": await task_manager.get_task(task_id).error_count,
                 },
             )
         except Exception as e:
             logger.error(
                 f"Error al actualizar manga con id {mangaId}: {str(e)}", exc_info=True
             )
-            task_manager.fail_task(
+            await task_manager.fail_task(
                 task_id,
                 f"Error al intentar actualizar el manga con ID  {mangaId}: {str(e)}",
             )
@@ -129,17 +131,17 @@ class MangaJikanService:
     async def update_all_mangas_from_mal_back(task_id: str):
         try:
             # Iniciamos tarea
-            task_manager.start_task(task_id)
+            await task_manager.start_task(task_id)
             # Obtenemos los mangas que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
             mangas_to_upd = objects_id_list_to_str(
                 await MangaRepository.get_all_ready_to_mal()
             )
             # Asignamos el total a la tarea
             total_to_upd = len(mangas_to_upd)
-            task_manager.update_progress(task_id, 0, total_to_upd)
+            await task_manager.update_progress(task_id, 0, total_to_upd)
             # procesamos cada manga incompleto
             for idx, manga in enumerate(mangas_to_upd, start=1):
-                if task_manager.is_cancelled(task_id):
+                if await task_manager.is_cancelled(task_id):
                     logger.info(
                         f"Tarea de actualización masiva de mangas cancelada: {task_id}"
                     )
@@ -152,33 +154,35 @@ class MangaJikanService:
                         manga.get("key_manga"),
                         True,
                     )
-                    task_manager.increment_success(task_id)
+                    await task_manager.increment_success(task_id)
                 except Exception as e:
                     logger.error(
                         f"Error al actualizar manga con id {manga.get('_id') or manga.get('id') or manga.get('Id')}: {str(e)}",
                         exc_info=True,
                     )
-                    task_manager.add_error(
+                    await task_manager.add_error(
                         task_id,
                         f"Error al actualizar manga con id {manga.get('_id') or manga.get('id') or manga.get('Id')}: {str(e)}",
                     )
 
                 # Actualizamos progreso tarea
-                task_manager.update_progress(task_id, idx, total_to_upd)
+                await task_manager.update_progress(task_id, idx, total_to_upd)
 
                 await asyncio.sleep(1.1)
 
             # Completamos tarea
-            task_manager.complete_task(
+            await task_manager.complete_task(
                 task_id,
                 {
                     "totalMangas": total_to_upd,
-                    "totalActualizados": task_manager.get_task(task_id).success_count,
-                    "totalErrores": task_manager.get_task(task_id).error_count,
+                    "totalActualizados": await task_manager.get_task(
+                        task_id
+                    ).success_count,
+                    "totalErrores": await task_manager.get_task(task_id).error_count,
                 },
             )
         except Exception as e:
-            task_manager.fail_task(
+            await task_manager.fail_task(
                 task_id,
                 f"Error al intentar actualizar los mangas con información incompleta: {str(e)}",
             )

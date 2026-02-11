@@ -86,9 +86,9 @@ class AnimeJikanService:
     async def run_update_anime_mal_back(task_id: str, animeId: ObjectIdStr):
         try:
             # Iniciamos tarea
-            task_manager.start_task(task_id)
-            task_manager.update_progress(task_id, 0, 1)
-            if task_manager.is_cancelled(task_id):
+            await task_manager.start_task(task_id)
+            await task_manager.update_progress(task_id, 0, 1)
+            if await task_manager.is_cancelled(task_id):
                 logger.info(
                     f"Tarea de actualización de anime con ID {animeId} cancelada: {task_id}"
                 )
@@ -97,30 +97,30 @@ class AnimeJikanService:
                 await AnimeJikanService.update_anime_from_mal(
                     animeId=animeId, is_all=False
                 )
-                task_manager.increment_success(task_id)
+                await task_manager.increment_success(task_id)
             except Exception as e:
                 logger.error(
                     f"Error al actualizar anime con id {animeId}: {str(e)}",
                     exc_info=True,
                 )
-                task_manager.add_error(
+                await task_manager.add_error(
                     task_id,
                     f"Error al actualizar anime con id {animeId}: {str(e)}",
                 )
-            task_manager.update_progress(task_id, 1, 1)
-            task_manager.complete_task(
+            await task_manager.update_progress(task_id, 1, 1)
+            await task_manager.complete_task(
                 task_id,
                 {
                     "totalAnimes": 1,
-                    "totalActualizados": task_manager.get_task(task_id).success_count,
-                    "totalErrores": task_manager.get_task(task_id).error_count,
+                    "totalActualizados": await task_manager.get_task(task_id).success_count,
+                    "totalErrores": await task_manager.get_task(task_id).error_count,
                 },
             )
         except Exception as e:
             logger.error(
                 f"Error al actualizar anime con id {animeId}: {str(e)}", exc_info=True
             )
-            task_manager.fail_task(
+            await task_manager.fail_task(
                 task_id,
                 f"Error al intentar actualizar el anime con ID  {animeId}: {str(e)}",
             )
@@ -130,17 +130,17 @@ class AnimeJikanService:
     async def update_all_animes_from_mal_back(task_id: str):
         try:
             # Iniciamos tarea
-            task_manager.start_task(task_id)
+            await task_manager.start_task(task_id)
             # Obtenemos los animes que tienen la informacion incompleta pero que ya tienen asigndo un id_mal
             animes_to_upd = objects_id_list_to_str(
                 await AnimeRepository.get_all_ready_to_mal()
             )
             # Asignamos el total a la tarea
             total_to_upd = len(animes_to_upd)
-            task_manager.update_progress(task_id, 0, total_to_upd)
+            await task_manager.update_progress(task_id, 0, total_to_upd)
             # procesamos cada anime incompleto
             for idx, anime in enumerate(animes_to_upd, start=1):
-                if task_manager.is_cancelled(task_id):
+                if await task_manager.is_cancelled(task_id):
                     logger.info(
                         f"Tarea de actualización masiva de animes cancelada: {task_id}"
                     )
@@ -153,33 +153,33 @@ class AnimeJikanService:
                         anime.get("key_anime"),
                         True,
                     )
-                    task_manager.increment_success(task_id)
+                    await task_manager.increment_success(task_id)
                 except Exception as e:
                     logger.error(
                         f"Error al actualizar anime con id {anime.get('_id') or anime.get('id') or anime.get('Id')}: {str(e)}",
                         exc_info=True,
                     )
-                    task_manager.add_error(
+                    await task_manager.add_error(
                         task_id,
                         f"Error al actualizar anime con id {anime.get('_id') or anime.get('id') or anime.get('Id')}: {str(e)}",
                     )
 
                 # Actualizamos progreso tarea
-                task_manager.update_progress(task_id, idx, total_to_upd)
+                await task_manager.update_progress(task_id, idx, total_to_upd)
 
                 await asyncio.sleep(1.1)
 
             # Completamos tarea
-            task_manager.complete_task(
+            await task_manager.complete_task(
                 task_id,
                 {
                     "totalAnimes": total_to_upd,
-                    "totalActualizados": task_manager.get_task(task_id).success_count,
-                    "totalErrores": task_manager.get_task(task_id).error_count,
+                    "totalActualizados": await task_manager.get_task(task_id).success_count,
+                    "totalErrores": await task_manager.get_task(task_id).error_count,
                 },
             )
         except Exception as e:
-            task_manager.fail_task(
+            await task_manager.fail_task(
                 task_id,
                 f"Error al intentar actualizar los animes con información incompleta: {str(e)}",
             )
