@@ -18,6 +18,8 @@ from ..pipeline_builders.common import (
 )
 from app.models.anime_model import AnimeModel
 from app.models.studio_model import StudioModel
+from app.core.cache.decorators import gen_cached
+from app.core.cache.cache_manager import cache_manager
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -28,6 +30,14 @@ class AnimeRepository:
     async def find_all_filtered(
         filters: FilterSchema, user_id: ObjectIdStr | None = None
     ):
+
+        cached_result = await cache_manager.get_search(
+            filters.model_dump(), filters.page, filters.limit, True, user_id
+        )
+        if cached_result is not None:
+            logger.debug(f"Cache HIT para búsqueda filtrada con user_id: {user_id}")
+            return cached_result["data"], cached_result["total"]
+
         pipeline = [
             {
                 "$match": {"linkMAL": {"$not": {"$eq": None}}},
@@ -77,10 +87,30 @@ class AnimeRepository:
             > 0  # Si el total del conteo da 0, no hacemos esta consulta simplemente damos lista vacia
             else []
         )
+
+        await cache_manager.set_search(
+            filters.model_dump(),
+            filters.page,
+            filters.limit,
+            {"data": results, "total": totalAnimes},
+            True,
+            user_id,
+        )
+
         return results, totalAnimes
 
     @staticmethod
     async def get_by_key(key_anime: int, user_id: ObjectIdStr | None = None):
+
+        cached_anime = await cache_manager.get_anime(key_anime, user_id)
+
+        if cached_anime is not None:
+            logger.debug(
+                f"Cache HIT para anime con key_anime: {key_anime} y user_id: {user_id}"
+            )
+            logger.debug(f"Cache data: {cached_anime}")
+            return cached_anime
+
         pipeline = [
             {
                 "$match": {"key_anime": key_anime},
@@ -91,6 +121,10 @@ class AnimeRepository:
             ),
         ]
         result = await AnimeModel.aggregate(pipeline).to_list()
+
+        if len(result) > 0:
+            await cache_manager.set_anime(key_anime, result[0], user_id)
+
         return result[0] if len(result) > 0 else None
 
     @staticmethod

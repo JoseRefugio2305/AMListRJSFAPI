@@ -13,6 +13,7 @@ from app.schemas.auth import UserLogRespSchema
 from app.core.utils import time_now_formatted, ObjectIdStr
 from app.repositories.anime import AnimeRepository, AnimeCRUDRepository
 from app.repositories.favorites.favorites_repository import FavoritesRepository
+from app.core.cache.cache_manager import cache_manager
 from app.core.logging import get_logger
 
 logger = get_logger(__name__)
@@ -36,6 +37,25 @@ class AnimeCRUDService:
             nowTS = time_now_formatted(True)
             updated = await FavoritesRepository.change_status_fav_anime(
                 data, user, nowTS
+            )
+
+            # Invalidamos la busqueda especificamente para este usuario y sus favoritos para que se actualice la informacion al hacer una consulta de busqueda o de favoritos
+            cache_key = cache_manager._generate_key(
+                prefix=cache_manager.ANIME_PREFIX,
+                key_anime=anime.key_anime,
+                user_id=user.id,
+            )
+
+            await cache_manager.delete(cache_key)
+
+            await cache_manager.delete_pattern(
+                f"{cache_manager.SEARCH_PREFIX}_user_{user.id}:*"
+            )
+            await cache_manager.delete_pattern(
+                f"{cache_manager.STATS_PREFIX}{user.id}:*"
+            )
+            logger.info(
+                f"Cache invalidado: anime {anime.key_anime} para user {user.id}"
             )
 
             return AniFavRespSchema(active=data.active, statusView=data.statusView)
