@@ -4,7 +4,7 @@ from ..pipeline_builders.common import (
     apply_paginacion_ordenacion,
     filtrado_gsae,
 )
-from app.core.utils import time_now_formatted
+from app.core.cache.cache_manager import cache_manager
 from app.models.genero_model import GeneroModel
 from app.core.logging import get_logger
 
@@ -57,5 +57,8 @@ class GenreRepository:
             },
             on_insert=GeneroModel(**genre.model_dump()),
         )
+
+        await cache_manager.invalidate_filters()
+        await cache_manager.invalidate_search()  # Invalidamos el cache de busqueda para evitar discrepancias al haber un nuevo genero
 
         return new_genre
