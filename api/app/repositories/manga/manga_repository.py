@@ -15,6 +15,7 @@ from ..pipeline_builders.common import (
     filtrado_gsae,
     filtrado_info_incompleta,
 )
+from app.core.cache.cache_manager import cache_manager
 from app.models.manga_model import MangaModel
 from app.models.editorial_model import EditorialModel
 from app.models.author_model import AuthorModel
@@ -28,6 +29,14 @@ class MangaRepository:
     async def find_all_filtered(
         filters: FilterSchema, user_id: ObjectIdStr | None = None
     ):
+        cached_result = await cache_manager.get_search(
+            filters.model_dump(), filters.page, filters.limit, False, user_id
+        )
+
+        if cached_result is not None:
+            logger.debug(f"Cache HIT para búsqueda filtrada con user_id: {user_id}")
+            return cached_result["data"], cached_result["total"]
+
         pipeline = [
             {
                 "$match": {"linkMAL": {"$not": {"$eq": None}}},
@@ -76,10 +85,27 @@ class MangaRepository:
             else []
         )
 
+        await cache_manager.set_search(
+            filters.model_dump(),
+            filters.page,
+            filters.limit,
+            {"data": results, "total": totalMangas},
+            False,
+            user_id,
+        )
+
         return results, totalMangas
 
     @staticmethod
     async def get_by_key(key_manga: int, user_id: ObjectIdStr | None = None):
+        cached_manga = await cache_manager.get_manga(key_manga, user_id)
+
+        if cached_manga is not None:
+            logger.debug(
+                f"Cache HIT para manga con key_manga: {key_manga} y user_id: {user_id}"
+            )
+            return cached_manga
+
         pipeline = [
             {
                 "$match": {"key_manga": key_manga},
@@ -91,6 +117,9 @@ class MangaRepository:
         ]
         logger.debug(pipeline)
         result = await MangaModel.aggregate(pipeline).to_list()
+
+        if len(result) > 0:
+            await cache_manager.set_manga(key_manga, result[0], user_id)
 
         return result[0] if len(result) > 0 else None
 

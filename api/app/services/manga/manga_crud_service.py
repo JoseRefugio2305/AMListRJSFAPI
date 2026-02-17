@@ -12,6 +12,7 @@ from app.schemas.manga import (
 from app.schemas.common.relations import CreateAutorSchema, CreateEditorialSchema
 from app.schemas.anime import AniFavRespSchema
 from app.schemas.auth import UserLogRespSchema
+from app.core.cache.cache_manager import cache_manager
 from app.core.utils import time_now_formatted, ObjectIdStr
 from app.core.logging import get_logger
 
@@ -35,6 +36,27 @@ class MangaCRUDService:
             nowTS = time_now_formatted(True)
             updated = await FavoritesRepository.change_status_fav_manga(
                 data, user, nowTS
+            )
+
+            # Invalidamos la busqueda especificamente para este usuario y sus favoritos para que se actualice la informacion al hacer una consulta de busqueda o de favoritos
+            # Eliminamos el cache para el manga especifico para este usuario
+            cache_key = cache_manager._generate_key(
+                prefix=cache_manager.MANGA_PREFIX,
+                key_manga=manga.key_manga,
+                user_id=user.id,
+            )
+
+            await cache_manager.delete(cache_key)
+            # Actualizamos el cache de busqueda para este usuario para que se actualice la informacion de favoritos al hacer una consulta de busqueda
+            await cache_manager.delete_pattern(
+                f"{cache_manager.SEARCH_PREFIX}_user_{user.id}:*"
+            )
+            # Actualizamos el cache de estadisticas para este usuario para que se actualice la informacion de favoritos al hacer una consulta de estadisticas
+            await cache_manager.delete_pattern(
+                f"{cache_manager.STATS_PREFIX}{user.id}:*"
+            )
+            logger.info(
+                f"Cache invalidado: manga {manga.key_manga} para user {user.id}"
             )
 
             return AniFavRespSchema(active=data.active, statusView=data.statusView)
