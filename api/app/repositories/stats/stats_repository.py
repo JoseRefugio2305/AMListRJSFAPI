@@ -17,10 +17,16 @@ from ..pipeline_builders.stats import (
     topEditoriales,
     topEstudios,
 )
+from app.core.cache.decorators import gen_cached, cached_stats
+from app.core.cache.cache_manager import cache_manager
+from app.core.logging import get_logger
+
+logger = get_logger(__name__)
 
 
 class StatsRepository:
     @staticmethod
+    @cached_stats(prefix="count_favs", ttl=cache_manager.TTL_STATS)
     async def get_cont_favs(user_id: ObjectIdStr):
         conteo_mangas = await UTManFavsModel.aggregate(
             [
@@ -42,6 +48,7 @@ class StatsRepository:
         return conteo_mangas, conteo_animes
 
     @staticmethod
+    @cached_stats(prefix="stats", ttl=cache_manager.TTL_STATS)
     async def get_stats(
         only_Favs: bool = False,
         user: Optional[UserLogRespSchema] = None,
@@ -87,6 +94,7 @@ class StatsRepository:
         return tiposAnime, tiposManga, porGenero, topEditorials, topStudios
 
     @staticmethod
+    @cached_stats(prefix="conteos_generales", ttl=cache_manager.TTL_STATS)
     async def get_conteos_generales():
         conteosGenerales = await AnimeModel.aggregate(
             [
