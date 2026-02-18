@@ -9,56 +9,130 @@ import { usePrimeReactTheme } from "./hooks/usePrimeReactTheme.ts";
 import { ProtectedRoute } from "./components/Auth/ProtectedRoute.tsx";
 import { AdminProtectedRoute } from "./components/Auth/AdminProtectedRoute.tsx";
 import { ScrollTop } from "./components/Layout/ScrollTop.tsx";
+import { PageSkeleton } from "./components/Skeletons/PageSkeleton.tsx";
 const HomePage = lazy(() => import("./pages/HomePage.tsx"));
 const AuthPage = lazy(() => import("./pages/AuthPage.tsx"));
-const AnimePage = lazy(() => import("./pages/Anime/AnimePage.tsx"));
+const AnimePage = lazy(
+   () => import(/* webpackChunkName: "anime" */ "./pages/Anime/AnimePage.tsx"),
+);
 const AnimeDetailsPage = lazy(
-   () => import("./pages/Anime/AnimeDetailsPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "anime" */
+         "./pages/Anime/AnimeDetailsPage.tsx"
+      ),
 );
-const AnimeEditPage = lazy(() => import("./pages/Anime/AnimeEditPage.tsx"));
-const MangaPage = lazy(() => import("./pages/Manga/MangaPage.tsx"));
-const MangaEditPage = lazy(() => import("./pages/Manga/MangaEditPage.tsx"));
+const MangaPage = lazy(
+   () => import(/* webpackChunkName: "manga" */ "./pages/Manga/MangaPage.tsx"),
+);
 const MangaDetailsPage = lazy(
-   () => import("./pages/Manga/MangaDetailsPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "manga" */
+         "./pages/Manga/MangaDetailsPage.tsx"
+      ),
 );
-const ExplorePage = lazy(() => import("./pages/Explore/ExplorePage.tsx"));
+const ExplorePage = lazy(
+   () =>
+      import(
+         /* webpackChunkName: "explore" */ "./pages/Explore/ExplorePage.tsx"
+      ),
+);
 const ExploreAnimesPage = lazy(
-   () => import("./pages/Explore/ExploreAnimesPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "explore" */ "./pages/Explore/ExploreAnimesPage.tsx"
+      ),
 );
 const ExploreMangasPage = lazy(
-   () => import("./pages/Explore/ExploreMangasPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "explore" */ "./pages/Explore/ExploreMangasPage.tsx"
+      ),
 );
-const Profile = lazy(() => import("./pages/User/Profile.tsx"));
+const Profile = lazy(
+   () =>
+      import(
+         /* webpackChunkName: "user-prof-conf" */ "./pages/User/Profile.tsx"
+      ),
+);
 const ConfigProfilePage = lazy(
-   () => import("./pages/User/ConfigProfilePage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "user-prof-conf" */ "./pages/User/ConfigProfilePage.tsx"
+      ),
 );
-const UserStatsPage = lazy(() => import("./pages/User/UserStatsPage.tsx"));
+const UserStatsPage = lazy(
+   () =>
+      import(
+         /* webpackChunkName: "user-lists" */ "./pages/User/UserStatsPage.tsx"
+      ),
+);
 const UserAnimeListPage = lazy(
-   () => import("./pages/User/UserAnimeListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "user-lists" */ "./pages/User/UserAnimeListPage.tsx"
+      ),
 );
 const UserMangaListPage = lazy(
-   () => import("./pages/User/UserMangaListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "user-lists" */ "./pages/User/UserMangaListPage.tsx"
+      ),
 );
 const DashboardStatsPage = lazy(
-   () => import("./pages/Dashboard/DashboardStatsPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-gen" */ "./pages/Dashboard/DashboardStatsPage.tsx"
+      ),
 );
 const DashboardGenresListPage = lazy(
-   () => import("./pages/Dashboard/DashboardGenresListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-gen" */ "./pages/Dashboard/DashboardGenresListPage.tsx"
+      ),
 );
 const DashboardAnimeListPage = lazy(
-   () => import("./pages/Dashboard/DashboardAnimeListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-anime" */ "./pages/Dashboard/DashboardAnimeListPage.tsx"
+      ),
+);
+const AnimeEditPage = lazy(
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-anime" */ "./pages/Anime/AnimeEditPage.tsx"
+      ),
 );
 const DashboardStudiosListPage = lazy(
-   () => import("./pages/Dashboard/DashboardStudiosListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-anime-studios" */ "./pages/Dashboard/DashboardStudiosListPage.tsx"
+      ),
 );
 const DashboardMangaListPage = lazy(
-   () => import("./pages/Dashboard/DashboardMangaListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-manga" */ "./pages/Dashboard/DashboardMangaListPage.tsx"
+      ),
+);
+const MangaEditPage = lazy(
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-manga" */ "./pages/Manga/MangaEditPage.tsx"
+      ),
 );
 const DashboardEditorialsListPage = lazy(
-   () => import("./pages/Dashboard/DashboardEditorialsListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-manga-edtauth" */ "./pages/Dashboard/DashboardEditorialsListPage.tsx"
+      ),
 );
 const DashboardAutoresListPage = lazy(
-   () => import("./pages/Dashboard/DashboardAutoresListPage.tsx")
+   () =>
+      import(
+         /* webpackChunkName: "dashboard-manga-edtauth" */ "./pages/Dashboard/DashboardAutoresListPage.tsx"
+      ),
 );
 const NotFoundPage = lazy(() => import("./pages/404.tsx"));
 
@@ -68,19 +142,7 @@ function App() {
       <>
          <Header />
          <ScrollTop />
-         <Suspense
-            fallback={
-               <div
-                  style={{
-                     maxWidth: "1280px",
-                     margin: "0 auto",
-                     padding: "0 1rem",
-                  }}
-               >
-                  Cargando...
-               </div>
-            }
-         >
+         <Suspense fallback={<PageSkeleton />}>
             <Routes>
                <Route path="/" element={<HomePage />} />
                <Route path="/login" element={<AuthPage />} />
