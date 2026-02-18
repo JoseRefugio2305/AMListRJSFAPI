@@ -1,6 +1,6 @@
 # API AMList
 
-Esta es una API para el almacenamiento y listado de anime y manga. Desarrollada en **[FastApi](https://fastapi.tiangolo.com/)** de **Python**, con **[MongoDB](https://www.mongodb.com/)** como base de datos y haciendo uso del el API no oficial de **[My Anime List](https://myanimelist.net/)**, **[Jikan API](https://jikan.moe/)**.
+Esta es una API para el almacenamiento y listado de anime y manga. Desarrollada en **[FastApi](https://fastapi.tiangolo.com/)** de **Python**, con **[MongoDB](https://www.mongodb.com/)** como base de datos, **[Redis](https://redis.io/)** para el manejo de cache y haciendo uso del el API no oficial de **[My Anime List](https://myanimelist.net/)**, **[Jikan API](https://jikan.moe/)**.
 
 Permite a un usuario sin autenticación la consulta de anime y manga, y de tener autenticación permite el agregar a favoritos anime y manga, y realizar operaciones de edición de perfil. Si tiene la autorización necesaria de administrador, permite además la creación, actualización (con información específica o a través de información obtenida desde My Anime List) y eliminación de anime y manga.
 
@@ -9,36 +9,7 @@ Permite a un usuario sin autenticación la consulta de anime y manga, y de tener
 ```bash
 api/
 └── app/
-    ├── base/
-    │   └── base_odm.py
-    │
-    ├── core/
-    │   ├── config/
-    │   │   ├── config.py
-    │   │   └── __init__.py
-    │   │
-    │   ├── database/
-    │   │   ├── connection.py
-    │   │   ├── __init__.py
-    │   │   └── helpers/
-    │   │       ├── db_helpers.py
-    │   │       ├── stats_db_helpers.py
-    │   │       ├── anime_helpers.py
-    │   │       └── manga_helpers.py
-    │   │
-    │   ├── logging/
-    │   │   ├── logger.py
-    │   │   └── __init__.py
-    │   │
-    │   ├── security/
-    │   │   ├── jwt_handler.py
-    │   │   ├── roles.py
-    │   │   └── __init__.py
-    │   │
-    │   └── utils/
-    │       ├── time_utils.py
-    │       ├── validations.py
-    │       └── __init__.py
+    ├── main.py
     │
     ├── models/
     │   ├── anime_model.py
@@ -52,86 +23,148 @@ api/
     │   └── utmanfavs_model.py
     │
     ├── routers/
-    │   ├── auth_router.py
     │   ├── anime_router.py
+    │   ├── auth_router.py
     │   ├── manga_router.py
-    │   ├── user_router.py
     │   ├── search_router.py
+    │   ├── user_router.py
     │   └── dashboard/
-    │       ├── dashboard_router.py
     │       ├── dashboard_anime_router.py
     │       ├── dashboard_manga_router.py
+    │       ├── dashboard_router.py
+    │       ├── dashboard_tasks_router.py
+    │       └── __init__.py
+    │
+    ├── services/
+    │   ├── auth_service.py
+    │   ├── jikan_service.py
+    │   ├── search_service.py
+    │   ├── stats_service.py
+    │   ├── user_services.py
+    │   ├── anime/
+    │   │   ├── anime_crud_service.py
+    │   │   ├── anime_file_service.py
+    │   │   ├── anime_jikan_service.py
+    │   │   ├── anime_service.py
+    │   │   └── __init__.py
+    │   ├── manga/
+    │   │   ├── manga_crud_service.py
+    │   │   ├── manga_jikan_service.py
+    │   │   ├── manga_service.py
+    │   │   └── __init__.py
+    │   └── shared/
+    │       ├── generic_crud_service.py
+    │       ├── genre_service.py
     │       └── __init__.py
     │
     ├── schemas/
     │   ├── anime/
-    │   │   ├── anime_schema.py
-    │   │   ├── anime_fav.py
     │   │   ├── anime_enums.py
+    │   │   ├── anime_fav.py
+    │   │   ├── anime_schema.py
     │   │   └── __init__.py
-    │   │
-    │   ├── manga/
-    │   │   ├── manga_schema.py
-    │   │   ├── manga_fav.py
-    │   │   ├── manga_enums.py
-    │   │   └── __init__.py
-    │   │
-    │   ├── common/
-    │   │   ├── genres.py
-    │   │   ├── images.py
-    │   │   ├── relations.py
-    │   │   └── __init__.py
-    │   │
     │   ├── auth/
     │   │   ├── auth_schema.py
     │   │   ├── user_schema.py
     │   │   └── __init__.py
-    │   │
+    │   ├── common/
+    │   │   ├── genres.py
+    │   │   ├── images.py
+    │   │   ├── relations.py
+    │   │   ├── responses.py
+    │   │   └── __init__.py
+    │   ├── manga/
+    │   │   ├── manga_enums.py
+    │   │   ├── manga_fav.py
+    │   │   ├── manga_schema.py
+    │   │   └── __init__.py
+    │   ├── search/
+    │   │   ├── filters_enum.py
+    │   │   ├── filters_schema.py
+    │   │   ├── search_schemas.py
+    │   │   └── __init__.py
     │   ├── stats/
     │   │   ├── stats_schemas.py
     │   │   └── __init__.py
-    │   │
-    │   └── search/
-    │       ├── filters_enum.py
-    │       ├── filters_schema.py
-    │       ├── search_schema.py
+    │   └── tasks/
+    │       ├── task_schema.py
     │       └── __init__.py
     │
-    ├── services/
+    ├── repositories/
     │   ├── anime/
-    │   │   ├── anime_service.py
-    │   │   ├── anime_utils.py
-    │   │   ├── anime_crud_service.py
-    │   │   ├── anime_jikan_service.py
-    │   │   ├── anime_file_service.py
+    │   │   ├── anime_crud_repository.py
+    │   │   ├── anime_file_repository.py
+    │   │   ├── anime_repository.py
     │   │   └── __init__.py
-    │   │
+    │   ├── auth/
+    │   │   ├── auth_repository.py
+    │   │   └── __init__.py
+    │   ├── favorites/
+    │   │   └── favorites_repository.py
     │   ├── manga/
-    │   │   ├── manga_service.py
-    │   │   ├── manga_utils.py
-    │   │   ├── manga_crud_service.py
-    │   │   ├── manga_jikan_service.py
-    │   │   ├── manga_file_service.py
+    │   │   ├── manga_crud_repository.py
+    │   │   ├── manga_repository.py
     │   │   └── __init__.py
-    │   │
-    │   ├── user_services.py
-    │   ├── stats_service.py
-    │   ├── auth_service.py
-    │   ├── jikan_service.py
-    │   └── __init__.py
+    │   ├── pipeline_builders/
+    │   │   ├── anime.py
+    │   │   ├── common.py
+    │   │   ├── manga.py
+    │   │   └── stats.py
+    │   ├── search/
+    │   │   ├── search_repository.py
+    │   │   └── __init__.py
+    │   ├── shared/
+    │   │   ├── genre_repository.py
+    │   │   └── __init__.py
+    │   ├── stats/
+    │   │   ├── stats_repository.py
+    │   │   └── __init__.py
+    │   └── user/
+    │       ├── user_repository.py
+    │       └── __init__.py
     │
-    └── main.py
+    └── core/
+        ├── cache/
+        │   ├── cache_manager.py
+        │   └── decorators.py
+        ├── config/
+        │   ├── config.py
+        │   └── __init__.py
+        ├── database/
+        │   ├── connection.py
+        │   └── __init__.py
+        ├── logging/
+        │   ├── logger.py
+        │   └── __init__.py
+        ├── redis/
+        │   └── client.py
+        ├── security/
+        │   ├── jwt_handler.py
+        │   ├── rate_limiter.py
+        │   ├── roles.py
+        │   └── __init__.py
+        ├── tasks/
+        │   ├── task_manager.py
+        │   └── __init__.py
+        └── utils/
+            ├── mappers.py
+            ├── time_utils.py
+            ├── validations.py
+            └── __init__.py
 ```
 
 ## Getting Started
 
 Las siguientes instrucciones son para la instalación y ejecución del API.
 
-
 ### Prerrequisitos
 
--  Python 3.13+
--  MongoDB (Local o con Atlas)
+- Python 3.13+
+- MongoDB (Local o con Atlas)
+
+En caso de querer usar caché con Redis:
+
+- Docker
 
 ### Instalación
 
@@ -160,6 +193,19 @@ Las siguientes instrucciones son para la instalación y ejecución del API.
    ACCESS_TOKEN_EXPIRE_MINUTES=10080
    LOG_LEVEL = DEBUG
    ORIGINS_CORS='["Direccion URL"]'
+
+   # Activar Redis (false en desarrollo local, true en producción)
+   REDIS_ENABLED=true
+
+   # Conexión Redis
+   REDIS_HOST=localhost
+   REDIS_PORT=6379
+   REDIS_PASSWORD=123456
+   REDIS_DB=0
+
+   # Cache
+   CACHE_ENABLED=true
+   CACHE_TTL_SECONDS=300
    ```
 
    Reemplaza el valor de las variables con las que usaras en el proyecto.
@@ -169,14 +215,23 @@ Las siguientes instrucciones son para la instalación y ejecución del API.
 Si no se tiene una base de datos, esta será creada por mongo al intentar insertar o leer información. También se puede llevar a cabo la restauración de la base de datos a partir de un respaldo previo basándote en el siguiente tutorial: [Exportar e importar de MongoDB - Database tools - mongodump y mongorestore](https://youtu.be/hg8OKEhjwUk?si=Dk9Jh0-S6BYdSb0w)
 
 #### Sobre Jikan Api
-Para este proyecto se hizo uso de la API NO Oficial de My Anime List, **_[Jikan API]( https://jikan.moe/)_**, en específico su integración con Python **_[jikan4snek]( https://github.com/ScathachGrip/jikan4snek)_**.
-Con la cual se hace la actualización de los animes y mangas con data obtenida desde esta página. 
+
+Para este proyecto se hizo uso de la API NO Oficial de My Anime List, **_[Jikan API](https://jikan.moe/)_**, en específico su integración con Python **_[jikan4snek](https://github.com/ScathachGrip/jikan4snek)_**.
+Con la cual se hace la actualización de los animes y mangas con data obtenida desde esta página.
 
 ## Uso
 
 Como ejecutar el proyecto
 
 ### Ejecución de la aplicación
+
+Antes de iniciar la aplicación en caso de haber querer usar el cache con Redis, se debe de activar el contenedor a partir de la imagen de Redis, para esto dentro de la ruta **`api/redis`** se debe de ejecutar el siguiente comando:
+
+```bash
+docker-compose up -d
+```
+
+Este comando activara el contenedor a apartir del archivo **docker-compose.yaml**, el cual puede ser monitoreado desde Docker Desktop.
 
 Para iniciar la aplicación hay que ejecutar el siguiente comando en la terminal
 
@@ -204,29 +259,27 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>Auth Endpoints</strong></summary>
 
--  POST /auth/register
+- **POST /auth/register**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: ninguna
 
-   -  Parámetros de ruta: ninguno
+   - Request schema: UserRegLogSchema
 
-   -  Autenticación: ninguna
+   - Response schema: UserLogRespSchema
 
-   -  Request schema: UserRegLogSchema
+---
 
-   -  Response schema: UserLogRespSchema
+- **POST /auth/login**
+   - Tipo: POST
 
--  POST /auth/login
+   - Autenticación: ninguna
 
-   -  Tipo: POST
+   - Request schema: UserRegLogSchema
 
-   -  Parámetros de ruta: ninguno
+   - Response schema: UserLogRespSchema
 
-   -  Autenticación: ninguna
-
-   -  Request schema: UserRegLogSchema
-
-   -  Response schema: UserLogRespSchema
+---
 
 </details>
 
@@ -234,55 +287,52 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>Anime Endpoints</strong></summary>
 
--  POST /anime/
+- **POST /anime/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: opcional (si está autenticado incluye datos de favoritos)
 
-   -  Parámetros: ninguno
+   - Request schema: FilterSchema
 
-   -  Autenticación: opcional
+   - Response schema: AnimeSearchSchema
 
-   -  Request schema: FilterSchema
+---
 
-   -  Response schema: AnimeSearchSchema
+- **POST /anime/emision/**
+   - Tipo: POST
 
--  POST /anime/emision/
+   - Autenticación: opcional
 
-   -  Tipo: POST
+   - Request schema: FilterSchema
 
-   -  Parámetros: ninguno
+   - Response schema: AnimeSearchSchema
 
-   -  Autenticación: opcional
+---
 
-   -  Request schema: FilterSchema
+- **GET /anime/{key_anime}**
+   - Tipo: GET
 
-   -  Response schema: AnimeSearchSchema
+   - Parámetros:
+      - key_anime: int
 
--  GET /anime/{key_anime}
+   - Autenticación: opcional
 
-   -  Tipo: GET
+   - Request schema: ninguno
 
-   -  Parámetros:
+   - Response schema: AnimeSchema
 
-      -  key_anime: int
+---
 
-   -  Autenticación: opcional
+- **POST /anime/changeFavStatus**
+   - Tipo: POST
 
-   -  Request schema: ninguno
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Response schema: AnimeSchema
+   - Request schema: AniFavPayloadSchema
 
--  POST /anime/changeFavStatus
+   - Response schema: AniFavRespSchema
 
-   -  Tipo: POST
-
-   -  Parámetros: ninguno
-
-   -  Autenticación: requerida (usuario)
-
-   -  Request schema: AniFavPayloadSchema
-
-   -  Response schema: AniFavRespSchema
+---
 
 </details>
 
@@ -290,55 +340,52 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>Manga Endpoints</strong></summary>
 
--  POST /manga/
+- **POST /manga/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: opcional
 
-   -  Parámetros: ninguno
+   - Request schema: FilterSchema
 
-   -  Autenticación: opcional
+   - Response schema: MangaSearchSchema
 
-   -  Request schema: FilterSchema
+---
 
-   -  Response schema: MangaSearchSchema
+- **POST /manga/publicando/**
+   - Tipo: POST
 
--  POST /manga/publicando/
+   - Autenticación: opcional
 
-   -  Tipo: POST
+   - Request schema: FilterSchema
 
-   -  Parámetros: ninguno
+   - Response schema: MangaSearchSchema
 
-   -  Autenticación: opcional
+---
 
-   -  Request schema: FilterSchema
+- **GET /manga/{key_manga}**
+   - Tipo: GET
 
-   -  Response schema: MangaSearchSchema
+   - Parámetros:
+      - key_manga: int
 
--  GET /manga/{key_manga}
+   - Autenticación: opcional
 
-   -  Tipo: GET
+   - Request schema: ninguno
 
-   -  Parámetros:
+   - Response schema: MangaSchema
 
-      -  key_manga: int
+---
 
-   -  Autenticación: opcional
+- **POST /manga/changeFavStatus**
+   - Tipo: POST
 
-   -  Request schema: ninguno
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Response schema: MangaSchema
+   - Request schema: MangaFavPayloadSchema
 
--  POST /manga/changeFavStatus
+   - Response schema: AniFavRespSchema
 
-   -  Tipo: POST
-
-   -  Parámetros: ninguno
-
-   -  Autenticación: requerida (usuario)
-
-   -  Request schema: MangaFavPayloadSchema
-
-   -  Response schema: AniFavRespSchema
+---
 
 </details>
 
@@ -346,115 +393,117 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>User Endpoints</strong></summary>
 
--  GET /user/me/
+- **GET /user/me/**
+   - Tipo: GET
 
-   -  Tipo: GET
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Parámetros: ninguno
+   - Request schema: ninguno
 
-   -  Autenticación: usuario
+   - Response schema: UserLogRespSchema
 
-   -  Request schema: ninguno
+---
 
-   -  Response schema: UserLogRespSchema
+- **GET /user/{username}**
+   - Tipo: GET
 
--  GET /user/{username}
+   - Parámetros:
+      - username: UsernameType
 
-   -  Tipo: GET
+   - Autenticación: opcional
 
-   -  Parámetros:
+   - Request schema: ninguno
 
-      -  username: UsernameType (str)
+   - Response schema: UserLogRespSchema
 
-   -  Autenticación: opcional
+---
 
-   -  Request schema: ninguno
+- **GET /user/stats/{username}**
+   - Tipo: GET
 
-   -  Response schema: UserLogRespSchema
+   - Parámetros:
+      - username: UsernameType
+      - tipoStats: TypeStatisticEnum (query, default: a_m_favs)
 
--  GET /user/stats/{username}
+   - Autenticación: opcional
 
-   -  Tipo: GET
+   - Request schema: ninguno
 
-   -  Parámetros:
+   - Response schema: FavsCountSchema
 
-      -  username: UsernameType (str)
-      
-      - tipoStats: TypeStatisticEnum (int)
+---
 
-   -  Autenticación: opcional
+- **POST /user/anime_list/{username}**
+   - Tipo: POST
 
-   -  Request schema: ninguno
+   - Parámetros:
+      - username: UsernameType
 
-   -  Response schema: FavsCountSchema
+   - Autenticación: opcional
 
--  POST /user/anime_list/{username}
+   - Request schema: FilterSchema
 
-   -  Tipo: POST
+   - Response schema: AnimeSearchSchema
 
-   -  Parámetros:
+---
 
-      -  username: UsernameType (str)
+- **POST /user/manga_list/{username}**
+   - Tipo: POST
 
-   -  Autenticación: opcional
+   - Parámetros:
+      - username: UsernameType
 
-   -  Request schema: FilterSchema
+   - Autenticación: opcional
 
-   -  Response schema: AnimeSearchSchema
+   - Request schema: FilterSchema
 
--  POST /user/manga_list/{username}
+   - Response schema: MangaSearchSchema
 
-   -  Tipo: POST
+---
 
-   -  Parámetros:
+- **POST /user/change_profpic/**
+   - Tipo: POST
 
-      -  username: UsernameType
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Autenticación: opcional
+   - Request schema: PayloadProfPicSchema
 
-   -  Request schema: FilterSchema
+   - Response schema: PayloadProfPicSchema
 
-   -  Response schema: MangaSearchSchema
+---
 
--  POST /user/change_profpic/
+- **POST /user/change_username/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Autenticación: usuario
+   - Request schema: PayloadUsernameSchema
 
-   -  Request schema: PayloadProfPicSchema
+   - Response schema: PayloadUsernameSchema
 
-   -  Response schema: PayloadProfPicSchema
+---
 
--  POST /user/change_username/
+- **POST /user/change_email/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Autenticación: usuario
+   - Request schema: PayloadEmailSchema
 
-   -  Request schema: PayloadUsernameSchema
+   - Response schema: ResponseEmailSchema
 
-   -  Response schema: PayloadUsernameSchema
+---
 
--  POST /user/change_email/
+- **POST /user/change_password/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: requerida (usuario autenticado)
 
-   -  Autenticación: usuario
+   - Request schema: PayloadPassSchema
 
-   -  Request schema: PayloadEmailSchema
+   - Response schema: ResponseNewPassSchema
 
-   -  Response schema: PayloadEmailSchema
-
--  POST /user/change_password/
-
-   -  Tipo: POST
-
-   -  Autenticación: usuario
-
-   -  Request schema: PayloadPassSchema
-
-   -  Response schema: ResponseNewPassSchema
+---
 
 </details>
 
@@ -462,57 +511,71 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>Search Endpoints</strong></summary>
 
--  POST /search/
+- **POST /search/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: opcional
 
-   -  Parámetros: ninguno
+   - Request schema: FilterSchema
 
-   -  Autenticación: opcional
+   - Response schema: SearchAllSchema
 
-   -  Request schema: FilterSchema
+---
 
-   -  Response schema: SearchAllSchema
+- **GET /search/get_filters/**
+   - Tipo: GET
+
+   - Autenticación: ninguna
+
+   - Request schema: ninguno
+
+   - Response schema: FiltersListAdvancedSearch
+
+---
 
 </details>
 
 ### DASHBOARD (ADMIN)
 
+> Todos los endpoints de dashboard requieren autenticación con rol **admin**.
+
 <details> <summary><strong>Dashboard General</strong></summary>
 
--  GET /dashboard/stats/
+- **GET /dashboard/stats/**
+   - Tipo: GET
 
-   -  Tipo: GET
+   - Parámetros:
+      - tipoStats: TypeStatisticEnum (query, default: a_m_favs)
 
-   -  Parámetros: 
+   - Autenticación: admin
 
-      - tipoStats: TypeStatisticEnum (int)
+   - Request schema: ninguno
 
-   -  Autenticación: admin
+   - Response schema: ConteoGeneralSchema
 
-   -  Request schema: ninguno
+---
 
-   -  Response schema: ConteoGeneralSchema
+- **POST /dashboard/users_list/**
+   - Tipo: POST
 
--  POST /dashboard/users_list/
+   - Autenticación: admin
 
-   -  Tipo: POST
+   - Request schema: UserListFilterSchema
 
-   -  Autenticación: admin
+   - Response schema: UserListSchema
 
-   -  Request schema: UserListFilterSchema
+---
 
-   -  Response schema: UserListSchema
+- **POST /dashboard/cng_active_state/**
+   - Tipo: POST
 
--  POST /dashboard/cng_active_state/
+   - Autenticación: admin
 
-   -  Tipo: POST
+   - Request schema: PayloadActiveStateSchema
 
-   -  Autenticación: admin
+   - Response schema: PayloadActiveStateSchema
 
-   -  Request schema: PayloadActiveStateSchema
-
-   -  Response schema: PayloadActiveStateSchema
+---
 
 </details>
 
@@ -520,133 +583,138 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>Dashboard Anime</strong></summary>
 
--  POST /dashboard/anime/create/
+- **POST /dashboard/anime/create/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: admin
 
-   -  Autenticación: admin
+   - Request schema: AnimeCreateSchema
 
-   -  Request schema: AnimeCreateSchema
+   - Response schema: ResponseUpdCrt
 
-   -  Response schema: ResponseUpdCrtAnime
+---
 
--  PUT /dashboard/anime/update/{anime_id}
+- **PUT /dashboard/anime/update/{anime_id}**
+   - Tipo: PUT
 
-   -  Tipo: PUT
+   - Parámetros:
+      - anime_id: ObjectIdStr
 
-   -  Parámetros:
+   - Autenticación: admin
 
-      -  anime_id: ObjectIdStr (str)
+   - Request schema: AnimeUpdateSchema
 
-   -  Autenticación: admin
+   - Response schema: ResponseUpdCrt
 
-   -  Request schema: AnimeUpdateSchema
+---
 
-   -  Response schema: ResponseUpdCrtAnime
+- **DELETE /dashboard/anime/delete/{anime_id}**
+   - Tipo: DELETE
 
--  DELETE /dashboard/anime/delete/{anime_id}
+   - Parámetros:
+      - anime_id: ObjectIdStr
 
-   -  Tipo: DELETE
+   - Autenticación: admin
 
-   -  Parámetros:
+   - Request schema: ninguno
 
-      -  anime_id: ObjectIdStr
+   - Response schema: ResponseUpdCrt
 
-   -  Autenticación: admin
+---
 
-   -  Request schema: ninguno
+- **POST /dashboard/anime/search_on_mal/**
+   - Tipo: POST
 
-   -  Response schema: ResponseUpdCrtAnime
+   - Autenticación: admin
 
--  POST /dashboard/anime/search_on_mal/
+   - Request schema: PayloadSearchAnimeMAL
 
-   -  Tipo: POST
+   - Response schema: ResponseSearchAnimeMAL
 
-   -  Autenticación: admin
+---
 
-   -  Request schema: PayloadSearchAnimeMAL
+- **POST /dashboard/anime/assign_id_mal/**
+   - Tipo: POST
 
-   -  Response schema: ResponseSearchAnimeMAL
+   - Autenticación: admin
 
--  POST /dashboard/anime/assign_id_mal/
+   - Request schema: PayloadAnimeIDMAL
 
-   -  Tipo: POST
+   - Response schema: ResponseUpdCrt
 
-   -  Autenticación: admin
+---
 
-   -  Request schema: PayloadAnimeIDMAL
+- **GET /dashboard/anime/update_from_mal/{anime_id}**
+   - Tipo: GET
 
-   -  Response schema: ResponseUpdCrtAnime
+   - Parámetros:
+      - anime_id: ObjectIdStr
 
--  GET /dashboard/anime/update_from_mal/{anime_id}
+   - Autenticación: admin
 
-   -  Tipo: GET
+   - Request schema: ninguno
 
-   -  Parámetros:
+   - Response schema: JSON personalizado `{ message: str, task_id: str }`
 
-      -  anime_id: ObjectIdStr
+---
 
-   -  Autenticación: admin
+- **GET /dashboard/anime/update_all_to_mal/**
+   - Tipo: GET
 
-   -  Request schema: ninguno
+   - Autenticación: admin
 
-   -  Response schema: JSON personalizado
+   - Request schema: ninguno
 
--  GET /dashboard/anime/update_all_to_mal/
+   - Response schema: JSON personalizado `{ message: str, task_id: str }`
 
-   -  Tipo: GET
+---
 
-   -  Parámetros: ninguno
+- **POST /dashboard/anime/get_incomplete/{ready_to_mal}**
+   - Tipo: POST
 
-   -  Autenticación: admin
+   - Parámetros:
+      - ready_to_mal: ReadyToMALEnum
 
-   -  Request schema: ninguno
+   - Autenticación: admin
 
-   -  Response schema: JSON personalizado
+   - Request schema: FilterSchema
 
--  POST /dashboard/anime/get_incomplete/{ready_to_mal}
+   - Response schema: SearchAnimeIncompleteSchema
 
--  Tipo: POST
+---
 
-   -  Parámetros:
+- **POST /dashboard/anime/upload_file/**
+   - Tipo: POST
 
-      -  ready_to_mal: int
+   - Autenticación: admin
 
-   -  Autenticación: admin
+   - Request schema: UploadFile (multipart/form-data, archivo `.json`)
 
-   -  Request schema: FilterSchema
+   - Response schema: ResponseUpdAllMALSchema
 
-   -  Response schema: SearchAnimeIncompleteSchema
+---
 
--  POST /dashboard/anime/upload_file/
+- **POST /dashboard/anime/genres_list/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: admin
 
-   -  Autenticación: admin
+   - Request schema: FilterGSAESchema
 
-   -  Request schema: archivo JSON
+   - Response schema: SearchGenresSchema
 
-   -  Response schema: ResponseUpdAllMALSchema
+---
 
--  POST /dashboard/anime/genres_list/
+- **POST /dashboard/anime/studios_list/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: admin
 
-   -  Autenticación: admin
+   - Request schema: FilterGSAESchema
 
-   -  Request schema: FilterGSAESchema
+   - Response schema: SearchStudiosSchema
 
-   -  Response schema: SearchGenresSchema
-
--  POST /dashboard/anime/studios_list/
-
-   -  Tipo: POST
-
-   -  Autenticación: admin
-
-   -  Request schema: FilterGSAESchema
-
-   -  Response schema: SearchStudiosSchema
+---
 
 </details>
 
@@ -654,120 +722,168 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
 <details> <summary><strong>Dashboard Manga</strong></summary>
 
--  POST /dashboard/manga/create/
+- **POST /dashboard/manga/create/**
+   - Tipo: POST
 
-   -  Tipo: POST
+   - Autenticación: admin
 
-   -  Autenticación: admin
+   - Request schema: MangaCreateSchema
 
-   -  Request schema: MangaCreateSchema
+   - Response schema: ResponseUpdCrt
 
-   -  Response schema: ResponseUpdCrtManga
+---
 
--  PUT /dashboard/manga/update/{manga_id}
+- **PUT /dashboard/manga/update/{manga_id}**
+   - Tipo: PUT
 
-   -  Tipo: PUT
+   - Parámetros:
+      - manga_id: ObjectIdStr
 
-   -  Parámetros:
+   - Autenticación: admin
 
-      -  manga_id: ObjectIdStr
+   - Request schema: MangaUpdateSchema
 
-   -  Autenticación: admin
+   - Response schema: ResponseUpdCrt
 
-   -  Request schema: MangaUpdateSchema
+---
 
-   -  Response schema: ResponseUpdCrtManga
+- **DELETE /dashboard/manga/delete/{manga_id}**
+   - Tipo: DELETE
 
--  DELETE /dashboard/manga/delete/{manga_id}
+   - Parámetros:
+      - manga_id: ObjectIdStr
 
-   -  Tipo: DELETE
+   - Autenticación: admin
 
-   -  Parámetros:
+   - Request schema: ninguno
 
-      -  manga_id: ObjectIdStr
+   - Response schema: ResponseUpdCrt
 
-   -  Autenticación: admin
+---
 
-   -  Request schema: ninguno
+- **POST /dashboard/manga/search_on_mal/**
+   - Tipo: POST
 
-   -  Response schema: ResponseUpdCrtManga
+   - Autenticación: admin
 
--  POST /dashboard/manga/search_on_mal/
+   - Request schema: PayloadSearchMangaMAL
 
-   -  Tipo: POST
+   - Response schema: ResponseSearchMangaMAL
 
-   -  Autenticación: admin
+---
 
-   -  Request schema: PayloadSearchAnimeMAL
+- **POST /dashboard/manga/assign_id_mal/**
+   - Tipo: POST
 
-   -  Response schema: ResponseSearchMangaMAL
+   - Autenticación: admin
 
--  POST /dashboard/manga/assign_id_mal/
+   - Request schema: PayloadMangaIDMAL
 
-   -  Tipo: POST
+   - Response schema: ResponseUpdCrt
 
-   -  Autenticación: admin
+---
 
-   -  Request schema: PayloadAnimeIDMAL
+- **GET /dashboard/manga/update_from_mal/{manga_id}**
+   - Tipo: GET
 
-   -  Response schema: ResponseUpdCrtManga
+   - Parámetros:
+      - manga_id: ObjectIdStr
 
--  GET /dashboard/manga/update_from_mal/{manga_id}
+   - Autenticación: admin
 
-   -  Tipo: GET
+   - Request schema: ninguno
 
-   -  Parámetros:
+   - Response schema: JSON personalizado `{ message: str, task_id: str }`
 
-      -  manga_id: ObjectIdStr
+---
 
-   -  Autenticación: admin
+- **GET /dashboard/manga/update_all_to_mal/**
+   - Tipo: GET
 
-   -  Request schema: ninguno
+   - Autenticación: admin
 
-   -  Response schema: JSON personalizado
+   - Request schema: ninguno
 
--  GET /dashboard/manga/update_all_to_mal/
+   - Response schema: JSON personalizado `{ message: str, task_id: str }`
 
-   -  Tipo: GET
+---
 
-   -  Autenticación: admin
+- **POST /dashboard/manga/get_incomplete/{ready_to_mal}**
+   - Tipo: POST
 
-   -  Request schema: ninguno
+   - Parámetros:
+      - ready_to_mal: ReadyToMALEnum
 
-   -  Response schema: JSON personalizado
+   - Autenticación: admin
 
--  POST /dashboard/manga/get_incomplete/{ready_to_mal}
+   - Request schema: FilterSchema
 
-   -  Tipo: POST
+   - Response schema: SearchMangaIncompleteSchema
 
-   -  Parámetros:
+---
 
-      -  ready_to_mal: int
+- **POST /dashboard/manga/editorials_list/**
+   - Tipo: POST
 
-   -  Autenticación: admin
+   - Autenticación: admin
 
-   -  Request schema: FilterSchema
+   - Request schema: FilterGSAESchema
 
-   -  Response schema: SearchMangaIncompleteSchema
+   - Response schema: SearchEditorialsSchema
 
--  POST /dashboard/manga/editorials_list/
+---
 
-   -  Tipo: POST
+- **POST /dashboard/manga/authors_list/**
+   - Tipo: POST
 
-   -  Autenticación: admin
+   - Autenticación: admin
 
-   -  Request schema: FilterGSAESchema
+   - Request schema: FilterGSAESchema
 
-   -  Response schema: SearchEditorialsSchema
+   - Response schema: SearchAutoresSchema
 
--  POST /dashboard/manga/authors_list/
-
-   -  Tipo: POST
-
-   -  Autenticación: admin
-
-   -  Request schema: FilterGSAESchema
-
-   -  Response schema: SearchAutoresSchema
+---
 
 </details>
+
+### DASHBOARD TASKS (ADMIN)
+
+<details> <summary><strong>Dashboard Tasks</strong></summary>
+
+- **GET /dashboard/task/{task_id}**
+   - Tipo: GET
+
+   - Parámetros:
+      - task_id: str
+
+   - Autenticación: admin
+
+   - Request schema: ninguno
+
+   - Response schema: TaskStatusResponse
+
+---
+
+- **POST /dashboard/task/cancel/{task_id}**
+   - Tipo: POST
+
+   - Parámetros:
+      - task_id: str
+
+   - Autenticación: admin
+
+   - Request schema: ninguno
+
+   - Response schema: JSON personalizado `{ message: str, task_id: str }`
+
+---
+
+- **GET /dashboard/task/list_all/**
+   - Tipo: GET
+
+   - Autenticación: admin
+
+   - Request schema: ninguno
+
+   - Response schema: JSON personalizado `{ tasks: list, total_tasks: int }`
+    </details>
