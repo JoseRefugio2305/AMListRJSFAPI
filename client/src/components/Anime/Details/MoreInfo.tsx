@@ -51,7 +51,7 @@ export function MoreInfoAnime({
          <h5
             className={`rounded-sm py-2 text-lg justify-center flex text-white  font-semibold ${getColorTipoAnimeManga(
                tipo,
-               0
+               0,
             )}`}
          >
             {getAnimeStrType(tipo)}
@@ -109,8 +109,8 @@ export function MoreInfoAnime({
             to={linkMAL}
             className="hover:underline hover:text-white font-semibold text-md bg-blue-500 rounded-sm px-2 py-1 w-full flex justify-center gap-3 items-center"
          >
-            <img src="/MAL.svg" className="w-[15%]" /> Página de MAL{" "}
-            <SquareArrowOutUpRightIcon size={16} />
+            <img src="/MAL.svg" className="w-[15%]" alt="MAL Logo" /> Página de
+            MAL <SquareArrowOutUpRightIcon size={16} />
          </Link>
       </>
    );
