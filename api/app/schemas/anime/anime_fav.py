@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from .anime_enums import StatusViewEnum
 from app.core.utils import ObjectIdStr
 # Animes favoritos

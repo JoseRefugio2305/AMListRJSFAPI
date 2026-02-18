@@ -17,7 +17,7 @@ from ..pipeline_builders.stats import (
     topEditoriales,
     topEstudios,
 )
-from app.core.cache.decorators import gen_cached, cached_stats
+from app.core.cache.decorators import cached_stats
 from app.core.cache.cache_manager import cache_manager
 from app.core.logging import get_logger
 

@@ -18,7 +18,6 @@ from ..pipeline_builders.common import (
 )
 from app.models.anime_model import AnimeModel
 from app.models.studio_model import StudioModel
-from app.core.cache.decorators import gen_cached
 from app.core.cache.cache_manager import cache_manager
 from app.core.logging import get_logger
 
@@ -108,7 +107,6 @@ class AnimeRepository:
             logger.debug(
                 f"Cache HIT para anime con key_anime: {key_anime} y user_id: {user_id}"
             )
-            logger.debug(f"Cache data: {cached_anime}")
             return cached_anime
 
         pipeline = [
