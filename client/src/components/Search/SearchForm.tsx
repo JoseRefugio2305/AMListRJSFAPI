@@ -36,20 +36,20 @@ export function SearchForm({
    const [selEditoriales, setSelEditoriales] = useState<FilterObjSchema[]>([]);
    const [selAutores, setSelAutores] = useState<FilterObjSchema[]>([]);
    const [selTiposAnime, setSelTiposAnime] = useState<OptionsSelectInterface[]>(
-      []
+      [],
    );
    const [selTiposManga, setSelTiposManga] = useState<OptionsSelectInterface[]>(
-      []
+      [],
    );
    const [selEmision, setSelEmision] = useState<OptionsSelectInterface | null>(
-      null
+      null,
    );
    const [selFieldOrd, setSelFieldOrd] =
       useState<OptionsSelectStrInterface | null>(null);
    const [selOrderBy, setSelOrderBy] =
       useState<OptionsSelectStrInterface | null>(null);
-   const [titSearch, setTitSearch] = useState<string>(
-      filtersParam.tit_search.trim()
+   const [titSearch, setTitSearch] = useState<string>(() =>
+      filtersParam.tit_search.trim(),
    );
    const idTitSearchInput = useId();
 

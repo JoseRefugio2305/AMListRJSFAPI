@@ -12,8 +12,8 @@ import { parseStringNumber } from "../../utils/parse";
 export default function MangaPage() {
    const [searchParams, setSearchParams] = useSearchParams();
 
-   const [page, setPage] = useState<number>(
-      parseStringNumber(searchParams.get("page") ?? "1")
+   const [page, setPage] = useState<number>(() =>
+      parseStringNumber(searchParams.get("page") ?? "1"),
    );
    const [total, setTotalMangas] = useState<number>(0);
    const [mangas, setMangas] = useState<MangaSchema[]>([]);

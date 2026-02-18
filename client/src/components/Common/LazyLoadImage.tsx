@@ -33,7 +33,7 @@ export function LazyLoadImage({
                }
             });
          },
-         { threshold: 0.1 } //Se muestra en caso de que el componente este visible en pantalla al menos en un 10%
+         { threshold: 0.1 }, //Se muestra en caso de que el componente este visible en pantalla al menos en un 10%
       );
 
       observer.observe(el);
@@ -41,10 +41,7 @@ export function LazyLoadImage({
    }, []);
 
    // Normaliza fallback a URL absoluta para comparaciones fiables
-   const fallbackAbsolute = useMemo(
-      () => new URL(fallbackSrc, window.location.href).href,
-      [fallbackSrc]
-   );
+   const fallbackAbsolute = new URL(fallbackSrc, window.location.href).href;
 
    // Deriva el src a usar sin setState dentro de un efecto para evitar renders en cascada
    const initialSrc = useMemo(() => {
