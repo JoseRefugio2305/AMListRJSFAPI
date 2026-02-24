@@ -16,7 +16,7 @@ export default function ExploreMangaPage() {
       page,
       setPage,
       loading,
-      setLoaging,
+      setLoading,
    } = useFilters(TipoContenidoEnum.manga);
 
    const [layout, setLayout] = useState<"list" | "grid">("grid");
@@ -58,7 +58,7 @@ export default function ExploreMangaPage() {
                      total={totalMangas}
                      page={page}
                      setPage={setPage}
-                     setLoading={setLoaging}
+                     setLoading={setLoading}
                      mangas={mangas}
                      layout={layout}
                      setLayout={setLayout}

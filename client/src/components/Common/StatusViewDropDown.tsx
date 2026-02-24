@@ -29,11 +29,11 @@ export function StatusViewDropDown({
    const username = authStore((s) => s.username);
    const showToast = toastStore((s) => s.showToast);
    const ruta = is_anime ? "/anime/" : "/manga/";
-   const [loading, setLoaging] = useState<boolean>(false);
+   const [loading, setLoading] = useState<boolean>(false);
 
    const handleStatusChange = (new_status: number) => {
       if (username && !loading) {
-         setLoaging(true);
+         setLoading(true);
          changeFavStatus(ruta + "changeFavStatus", {
             animeId: is_anime ? fav_id : undefined,
             mangaId: !is_anime ? fav_id : undefined,
@@ -51,10 +51,10 @@ export function StatusViewDropDown({
                if (resp.is_success) {
                   setStatusView(resp?.statusView ?? 5);
                }
-               setLoaging(false);
+               setLoading(false);
             })
             .catch((error) => {
-               setLoaging(false);
+               setLoading(false);
                console.error(error);
                showToast({
                   severity: "error",

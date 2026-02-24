@@ -16,7 +16,7 @@ export default function ExploreAnimePage() {
       page,
       setPage,
       loading,
-      setLoaging,
+      setLoading,
    } = useFilters(TipoContenidoEnum.anime);
    const [layout, setLayout] = useState<"list" | "grid">("grid");
 
@@ -57,7 +57,7 @@ export default function ExploreAnimePage() {
                      total={totalAnimes}
                      page={page}
                      setPage={setPage}
-                     setLoading={setLoaging}
+                     setLoading={setLoading}
                      animes={animes}
                      layout={layout}
                      setLayout={setLayout}

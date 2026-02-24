@@ -25,7 +25,7 @@ export default function ExplorePage() {
       page,
       setPage,
       loading,
-      setLoaging,
+      setLoading,
       getURLParamsAM,
    } = useFilters(TipoContenidoEnum.todos);
 
@@ -89,7 +89,7 @@ export default function ExplorePage() {
                         total={totalAnimes > 20 ? 20 : totalAnimes}
                         page={page}
                         setPage={setPage}
-                        setLoading={setLoaging}
+                        setLoading={setLoading}
                         animes={animes}
                         layout={layout}
                         setLayout={setLayout}
@@ -126,7 +126,7 @@ export default function ExplorePage() {
                         total={totalMangas > 20 ? 20 : totalMangas}
                         page={page}
                         setPage={setPage}
-                        setLoading={setLoaging}
+                        setLoading={setLoading}
                         mangas={mangas}
                         layout={layout}
                         setLayout={setLayout}

@@ -52,7 +52,7 @@ export default function UserMangaListPage() {
       page,
       setPage,
       loading,
-      setLoaging,
+      setLoading,
    } = useFilters(
       TipoContenidoEnum.manga,
       true,
@@ -117,7 +117,7 @@ export default function UserMangaListPage() {
                      <MangaPagination
                         page={page}
                         total={totalMangas}
-                        setLoading={setLoaging}
+                        setLoading={setLoading}
                         setPage={setPage}
                         mangas={mangas}
                         layout={layout}

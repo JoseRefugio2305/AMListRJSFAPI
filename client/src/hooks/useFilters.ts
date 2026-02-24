@@ -16,7 +16,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
      const [totalAnimes, setTotalAnimes] = useState<number>(0);
      const [mangas, setMangas] = useState<MangaSchema[]>([]);
      const [totalMangas, setTotalMangas] = useState<number>(0);
-     const [loading, setLoaging] = useState<boolean>(true);
+     const [loading, setLoading] = useState<boolean>(true);
 
      const [filtersParam, setFiltersParam] = useState<FilterParamsInterface>(
           () => getInitialFilters(searchParams, tipoContenido, onlyFavs)
@@ -29,7 +29,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
 
      useEffect(() => {
           const fetchResultsSearch = () => {
-               setLoaging(true);
+               setLoading(true);
                const filtersPayload: FilterPayload = {
                     limit: 20,
                     page: page > 1 ? page : 1,
@@ -72,7 +72,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
                               }).catch((error) => {
                                    console.error(error);
                               })
-                              .finally(() => setLoaging(false));
+                              .finally(() => setLoading(false));
                     } else {
                          getUserMangaList(username, filtersPayload)
                               .then((resp) => {
@@ -81,7 +81,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
                               }).catch((error) => {
                                    console.error(error);
                               })
-                              .finally(() => setLoaging(false));
+                              .finally(() => setLoading(false));
                     }
                } else {
                     doAdvancedSearch(filtersPayload)
@@ -94,7 +94,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
                          .catch((error) => {
                               console.error(error);
                          })
-                         .finally(() => setLoaging(false));
+                         .finally(() => setLoading(false));
                }
           };
           fetchResultsSearch();
@@ -111,7 +111,7 @@ export const useFilters = (tipoContenido: TipoContenidoEnum, onlyFavs: boolean =
           mangas,
           totalMangas,
           loading,
-          setLoaging,
+          setLoading,
           getURLParamsAM
      };
 };

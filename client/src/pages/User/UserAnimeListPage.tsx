@@ -52,7 +52,7 @@ export default function UserAnimeListPage() {
       page,
       setPage,
       loading,
-      setLoaging,
+      setLoading,
    } = useFilters(
       TipoContenidoEnum.anime,
       true,
@@ -117,7 +117,7 @@ export default function UserAnimeListPage() {
                      <AnimePagination
                         page={page}
                         total={totalAnimes}
-                        setLoading={setLoaging}
+                        setLoading={setLoading}
                         setPage={setPage}
                         animes={animes}
                         layout={layout}
