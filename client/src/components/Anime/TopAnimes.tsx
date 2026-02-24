@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { getAnimes } from "../../services/animeServices";
 import { FieldOrdEnum } from "../../types/filterTypes";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
@@ -7,7 +7,7 @@ import { Link } from "react-router";
 import { TopSkeleton } from "../Skeletons/TopSkeleton";
 import type { AnimeSchema } from "../../schemas/animeSchemas";
 
-export function TopAnimes() {
+export const TopAnimes = memo(() => {
    const [animes, setAnimes] = useState<AnimeSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
@@ -72,4 +72,6 @@ export function TopAnimes() {
          )}
       </div>
    );
-}
+});
+
+TopAnimes.displayName = "TopAnimes";

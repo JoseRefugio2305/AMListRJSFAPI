@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { FieldOrdEnum } from "../../types/filterTypes";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { cutText, getTitleForLink } from "../../utils/common";
@@ -7,7 +7,7 @@ import { TopSkeleton } from "../Skeletons/TopSkeleton";
 import { getMangas } from "../../services/mangaServices";
 import type { MangaSchema } from "../../schemas/mangaSchemas";
 
-export function TopMangas() {
+export const TopMangas = memo(() => {
    const [mangas, setMangas] = useState<MangaSchema[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
 
@@ -72,4 +72,6 @@ export function TopMangas() {
          )}
       </div>
    );
-}
+});
+
+TopMangas.displayName = "TopMangas";

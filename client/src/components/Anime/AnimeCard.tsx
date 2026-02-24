@@ -7,11 +7,11 @@ import {
 } from "../../utils/common";
 import { LazyLoadImage } from "../Common/LazyLoadImage";
 import { Link } from "react-router";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FavButton } from "../Common/FavButon";
 import type { AnimeSchema } from "../../schemas/animeSchemas";
 
-export const AnimeCard = (anime: AnimeSchema) => {
+export const AnimeCard = memo((anime: AnimeSchema) => {
    const [fav_status, setFav] = useState<boolean>(anime.isFav ?? false);
 
    return (
@@ -37,7 +37,7 @@ export const AnimeCard = (anime: AnimeSchema) => {
                <h5
                   className={`emision-day ${getColorTipoAnimeManga(
                      anime.tipo,
-                     anime.emision
+                     anime.emision,
                   )}`}
                >
                   {anime.emision === 1
@@ -83,4 +83,6 @@ export const AnimeCard = (anime: AnimeSchema) => {
          </div>
       </div>
    );
-};
+});
+
+AnimeCard.displayName = "AnimeCard";
