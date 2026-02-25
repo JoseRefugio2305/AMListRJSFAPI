@@ -36,8 +36,9 @@ export default function AutoresList() {
                : FieldOrdGSAEEnum.id_MAL;
          })(),
       };
-      if (lazyState.filters.global && lazyState.filters.global.value) {
-         filters.txtSearch = lazyState.filters.global.value.trim();
+      const globalFilter = lazyState.filters.global;
+      if (globalFilter && "value" in globalFilter && globalFilter.value) {
+         filters.txtSearch = globalFilter.value.trim();
       }
       getGSAE(filters, TipoGSAEEnum.autores)
          .then((resp) => {
@@ -79,7 +80,7 @@ export default function AutoresList() {
                totalAut > 0 ? lazyState.first + 1 : totalAut
             } a ${Math.min(
                lazyState.rows + lazyState.first,
-               totalAut
+               totalAut,
             )} autor(es) de ${totalAut} resultados`}
             first={lazyState.first}
             totalRecords={totalAut}
@@ -119,12 +120,6 @@ export default function AutoresList() {
                   <AccionesGSAEList
                      gsae={rowData}
                      typeGSAE={TipoGSAEEnum.autores}
-                     callBackDel={() => {
-                        setLoading(true);
-                        setLazyState((prev) => {
-                           return { ...prev };
-                        });
-                     }}
                   />
                )}
             />

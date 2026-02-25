@@ -6,6 +6,7 @@ import { Column } from "primereact/column";
 import {
    FieldOrdEnum,
    lazyStateInicial,
+   ReadyToMALEnum,
    type FilterPayload,
    type LazyTableStateInc,
    type OptionsSelectInterface,
@@ -14,6 +15,7 @@ import { getIncompleteAnimes } from "../../../services/searchServices";
 import { getAnimeStrType, getColorTipoAnimeManga } from "../../../utils/common";
 import { HeaderAnimeInc } from "./HeaderAnimeInc";
 import { AccionesIncList } from "./AccionesIncList";
+import type { TipoAnimeEnum } from "../../../types/animeTypes";
 
 export default function AnimeIncompleteList() {
    const [animesInc, setAnimesInc] = useState<AnimeIncompleteSchema[]>([]);
@@ -33,7 +35,7 @@ export default function AnimeIncompleteList() {
       const filters: FilterPayload = {
          limit: 20,
          page: lazyState.page + 1,
-         tiposAnime: selTipoAnime ? [selTipoAnime.code] : [],
+         tiposAnime: selTipoAnime ? [selTipoAnime.code as TipoAnimeEnum] : [],
          orderBy: lazyState.sortOrder === 1 ? 1 : -1,
          orderField: (() => {
             const key = (lazyState.sortField || "key").trim();
@@ -42,10 +44,12 @@ export default function AnimeIncompleteList() {
                : FieldOrdEnum.key;
          })(),
       };
-      if (lazyState.filters.global && lazyState.filters.global.value) {
-         filters.tituloBusq = lazyState.filters.global.value.trim();
+
+      const globalFilter = lazyState.filters.global;
+      if (globalFilter && "value" in globalFilter && globalFilter.value) {
+         filters.tituloBusq = globalFilter.value.trim();
       }
-      getIncompleteAnimes(filters, selStatusAct?.code ?? 2)
+      getIncompleteAnimes(filters, (selStatusAct?.code ?? 2) as ReadyToMALEnum)
          .then((resp) => {
             setAnimesInc(resp.listaAnimes ?? []);
             setTotalInc(resp.totalAnimes ?? 0);
@@ -92,7 +96,7 @@ export default function AnimeIncompleteList() {
                totalInc > 0 ? lazyState.first + 1 : totalInc
             } a ${Math.min(
                lazyState.rows + lazyState.first,
-               totalInc
+               totalInc,
             )} anime(s) de ${totalInc} resultados`}
             first={lazyState.first}
             totalRecords={totalInc}
@@ -146,7 +150,7 @@ export default function AnimeIncompleteList() {
                      <p
                         className={`w-full font-bold text-white rounded-2xl p-1 text-center ${getColorTipoAnimeManga(
                            aInc.tipo,
-                           0
+                           0,
                         )}`}
                      >
                         {getAnimeStrType(aInc.tipo)}

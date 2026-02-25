@@ -22,8 +22,8 @@ import {
    type OptionsSelectStrInterface,
 } from "../../types/filterTypes";
 import { Dropdown } from "primereact/dropdown";
-import { optionsTipoAnime } from "../../types/animeTypes";
-import { optionsTipoManga } from "../../types/mangaTypes";
+import { optionsTipoAnime, TipoAnimeEnum } from "../../types/animeTypes";
+import { optionsTipoManga, TipoMangaEnum } from "../../types/mangaTypes";
 import { FilterMultiSelect } from "./FilterMultiSelect";
 
 interface FiltersProps {
@@ -120,7 +120,7 @@ export function FiltersSearchForm({
                      setSelTiposManga(() => {
                         const sTManga = new Set(filtersParam.tiposManga);
                         return optionsTipoManga.filter((tm) =>
-                           sTManga.has(tm.code)
+                           sTManga.has(tm.code as TipoMangaEnum)
                         );
                      });
                   }
@@ -141,7 +141,7 @@ export function FiltersSearchForm({
                      setSelTiposAnime(() => {
                         const sTAnime = new Set(filtersParam.tiposAnime);
                         return optionsTipoAnime.filter((ta) =>
-                           sTAnime.has(ta.code)
+                           sTAnime.has(ta.code as TipoAnimeEnum)
                         );
                      });
                   }

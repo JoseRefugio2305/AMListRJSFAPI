@@ -36,8 +36,9 @@ export default function EditorialesList() {
                : FieldOrdGSAEEnum.id_MAL;
          })(),
       };
-      if (lazyState.filters.global && lazyState.filters.global.value) {
-         filters.txtSearch = lazyState.filters.global.value.trim();
+      const globalFilter = lazyState.filters.global;
+      if (globalFilter && "value" in globalFilter && globalFilter.value) {
+         filters.txtSearch = globalFilter.value.trim();
       }
       getGSAE(filters, TipoGSAEEnum.editoriales)
          .then((resp) => {
@@ -79,7 +80,7 @@ export default function EditorialesList() {
                totalEdt > 0 ? lazyState.first + 1 : totalEdt
             } a ${Math.min(
                lazyState.rows + lazyState.first,
-               totalEdt
+               totalEdt,
             )} editorial(es) de ${totalEdt} resultados`}
             first={lazyState.first}
             totalRecords={totalEdt}
@@ -119,12 +120,6 @@ export default function EditorialesList() {
                   <AccionesGSAEList
                      gsae={rowData}
                      typeGSAE={TipoGSAEEnum.editoriales}
-                     callBackDel={() => {
-                        setLoading(true);
-                        setLazyState((prev) => {
-                           return { ...prev };
-                        });
-                     }}
                   />
                )}
             />

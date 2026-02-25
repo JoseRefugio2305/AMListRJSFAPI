@@ -1,8 +1,7 @@
 import type { DataTableFilterMeta } from "primereact/datatable"
-import type { LazyTableState } from "../components/Dashboard/Anime/AnimeIncompleteList"
-import type { TipoAnimeEnum } from "./animeTypes"
 import type { TipoMangaEnum } from "./mangaTypes"
 import { FilterMatchMode } from "primereact/api"
+import type { TipoAnimeEnum } from "./animeTypes"
 
 export interface OptionsSelectInterface {
      code: number,
@@ -13,19 +12,22 @@ export interface OptionsSelectStrInterface {
      code: string,
      name: string
 }
-export enum EmisionEnum {
-     finalizado = 0,
-     emision = 1,
-     pausado = 2,
-     todos = 3,
-}
+export const EmisionEnum = {
+     finalizado: 0,
+     emision: 1,
+     pausado: 2,
+     todos: 3,
+} as const
 
-export enum TipoGSAEEnum {
-     generos = 1,
-     estudios = 2,
-     editoriales = 3,
-     autores = 4
-}
+export type EmisionEnum = typeof EmisionEnum[keyof typeof EmisionEnum];
+
+export const TipoGSAEEnum = {
+     generos: 1,
+     estudios: 2,
+     editoriales: 3,
+     autores: 4
+} as const
+export type TipoGSAEEnum = typeof TipoGSAEEnum[keyof typeof TipoGSAEEnum];
 
 export const optionsEmision: OptionsSelectInterface[] = [
      { code: EmisionEnum.emision, name: "Emisión/Publicación" },
@@ -34,14 +36,15 @@ export const optionsEmision: OptionsSelectInterface[] = [
      { code: EmisionEnum.todos, name: "Todos" },
 ]
 
-export enum StatusViewEnum {
-     viendo = 1,
-     pendiente = 2,
-     considerando = 3,
-     abandonado = 4,
-     ninguno = 5,
-     completado = 6
-}
+export const StatusViewEnum = {
+     viendo: 1,
+     pendiente: 2,
+     considerando: 3,
+     abandonado: 4,
+     ninguno: 5,
+     completado: 6
+} as const
+export type StatusViewEnum = typeof StatusViewEnum[keyof typeof StatusViewEnum];
 
 export const optionsStatusView: OptionsSelectInterface[] = [
      { code: StatusViewEnum.ninguno, name: "Todos" },
@@ -52,11 +55,13 @@ export const optionsStatusView: OptionsSelectInterface[] = [
      { code: StatusViewEnum.abandonado, name: "Abandonado" },
 ]
 
-export enum TipoContenidoEnum {
-     anime = 1,
-     manga = 2,
-     todos = 3,
-}
+export const TipoContenidoEnum = {
+     anime: 1,
+     manga: 2,
+     todos: 3,
+} as const
+export type TipoContenidoEnum = typeof TipoContenidoEnum[keyof typeof TipoContenidoEnum];
+
 
 export const optionsTipoCont: OptionsSelectInterface[] = [
      { code: TipoContenidoEnum.anime, name: "Anime" },
@@ -64,20 +69,22 @@ export const optionsTipoCont: OptionsSelectInterface[] = [
      { code: TipoContenidoEnum.todos, name: "Todos" },
 ]
 
-export enum FieldOrdEnum {
-     key = "key",
-     id_MAL = "id_MAL",
-     titulo = "titulo",
-     calificacion = "calificacion",
-     episodios = "episodios",
-     capitulos = "capitulos"
-}
+export const FieldOrdEnum = {
+     key: "key",
+     id_MAL: "id_MAL",
+     titulo: "titulo",
+     calificacion: "calificacion",
+     episodios: "episodios",
+     capitulos: "capitulos"
+} as const
+export type FieldOrdEnum = typeof FieldOrdEnum[keyof typeof FieldOrdEnum];
 
-export enum FieldOrdGSAEEnum {
-     id_MAL = "id_MAL",
-     nombre = "nombre",
-     nombre_mal = "nombre_mal",
-}
+export const FieldOrdGSAEEnum = {
+     id_MAL: "id_MAL",
+     nombre: "nombre",
+     nombre_mal: "nombre_mal",
+} as const
+export type FieldOrdGSAEEnum = typeof FieldOrdGSAEEnum[keyof typeof FieldOrdGSAEEnum];
 
 export const optionsFieldOrd: OptionsSelectStrInterface[] = [
      { code: FieldOrdEnum.key, name: "Key" },
@@ -88,10 +95,11 @@ export const optionsFieldOrd: OptionsSelectStrInterface[] = [
      { code: FieldOrdEnum.capitulos, name: "Capítulos" }
 ]
 
-export enum OrderByEnum {
-     asc = 1,
-     desc = -1
-}
+export const OrderByEnum = {
+     asc: 1,
+     desc: -1
+} as const
+export type OrderByEnum = typeof OrderByEnum[keyof typeof OrderByEnum];
 
 export const optionsOrderBy: OptionsSelectStrInterface[] = [
      { code: "asc", name: "Ascendente" },
@@ -132,21 +140,22 @@ export interface FilterParamsInterface {
      estudios: number[];
      editoriales: number[];
      autores: number[];
-     emision: number;
-     tiposAnime: number[];
-     tiposManga: number[];
-     tipoContenido: number;
+     emision: EmisionEnum;
+     tiposAnime: TipoAnimeEnum[];
+     tiposManga: TipoMangaEnum[];
+     tipoContenido: TipoContenidoEnum;
      orderBy: OrderByType;
      orderField: FieldOrdEnum;
      statusView?: StatusViewEnum
 }
 
 
-export enum ReadyToMALEnum {
-     no_listo = 0,
-     listo = 1,
-     todos = 2
-}
+export const ReadyToMALEnum = {
+     no_listo: 0,
+     listo: 1,
+     todos: 2
+} as const
+export type ReadyToMALEnum = typeof ReadyToMALEnum[keyof typeof ReadyToMALEnum];
 
 export const optionsReadyToMAL: OptionsSelectInterface[] = [
      { code: ReadyToMALEnum.no_listo, name: "No Listo" },
@@ -164,7 +173,7 @@ export interface LazyTableStateInc {
      filters: DataTableFilterMeta;
 }
 
-export const lazyStateInicial: LazyTableState = {
+export const lazyStateInicial: LazyTableStateInc = {
      first: 0,
      rows: 20,
      page: 0,

@@ -1,5 +1,7 @@
 import { parseStringNumber } from "./parse";
-import { FieldOrdEnum, StatusViewEnum, TipoContenidoEnum, type FilterParamsInterface } from "../types/filterTypes";
+import { EmisionEnum, FieldOrdEnum, StatusViewEnum, TipoContenidoEnum, type FilterParamsInterface } from "../types/filterTypes";
+import type { TipoAnimeEnum } from "../types/animeTypes";
+import type { TipoMangaEnum } from "../types/mangaTypes";
 
 export function getInitialFilters(searchParams: URLSearchParams, tipoContenido: TipoContenidoEnum, onlyFavs: boolean = false): FilterParamsInterface {
      return {
@@ -25,16 +27,16 @@ export function getInitialFilters(searchParams: URLSearchParams, tipoContenido: 
                     ?.split(",")
                     .map((a) => parseStringNumber(a)) || [],
           tiposAnime:
-               searchParams
+               (searchParams
                     .get("tiposAnime")
                     ?.split(",")
-                    .map((ta) => parseStringNumber(ta)) || [],
+                    .map((ta) => parseStringNumber(ta)) || []) as TipoAnimeEnum[],
           tiposManga:
-               searchParams
+               (searchParams
                     .get("tiposManga")
                     ?.split(",")
-                    .map((tm) => parseStringNumber(tm)) || [],
-          emision: parseStringNumber(searchParams.get("emision") || "3"),
+                    .map((tm) => parseStringNumber(tm)) || []) as TipoMangaEnum[],
+          emision: parseStringNumber(searchParams.get("emision") || "3") as EmisionEnum,
           tipoContenido: tipoContenido,
           orderBy: searchParams.get("orderby") ? (searchParams.get("orderby") === "desc" ? "desc" : "asc") : "asc",
           orderField: (() => {
@@ -46,8 +48,11 @@ export function getInitialFilters(searchParams: URLSearchParams, tipoContenido: 
           statusView: (() => {
                if (!onlyFavs) return StatusViewEnum.ninguno
                const key = parseStringNumber(searchParams.get("status") || "5")
-               return StatusViewEnum[key] ? key : StatusViewEnum.ninguno
-          })()
+               const StatusValues = new Set(
+                    Object.values(StatusViewEnum)
+               );
+               return StatusValues.has(key as StatusViewEnum) ? key : StatusViewEnum.ninguno
+          })() as StatusViewEnum
      };
 }
 

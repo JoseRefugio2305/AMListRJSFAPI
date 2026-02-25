@@ -12,6 +12,7 @@ import { TitulosAlt } from "../../components/Common/Details/TitulosAlt";
 import { MoreInfoAnime } from "../../components/Anime/Details/MoreInfo";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import type { AnimeCompleteSchema } from "../../schemas/animeSchemas";
+import type { StatusViewEnum } from "../../types/animeTypes";
 
 export default function AnimeDetailsPage() {
    const navigate = useNavigate();
@@ -87,7 +88,7 @@ export default function AnimeDetailsPage() {
                               episodios={animeDetails.episodios}
                               fav_status={fav_status}
                               setFav={setFav}
-                              statusView={statusView}
+                              statusView={statusView as StatusViewEnum}
                               setStatusView={setStatusView}
                            />
                         </div>

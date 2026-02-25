@@ -16,7 +16,7 @@ export function useStatsDashboard() {
      useEffect(() => {
           const fetchStats = () => {
                setLoadingStats(true);
-               getFullStatsDash(selTypeStat.code)
+               getFullStatsDash(selTypeStat.code as TypeStatsEnum)
                     .then((resp) => {
                          setStats(resp)
                          setLoadingStats(false)

@@ -31,7 +31,7 @@ export function StatusViewDropDown({
    const ruta = is_anime ? "/anime/" : "/manga/";
    const [loading, setLoading] = useState<boolean>(false);
 
-   const handleStatusChange = (new_status: number) => {
+   const handleStatusChange = (new_status: StatusViewEnum) => {
       if (username && !loading) {
          setLoading(true);
          changeFavStatus(ruta + "changeFavStatus", {

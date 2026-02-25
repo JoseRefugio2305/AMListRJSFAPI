@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import ReactApexChart from "react-apexcharts";
 import type { ApexOptions } from "apexcharts";
 import { themeStore } from "../../store/themeStore";
+import type { StatusViewEnum } from "../../types/filterTypes";
 
 interface StatsSViewFavsProps {
    dataStats: StatusViewCountSchema[];
@@ -22,7 +23,7 @@ export function StatsSViewFavs({ dataStats, areAnimes }: StatsSViewFavsProps) {
       series: dataStats.map((stat) => stat.conteo),
       options: {
          labels: dataStats.map((stat) =>
-            getStatusViewName(stat.statusView, areAnimes)
+            getStatusViewName(stat.statusView as StatusViewEnum, areAnimes)
          ),
          legend: {
             labels: {

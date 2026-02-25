@@ -10,6 +10,7 @@ import {
 import { Search } from "lucide-react";
 import { FiltersSearchForm } from "./FiltersSearchForm";
 import {
+   EmisionEnum,
    FieldOrdEnum,
    TipoContenidoEnum,
    type FilterParamsInterface,
@@ -17,6 +18,8 @@ import {
    type OptionsSelectStrInterface,
    type OrderByType,
 } from "../../types/filterTypes";
+import type { TipoAnimeEnum } from "../../types/animeTypes";
+import type { TipoMangaEnum } from "../../types/mangaTypes";
 
 interface SearchFormProps {
    filtersParam: FilterParamsInterface;
@@ -102,9 +105,9 @@ export function SearchForm({
             estudios: arrStudios,
             autores: arrAuthors,
             editoriales: arrEditorials,
-            tiposAnime: arrTiposAnime,
-            tiposManga: arrTiposManga,
-            emision: emision,
+            tiposAnime: arrTiposAnime as TipoAnimeEnum[],
+            tiposManga: arrTiposManga as TipoMangaEnum[],
+            emision: emision as EmisionEnum,
             tipoContenido: tipoContenido,
             orderBy: orderby,
             orderField: orderfield,

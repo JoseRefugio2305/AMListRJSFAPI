@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { optionsTypeStat } from "../types/statsTypes";
+import { optionsTypeStat, TypeStatsEnum } from "../types/statsTypes";
 import { useEffect, useState } from "react";
 import type { FavsCountSchema } from "../schemas/statsSchemas";
 import { getFavsStats } from "../services/statsServices";
@@ -21,7 +21,7 @@ export function useStatsFavs(name: string, username: string) {
                }
                setLoadingStats(true);
                getFavsStats(
-                    selTypeStat.code,
+                    selTypeStat.code as TypeStatsEnum,
                     isOwnProfile ? username ?? "" : name?.toLowerCase() ?? ""
                )
                     .then((resp) => {

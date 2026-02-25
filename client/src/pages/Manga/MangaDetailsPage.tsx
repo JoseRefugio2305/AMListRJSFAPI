@@ -12,6 +12,7 @@ import type { MangaCompleteSchema } from "../../schemas/mangaSchemas";
 import { getMangaDetails } from "../../services/mangaServices";
 import { MangaRelationsSection } from "../../components/Manga/Details/RelationsSection";
 import { MoreInfoManga } from "../../components/Manga/Details/MoreInfo";
+import type { StatusViewEnum } from "../../types/filterTypes";
 
 export default function MangaDetailsPage() {
    const navigate = useNavigate();
@@ -89,7 +90,7 @@ export default function MangaDetailsPage() {
                               volumenes={mangaDetails.volumenes}
                               fav_status={fav_status}
                               setFav={setFav}
-                              statusView={statusView}
+                              statusView={statusView as StatusViewEnum}
                               setStatusView={setStatusView}
                            />
                         </div>

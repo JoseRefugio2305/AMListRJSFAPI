@@ -1,6 +1,7 @@
-import { StatusViewEnum, TipoAnimeEnum } from "../types/animeTypes";
+
+import { StatusViewEnum, StatusViewLabel, TipoAnimeEnum, TipoAnimeLabel } from "../types/animeTypes";
 import { TipoContenidoEnum } from "../types/filterTypes";
-import { TipoMangaEnum } from "../types/mangaTypes";
+import { TipoMangaEnum, TipoMangaLabel } from "../types/mangaTypes";
 
 export function cutText(text: string, length_text: number = 35): string {
      return text.length > length_text ? text.substring(0, length_text) + "..." : text
@@ -23,24 +24,17 @@ export function getDayEmision(fechaemision: string): string {
 };
 
 export function getAnimeStrType(tipo: TipoAnimeEnum): string {
-     const tipo_anime: string = TipoAnimeEnum[tipo]
+     const tipo_anime: string = TipoAnimeLabel[tipo]
      return tipo_anime
 }
 
 export function getMangaStrType(tipo: TipoMangaEnum): string {
-     switch (tipo) {
-          case TipoMangaEnum.NL:
-               return "Novela Ligera";
-          case TipoMangaEnum.One_Shot:
-               return "One Shot";
-          default:
-               return TipoMangaEnum[tipo];
-     }
+     return TipoMangaLabel[tipo]
 }
 
 export function getStatusViewName(status: StatusViewEnum, isAnime: boolean = true): string {
      if (status === StatusViewEnum.Viendo && !isAnime) return "Leyendo";
-     return StatusViewEnum[status];
+     return StatusViewLabel[status];
 }
 
 export function getColorTipoAnimeManga(tipo: TipoAnimeEnum | TipoMangaEnum, is_emision: number) {
@@ -75,7 +69,7 @@ export function getStatusViewStr(statusView: StatusViewEnum, is_anime: boolean):
      if (!is_anime && statusView === StatusViewEnum.Viendo) {
           return "Leyendo";
      }
-     const str_status: string = StatusViewEnum[statusView];
+     const str_status: string = StatusViewLabel[statusView];
      return str_status;
 }
 

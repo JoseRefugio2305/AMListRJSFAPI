@@ -25,7 +25,7 @@ export default function UserStatsPage() {
    const [, setIsOwnProf] = useState<boolean>(false);
    const [checkUser, setCheckUser] = useState<boolean>(true);
 
-   const [statActive, setStatActive] = useState<number>(TypeStatsEnum.a_m_favs);
+   const [statActive, setStatActive] = useState<TypeStatsEnum>(TypeStatsEnum.a_m_favs);
 
    useEffect(() => {
       const fetchUserData = async () => {

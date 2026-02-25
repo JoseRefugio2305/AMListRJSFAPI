@@ -56,6 +56,7 @@ export function LazyLoadImage({
    const srcToUse = forceFallback ? fallbackAbsolute : initialSrc;
 
    const handleError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+      console.log(e.type)
       // const target = e.currentTarget;
       // Evita reasignar fallback más de una vez para romper bucles
       if (!triedFallbackRef.current) {

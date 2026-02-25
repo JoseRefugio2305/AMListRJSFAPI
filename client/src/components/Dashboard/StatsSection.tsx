@@ -16,7 +16,7 @@ const ChartEditoriales = lazy(
 );
 
 export default function StatsSection() {
-   const [statActive, setStatActive] = useState<number>(TypeStatsEnum.tipo_a_m);
+   const [statActive, setStatActive] = useState<TypeStatsEnum>(TypeStatsEnum.tipo_a_m);
    const {
       selTypeStat,
       setSelTypeStat,

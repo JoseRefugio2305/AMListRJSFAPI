@@ -36,8 +36,9 @@ export default function EstudiosList() {
                : FieldOrdGSAEEnum.id_MAL;
          })(),
       };
-      if (lazyState.filters.global && lazyState.filters.global.value) {
-         filters.txtSearch = lazyState.filters.global.value.trim();
+      const globalFilter = lazyState.filters.global;
+      if (globalFilter && "value" in globalFilter && globalFilter.value) {
+         filters.txtSearch = globalFilter.value.trim();
       }
       getGSAE(filters, TipoGSAEEnum.estudios)
          .then((resp) => {
@@ -79,7 +80,7 @@ export default function EstudiosList() {
                totalStd > 0 ? lazyState.first + 1 : totalStd
             } a ${Math.min(
                lazyState.rows + lazyState.first,
-               totalStd
+               totalStd,
             )} estudio(s) de ${totalStd} resultados`}
             first={lazyState.first}
             totalRecords={totalStd}
@@ -118,12 +119,6 @@ export default function EstudiosList() {
                   <AccionesGSAEList
                      gsae={rowData}
                      typeGSAE={TipoGSAEEnum.estudios}
-                     callBackDel={() => {
-                        setLoading(true);
-                        setLazyState((prev) => {
-                           return { ...prev };
-                        });
-                     }}
                   />
                )}
             />

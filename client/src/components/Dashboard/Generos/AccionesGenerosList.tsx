@@ -6,15 +6,14 @@ import { TipoGSAEEnum } from "../../../types/filterTypes";
 
 interface AccionesGSAEListProps {
    gsae: GSAESchema;
-   callBackDel: <T>(...args: T[]) => void;
    typeGSAE: TipoGSAEEnum;
 }
 
 export function AccionesGSAEList({
    gsae,
-   callBackDel,
    typeGSAE,
 }: AccionesGSAEListProps) {
+   console.log()
    const ruta =
       typeGSAE === TipoGSAEEnum.generos
          ? "/explore?genres"

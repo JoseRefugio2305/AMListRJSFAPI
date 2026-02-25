@@ -36,8 +36,9 @@ export default function GenerosList() {
                : FieldOrdGSAEEnum.id_MAL;
          })(),
       };
-      if (lazyState.filters.global && lazyState.filters.global.value) {
-         filters.txtSearch = lazyState.filters.global.value.trim();
+      const globalFilter = lazyState.filters.global;
+      if (globalFilter && "value" in globalFilter && globalFilter.value) {
+         filters.txtSearch = globalFilter.value.trim();
       }
       getGSAE(filters, TipoGSAEEnum.generos)
          .then((resp) => {
@@ -79,7 +80,7 @@ export default function GenerosList() {
                totalGen > 0 ? lazyState.first + 1 : totalGen
             } a ${Math.min(
                lazyState.rows + lazyState.first,
-               totalGen
+               totalGen,
             )} géneros(s) de ${totalGen} resultados`}
             first={lazyState.first}
             totalRecords={totalGen}
@@ -118,12 +119,6 @@ export default function GenerosList() {
                   <AccionesGSAEList
                      gsae={rowData}
                      typeGSAE={TipoGSAEEnum.generos}
-                     callBackDel={() => {
-                        setLoading(true);
-                        setLazyState((prev) => {
-                           return { ...prev };
-                        });
-                     }}
                   />
                )}
             />
