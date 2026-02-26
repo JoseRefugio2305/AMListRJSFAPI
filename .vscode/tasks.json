@@ -1,39 +1,90 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "backendFastAPI",
-      "type": "shell",
-      "command": [
-        ".\\myenv\\Scripts\\activate",
-        "&&",
-        "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
-      ],
-      "options": {
-        "cwd": "api"
+   "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "backendFastAPI",
+         "type": "shell",
+         "command": [
+            ".\\myenv\\Scripts\\activate",
+            "&&",
+            "uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+         ],
+         "options": {
+            "cwd": "api"
+         },
+         "problemMatcher": []
       },
-      "problemMatcher": []
-    },
-    {
-      "label": "frontendReactVite",
-      "type": "shell",
-      "command": "pnpm run dev",
-      "options": {
-        "cwd": "client"
+      {
+         "label": "frontendReactVite",
+         "type": "shell",
+         "command": "pnpm run dev",
+         "options": {
+            "cwd": "client"
+         },
+         "problemMatcher": []
       },
-      "problemMatcher": []
-    },
-    {
-      "label": "start:FrontBack",
-      "dependsOn": [
-        "backendFastAPI",
-        "frontendReactVite"
-      ],
-      "runOptions": {
-        "runOn": "default",
-        "reevaluateOnRerun": true
+      {
+         "label": "start:FrontBack",
+         "dependsOn": ["backendFastAPI", "frontendReactVite"],
+         "runOptions": {
+            "runOn": "default",
+            "reevaluateOnRerun": true
+         },
+         "problemMatcher": []
       },
-      "problemMatcher": []
-    }
-  ]
+      {
+         "label": "BuildDockerBackend",
+         "type": "shell",
+         "command": "docker build -t api-amlist .",
+         "options": {
+            "cwd": "api"
+         },
+         "problemMatcher": []
+      },
+      {
+         "label": "BuildDockerFrontEnd",
+         "type": "shell",
+         "command": "docker build -t client-amlist .",
+         "options": {
+            "cwd": "client"
+         },
+         "problemMatcher": []
+      },
+      {
+         "label": "Build&StartRedis",
+         "type": "shell",
+         "command": "docker-compose up -d",
+         "options": {
+            "cwd": "api/redis"
+         },
+         "problemMatcher": []
+      },
+      {
+         "label": "StartBackend",
+         "type": "shell",
+         "command": "docker run -p 8000:8000 --env-file .env api-amlist",
+         "options": {
+            "cwd": "api"
+         },
+         "problemMatcher": []
+      },
+      {
+         "label": "StartFrontEnd",
+         "type": "shell",
+         "command": "docker run -p 5173:80 client-amlist",
+         "options": {
+            "cwd": "api"
+         },
+         "problemMatcher": []
+      },
+      {
+         "label": "start:AllDockers",
+         "dependsOn": ["Build&StartRedis", "StartBackend", "StartFrontEnd"],
+         "runOptions": {
+            "runOn": "default",
+            "reevaluateOnRerun": true
+         },
+         "problemMatcher": []
+      }
+   ]
 }
