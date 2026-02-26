@@ -1,4 +1,4 @@
-# Cliente AMList
+# Cliente AniMangaList
 
 Desarrollado sobre **[Vite](https://v3.vitejs.dev/guide/)** con **[React](https://es.react.dev/)** y **[TS](https://www.typescriptlang.org/)**.
 
@@ -163,7 +163,7 @@ pnpm run dev
 En la ruta **`./client`** se debe ejecutar el siguiente comando:
 
 ```bash
-docker build -t client-amlist .
+docker build -t client-AniMangaList .
 ```
 
 ### Inicialización de la imagen
@@ -171,5 +171,5 @@ docker build -t client-amlist .
 En la ruta **`./client`** se debe ejecutar el siguiente comando:
 
 ```bash
-docker run -p 5173:80 client-amlist
+docker run -p 5173:80 client-AniMangaList
 ```

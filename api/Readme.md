@@ -1,4 +1,4 @@
-# API AMList
+# API AniMangaList
 
 Esta es una API para el almacenamiento y listado de anime y manga. Desarrollada en **[FastApi](https://fastapi.tiangolo.com/)** de **Python**, con **[MongoDB](https://www.mongodb.com/)** como base de datos, **[Redis](https://redis.io/)** para el manejo de cache y haciendo uso del el API no oficial de **[My Anime List](https://myanimelist.net/)**, **[Jikan API](https://jikan.moe/)**.
 
@@ -896,7 +896,7 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 En la ruta **`./api`** se debe ejecutar el siguiente comando:
 
 ```bash
-docker build -t api-amlist .
+docker build -t api-AniMangaList .
 ```
 
 ### Inicialización de la imagen
@@ -904,7 +904,7 @@ docker build -t api-amlist .
 En la ruta **`./api`** se debe ejecutar el siguiente comando:
 
 ```bash
-docker run -p 8000:8000 --env-file .env api-amlist
+docker run -p 8000:8000 --env-file .env api-AniMangaList
 ```
 
 > **Nota**: Antes de inicializar, se debe de inicializar primero la imagen de redis, como se indica anteriormente, así como también debe de estar creado el archivo **`.env`** en la ruta **`./api`**.
