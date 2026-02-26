@@ -8,7 +8,6 @@ Además, el sistema permite la edición del perfil y, cuando el usuario está au
 
 [Click en las siguientes imágenes para ver un clip de la ejecución del Proyecto en YouTube](https://youtu.be/dPWxWPQ5xxg)
 
-
 [![Clip del Proyecto](../assets/captura.png)](https://youtu.be/dPWxWPQ5xxg "Clip del Proyecto")
 
 ## Estructura del Proyecto
@@ -103,8 +102,8 @@ Instrucciones de instalación e inicialización del proyecto.
 
 ### Prerrequisitos
 
--  [NodeJS 24+](https://nodejs.org/es)
--  [pnpm](https://pnpm.io/es/)
+- [NodeJS 24+](https://nodejs.org/es)
+- [pnpm](https://pnpm.io/es/)
 
 ### Instalación
 
@@ -141,18 +140,36 @@ pnpm run dev
 
 ## Tecnologías usadas
 
--  [NodeJS 24+](https://nodejs.org/es)
--  [pnpm](https://pnpm.io/es/)
--  [Vite](https://v3.vitejs.dev/guide/)
--  [React](https://es.react.dev/)
--  [TypeScript](https://www.typescriptlang.org/)
--  [TailwindCSS](https://tailwindcss.com/docs/installation/using-vite)
+- [NodeJS 24+](https://nodejs.org/es)
+- [pnpm](https://pnpm.io/es/)
+- [Vite](https://v3.vitejs.dev/guide/)
+- [React](https://es.react.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [TailwindCSS](https://tailwindcss.com/docs/installation/using-vite)
 
 ## Componentes y recursos
 
--  [PrimeReact](https://primereact.org/installation/)
--  [FlowbiteReact](https://flowbite-react.com/docs/getting-started/introduction)
--  [Lucide Icons](https://lucide.dev/icons/)
--  [ApexCharts React](https://apexcharts.com/react-chart-demos/)
--  [Zod](https://zod.dev/)
--  [Zustand](https://zustand-demo.pmnd.rs/)
+- [PrimeReact](https://primereact.org/installation/)
+- [FlowbiteReact](https://flowbite-react.com/docs/getting-started/introduction)
+- [Lucide Icons](https://lucide.dev/icons/)
+- [ApexCharts React](https://apexcharts.com/react-chart-demos/)
+- [Zod](https://zod.dev/)
+- [Zustand](https://zustand-demo.pmnd.rs/)
+
+## Ejecución con Docker
+
+### Build de la imagen
+
+En la ruta **`./client`** se debe ejecutar el siguiente comando:
+
+```bash
+docker build -t client-amlist .
+```
+
+### Inicialización de la imagen
+
+En la ruta **`./client`** se debe ejecutar el siguiente comando:
+
+```bash
+docker run -p 5173:80 client-amlist
+```

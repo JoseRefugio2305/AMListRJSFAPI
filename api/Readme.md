@@ -887,3 +887,24 @@ Para consultar los diferentes enpoints de la aplicación, así como sus payloads
 
    - Response schema: JSON personalizado `{ tasks: list, total_tasks: int }`
     </details>
+
+
+## Ejecución con Docker
+
+### Build de la imagen
+
+En la ruta **`./api`** se debe ejecutar el siguiente comando:
+
+```bash
+docker build -t api-amlist .
+```
+
+### Inicialización de la imagen
+
+En la ruta **`./api`** se debe ejecutar el siguiente comando:
+
+```bash
+docker run -p 8000:8000 --env-file .env api-amlist
+```
+
+> **Nota**: Antes de inicializar, se debe de inicializar primero la imagen de redis, como se indica anteriormente, así como también debe de estar creado el archivo **`.env`** en la ruta **`./api`**.
