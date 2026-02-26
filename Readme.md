@@ -1,6 +1,6 @@
-## 🎯 Propósito del Proyecto
+# AniMangaList
 
-### ¿Qué es AniMangaList?
+## ¿Qué es AniMangaList?
 
 **AniMangaList** es una plataforma web full-stack diseñada para otakus y entusiastas del anime/manga que desean:
 
@@ -14,7 +14,7 @@
 
 [![Clip del Proyecto](./assets/captura.png)](https://youtu.be/dPWxWPQ5xxg "Clip del Proyecto")
 
-### Problema que Resuelve
+## Problema que Resuelve
 
 Los usuarios de anime/manga suelen tener colecciones dispersas en múltiples plataformas (MAL, AniList, notas personales, etc.). AniMangaList centraliza toda esta información en una interfaz única, moderna y personalizable, permitiendo:
 
@@ -23,7 +23,7 @@ Los usuarios de anime/manga suelen tener colecciones dispersas en múltiples pla
 - Estadísticas visuales de tus hábitos de consumo
 - Gestión sin límites de títulos o listas
 
-### Stack Tecnológico
+## Stack Tecnológico
 
 >[!NOTE]
 > Las documentaciones detalladas de cada proyecto se encuentran en sus respectivos directorios.
