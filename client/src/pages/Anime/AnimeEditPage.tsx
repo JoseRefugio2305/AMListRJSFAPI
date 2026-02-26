@@ -23,21 +23,25 @@ import { ImagesSectionForm } from "../../components/Dashboard/Anime/FormEdit/Ima
 import type { AnimeImagesSharedSchema } from "../../schemas/relationsSchemas";
 import { toastStore } from "../../store/toastStore";
 import { updateAnime } from "../../services/dashboardAnimeServides";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function AnimeEditPage() {
    const navigate = useNavigate();
    const { key_anime } = useParams();
    const [animeData, setAnimeData] = useState<AnimeCompleteSchema>();
+   const [animeTitulo, setAnimeTitulo] = useState<string>("Editar");
    const [selGenres, setSelGenres] = useState<FilterObjSchema[]>([]);
    const [selStudios, setSelStudios] = useState<FilterObjSchema[]>([]);
    const [emisionDate, setEmisionDate] = useState<Date | null>(null);
    const [selEmision, setSelEmision] = useState<OptionsSelectInterface | null>(
-      null
+      null,
    );
    const [selTipoAnime, setSelTipoAnime] =
       useState<OptionsSelectInterface | null>(null);
    const showToast = toastStore((s) => s.showToast);
    const [loading, setLoading] = useState<boolean>(true);
+
+   useDocumentTitle(animeTitulo);
 
    useEffect(() => {
       const fetchAnimeData = async () => {
@@ -53,15 +57,16 @@ export default function AnimeEditPage() {
                      setAnimeData(resp.anime);
                      setSelEmision(
                         optionsEmision.filter(
-                           (ope) => ope.code === resp.anime?.emision
-                        )[0]
+                           (ope) => ope.code === resp.anime?.emision,
+                        )[0],
                      );
                      setSelTipoAnime(
                         optionsTipoAnime.filter(
-                           (opt) => opt.code === resp.anime?.tipo
-                        )[0]
+                           (opt) => opt.code === resp.anime?.tipo,
+                        )[0],
                      );
                      setEmisionDate(new Date(resp.anime.fechaEmision));
+                     setAnimeTitulo(`Editar - ${resp.anime?.titulo}`);
                   }
                })
                .catch((error) => {
@@ -84,13 +89,13 @@ export default function AnimeEditPage() {
       const titulo = String(formData.get("titulo") ?? "");
       const descripcion = String(formData.get("descripcion") ?? "");
       const episodios = parseStringNumber(
-         String(formData.get("episodios") ?? "0")
+         String(formData.get("episodios") ?? "0"),
       );
       const calificacion = parseFloatStringNumber(
-         String(formData.get("calificacion") ?? "0")
+         String(formData.get("calificacion") ?? "0"),
       );
       const numRatings = parseStringNumber(
-         String(formData.get("numRatings") ?? "0")
+         String(formData.get("numRatings") ?? "0"),
       );
       const link_p = String(formData.get("link_p") ?? "");
       const linkMAL = String(formData.get("linkMAL") ?? "");
@@ -183,7 +188,7 @@ export default function AnimeEditPage() {
                               {
                                  label: "Editar Anime",
                                  to: `/anime/${getTitleForLink(
-                                    animeData.titulo
+                                    animeData.titulo,
                                  )}/${animeData.key_anime}`,
                               },
                            ]}
@@ -233,8 +238,8 @@ export default function AnimeEditPage() {
                                  onClick={() =>
                                     navigate(
                                        `/anime/${getTitleForLink(
-                                          animeData.titulo
-                                       )}/${animeData.key_anime}`
+                                          animeData.titulo,
+                                       )}/${animeData.key_anime}`,
                                     )
                                  }
                               >

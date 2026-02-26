@@ -10,8 +10,10 @@ import { UsernameForm } from "../../components/User/UsernameForm";
 import { EmailForm } from "../../components/User/EmailForm";
 import { PasswordForm } from "../../components/User/PasswordForm";
 import { ConfigProfileSkeleton } from "../../components/Skeletons/ConfigProfileSkeleton";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function ConfigProfilePage() {
+   useDocumentTitle("Configuración de Perfil")
    const { username } = authStore();
 
    const navigate = useNavigate();

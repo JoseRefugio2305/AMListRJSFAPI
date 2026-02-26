@@ -11,8 +11,10 @@ import { TabMenuStatusView } from "../../components/Common/User/TabMenuStatusVie
 import { PaginationSkeleton } from "../../components/Skeletons/PaginationSekeleton";
 import { MangaPagination } from "../../components/Manga/MangaPagination";
 import { SearchSkeleton } from "../../components/Skeletons/SearchSkeleton";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function UserMangaListPage() {
+   useDocumentTitle("Lista de Mangas");
    const navigate = useNavigate();
    const { username } = authStore();
    const { name } = useParams();
@@ -27,7 +29,7 @@ export default function UserMangaListPage() {
          setIsOwnProf(own);
          setCheckUser(true);
          await getUserDataProfile(
-            own ? username ?? "" : name?.toLowerCase() ?? ""
+            own ? (username ?? "") : (name?.toLowerCase() ?? ""),
          )
             .then((resp) => {
                if (!resp) {
@@ -56,7 +58,7 @@ export default function UserMangaListPage() {
    } = useFilters(
       TipoContenidoEnum.manga,
       true,
-      name ? (username === name ? username : name?.toLowerCase()) : ""
+      name ? (username === name ? username : name?.toLowerCase()) : "",
    );
 
    if (!name?.trim()) {

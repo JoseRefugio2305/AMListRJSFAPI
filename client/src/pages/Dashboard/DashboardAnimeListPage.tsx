@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { TabItem, Tabs } from "flowbite-react";
 import { TopSkeleton } from "../../components/Skeletons/TopSkeleton";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle.ts";
 
 const AnimeFullList = lazy(
    () => import("../../components/Dashboard/Anime/AnimeFullList.tsx")
@@ -19,6 +20,7 @@ const AnimeIncompleteList = lazy(
 
 export default function DashboardAnimeListPage() {
    const [listSel, setListSel] = useState<number>(0);
+   useDocumentTitle("Listado de Animes")
 
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 px-5 pb-14 mt-5 gap-8 min-h-screen">

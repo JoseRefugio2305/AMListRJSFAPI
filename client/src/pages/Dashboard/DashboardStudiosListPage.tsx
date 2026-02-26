@@ -2,8 +2,10 @@ import EstudiosList from "../../components/Dashboard/Estudios/EstudiosList";
 import { SidebarDash } from "../../components/Dashboard/SidebarDash";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import { LaptopMinimal } from "lucide-react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function DashboardStudiosListPage() {
+   useDocumentTitle("Listado de Estudios de Animación")
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 px-5 pb-14 mt-5 gap-8 min-h-screen">
          <SidebarDash selectedOption={5} />

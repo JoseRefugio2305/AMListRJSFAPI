@@ -8,8 +8,10 @@ import { getMangas } from "../../services/mangaServices";
 import { CarouselManga } from "../../components/Manga/CarouselManga";
 import { MangaPagination } from "../../components/Manga/MangaPagination";
 import { parseStringNumber } from "../../utils/parse";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function MangaPage() {
+   useDocumentTitle("Mangas")
    const [searchParams, setSearchParams] = useSearchParams();
 
    const [page, setPage] = useState<number>(() =>

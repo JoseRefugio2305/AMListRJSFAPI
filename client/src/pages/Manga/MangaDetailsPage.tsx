@@ -13,14 +13,18 @@ import { getMangaDetails } from "../../services/mangaServices";
 import { MangaRelationsSection } from "../../components/Manga/Details/RelationsSection";
 import { MoreInfoManga } from "../../components/Manga/Details/MoreInfo";
 import type { StatusViewEnum } from "../../types/filterTypes";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function MangaDetailsPage() {
    const navigate = useNavigate();
    const { key_manga } = useParams();
    const [mangaDetails, setMangaDetails] = useState<MangaCompleteSchema>();
+   const [mangaTitulo, setMangaTitulo] = useState<string>("Detalles");
    const [loading, setLoading] = useState<boolean>(true);
    const [fav_status, setFav] = useState<boolean>(false);
    const [statusView, setStatusView] = useState<number>(5);
+
+   useDocumentTitle(mangaTitulo);
 
    useEffect(() => {
       const fetchMangaDetails = () => {
@@ -36,6 +40,7 @@ export default function MangaDetailsPage() {
                      setMangaDetails(resp.manga);
                      setFav(resp.manga?.isFav ?? false);
                      setStatusView(resp.manga?.statusView ?? 5);
+                     setMangaTitulo(resp.manga?.titulo);
                   }
                })
                .catch((error) => {

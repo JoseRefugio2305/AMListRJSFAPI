@@ -1,9 +1,12 @@
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+
 export default function NotFoundPage() {
+   useDocumentTitle("404 - Página  no encontrada");
    return (
       <main className="min-h-screen flex items-center justify-center bg-transparent">
          <div className="max-w-5xl w-full flex flex-col items-center px-5">
             <h1 className="text-3xl font-bold underline text-center">
-               404 - Página  no encontrada
+               404 - Página no encontrada
             </h1>
             <img
                alt="Not Found 404"

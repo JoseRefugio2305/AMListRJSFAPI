@@ -6,8 +6,10 @@ import { SearchForm } from "../../components/Search/SearchForm";
 import { PaginationSkeleton } from "../../components/Skeletons/PaginationSekeleton";
 import { MangaPagination } from "../../components/Manga/MangaPagination";
 import { useState } from "react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function ExploreMangaPage() {
+   useDocumentTitle("Explorar Mangas")
    const {
       totalMangas,
       mangas,

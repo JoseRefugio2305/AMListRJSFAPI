@@ -14,7 +14,9 @@ import { MangaPagination } from "../../components/Manga/MangaPagination";
 import { TipoContenidoEnum } from "../../types/filterTypes";
 import { Link } from "react-router";
 import { useState } from "react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 export default function ExplorePage() {
+   useDocumentTitle("Explorar Contenido")
    const {
       animes,
       totalAnimes,

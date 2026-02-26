@@ -6,8 +6,10 @@ import { SearchForm } from "../../components/Search/SearchForm";
 import { PaginationSkeleton } from "../../components/Skeletons/PaginationSekeleton";
 import { AnimePagination } from "../../components/Anime/AnimePagination";
 import { useState } from "react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function ExploreAnimePage() {
+   useDocumentTitle("Explorar Animes")
    const {
       animes,
       totalAnimes,

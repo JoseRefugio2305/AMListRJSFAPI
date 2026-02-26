@@ -13,14 +13,18 @@ import { MoreInfoAnime } from "../../components/Anime/Details/MoreInfo";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import type { AnimeCompleteSchema } from "../../schemas/animeSchemas";
 import type { StatusViewEnum } from "../../types/animeTypes";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function AnimeDetailsPage() {
    const navigate = useNavigate();
    const { key_anime } = useParams();
    const [animeDetails, setAnimeDetails] = useState<AnimeCompleteSchema>();
+   const [animeTitulo, setAnimeTitulo] = useState<string>("Detalles");
    const [loading, setLoading] = useState<boolean>(true);
    const [fav_status, setFav] = useState<boolean>(false);
    const [statusView, setStatusView] = useState<number>(5);
+
+   useDocumentTitle(animeTitulo);
 
    useEffect(() => {
       const fetchAnimeDetails = () => {
@@ -36,6 +40,7 @@ export default function AnimeDetailsPage() {
                      setAnimeDetails(resp.anime);
                      setFav(resp.anime?.isFav ?? false);
                      setStatusView(resp.anime?.statusView ?? 5);
+                     setAnimeTitulo(resp.anime?.titulo);
                   }
                })
                .catch((error) => {

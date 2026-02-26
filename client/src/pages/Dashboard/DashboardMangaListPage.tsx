@@ -5,6 +5,7 @@ import { Brush, CircleCheckIcon, HourglassIcon } from "lucide-react";
 import { MenuMangaList } from "../../components/Dashboard/Manga/MenuMangaList.tsx";
 import { TabItem, Tabs } from "flowbite-react";
 import { TopSkeleton } from "../../components/Skeletons/TopSkeleton.tsx";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle.ts";
 
 const MangaFullList = lazy(
    () => import("../../components/Dashboard/Manga/MangaFullList.tsx")
@@ -15,6 +16,8 @@ const MangaIncompleteList = lazy(
 
 export default function DashboardMangaListPage() {
    const [listSel, setListSel] = useState<number>(0);
+
+   useDocumentTitle("Listado de Mangas")
 
    return (
       <main className="max-w-5xl mx-auto space-y-8 py-5 px-5 pb-14 mt-5 gap-8 min-h-screen">

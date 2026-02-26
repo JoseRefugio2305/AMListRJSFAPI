@@ -23,11 +23,13 @@ import { ImagesSectionForm } from "../../components/Dashboard/Manga/FormEdit/Ima
 import { MultiSelectsForm } from "../../components/Dashboard/Manga/FormEdit/MultiSelectsForm";
 import type { MangaImagesSharedSchema } from "../../schemas/relationsSchemas";
 import { updateManga } from "../../services/dashboardMangaServices";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function MangaEditPage() {
    const navigate = useNavigate();
    const { key_manga } = useParams();
    const [mangaData, setMangaData] = useState<MangaCompleteSchema>();
+   const [mangaTitulo, setMangaTitulo] = useState<string>("Editar");
    const [selGenres, setSelGenres] = useState<FilterObjSchema[]>([]);
    const [selEditorials, setSelEditorials] = useState<FilterObjSchema[]>([]);
    const [selAuthors, setSelAuthors] = useState<FilterObjSchema[]>([]);
@@ -38,6 +40,9 @@ export default function MangaEditPage() {
       useState<OptionsSelectInterface | null>(null);
    const showToast = toastStore((s) => s.showToast);
    const [loading, setLoading] = useState<boolean>(true);
+
+   useDocumentTitle(mangaTitulo);
+
    useEffect(() => {
       const fetchmangaData = async () => {
          const k_m = parseStringNumber(key_manga ?? "0");
@@ -50,20 +55,24 @@ export default function MangaEditPage() {
                   }
                   if (resp.manga) {
                      setMangaData(resp.manga);
+                     setMangaTitulo(`Editar - ${resp.manga?.titulo}`);
                      setSelPubl(
                         optionsEmision.filter(
-                           (ope) => ope.code === resp.manga?.publicando
-                        )[0]
+                           (ope) => ope.code === resp.manga?.publicando,
+                        )[0],
                      );
                      setSelTipoManga(
                         optionsTipoManga.filter(
-                           (opt) => opt.code === resp.manga?.tipo
-                        )[0]
+                           (opt) => opt.code === resp.manga?.tipo,
+                        )[0],
                      );
                      setPubDate(new Date(resp.manga.fechaComienzoPub));
-                     if(resp.manga.fechaFinPub&&resp.manga.fechaFinPub!=="None")
-                     {setEndPubDate( new Date(resp.manga.fechaFinPub)
-                     );}
+                     if (
+                        resp.manga.fechaFinPub &&
+                        resp.manga.fechaFinPub !== "None"
+                     ) {
+                        setEndPubDate(new Date(resp.manga.fechaFinPub));
+                     }
                   }
                })
                .catch((error) => {
@@ -86,16 +95,16 @@ export default function MangaEditPage() {
       const titulo = String(formData.get("titulo") ?? "");
       const descripcion = String(formData.get("descripcion") ?? "");
       const capitulos = parseStringNumber(
-         String(formData.get("capitulos") ?? "0")
+         String(formData.get("capitulos") ?? "0"),
       );
       const volumenes = parseStringNumber(
-         String(formData.get("volumenes") ?? "0")
+         String(formData.get("volumenes") ?? "0"),
       );
       const calificacion = parseFloatStringNumber(
-         String(formData.get("calificacion") ?? "0")
+         String(formData.get("calificacion") ?? "0"),
       );
       const numRatings = parseStringNumber(
-         String(formData.get("numRatings") ?? "0")
+         String(formData.get("numRatings") ?? "0"),
       );
       const link_p = String(formData.get("link_p") ?? "");
       const linkMAL = String(formData.get("linkMAL") ?? "");
@@ -194,7 +203,7 @@ export default function MangaEditPage() {
                               {
                                  label: "Editar Manga",
                                  to: `/manga/${getTitleForLink(
-                                    mangaData.titulo
+                                    mangaData.titulo,
                                  )}/${mangaData.key_manga}`,
                               },
                            ]}
@@ -249,8 +258,8 @@ export default function MangaEditPage() {
                                  onClick={() =>
                                     navigate(
                                        `/manga/${getTitleForLink(
-                                          mangaData.titulo
-                                       )}/${mangaData.key_manga}`
+                                          mangaData.titulo,
+                                       )}/${mangaData.key_manga}`,
                                     )
                                  }
                               >

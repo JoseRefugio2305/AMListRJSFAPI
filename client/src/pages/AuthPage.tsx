@@ -4,8 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
 import { Login } from "../components/Auth/Login";
 import { Register } from "../components/Auth/Register";
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
 
 export default function AuthPage() {
+   useDocumentTitle("Acceder");
    const username = authStore((s) => s.username);
    const navigate = useNavigate();
 

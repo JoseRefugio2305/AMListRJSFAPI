@@ -11,8 +11,10 @@ import { TabMenuStatusView } from "../../components/Common/User/TabMenuStatusVie
 import { PaginationSkeleton } from "../../components/Skeletons/PaginationSekeleton";
 import { AnimePagination } from "../../components/Anime/AnimePagination";
 import { SearchSkeleton } from "../../components/Skeletons/SearchSkeleton";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function UserAnimeListPage() {
+   useDocumentTitle("Lista de Animes");
    const navigate = useNavigate();
    const { username } = authStore();
    const { name } = useParams();
@@ -27,7 +29,7 @@ export default function UserAnimeListPage() {
          setIsOwnProf(own);
          setCheckUser(true);
          await getUserDataProfile(
-            own ? username ?? "" : name?.toLowerCase() ?? ""
+            own ? (username ?? "") : (name?.toLowerCase() ?? ""),
          )
             .then((resp) => {
                if (!resp) {
@@ -56,7 +58,7 @@ export default function UserAnimeListPage() {
    } = useFilters(
       TipoContenidoEnum.anime,
       true,
-      name ? (username === name ? username : name?.toLowerCase()) : ""
+      name ? (username === name ? username : name?.toLowerCase()) : "",
    );
 
    if (!name?.trim()) {

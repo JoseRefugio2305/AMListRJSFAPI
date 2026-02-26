@@ -10,22 +10,26 @@ import { TabMenuStats } from "../../components/Common/Stats/TabMenuStats";
 import { TypeStatsEnum } from "../../types/statsTypes";
 import { getUserDataProfile } from "../../services/userServices";
 import { DetailsSkeleton } from "../../components/Skeletons/DetailsSkeleton";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 const ChartGeneros = lazy(() => import("../../components/Charts/ChartGeneros"));
 const ChartsTypeAM = lazy(() => import("../../components/Charts/ChartsTypeAM"));
 const ChartStudios = lazy(() => import("../../components/Charts/ChartStudios"));
 const ChartEditoriales = lazy(
-   () => import("../../components/Charts/ChartEditoriales")
+   () => import("../../components/Charts/ChartEditoriales"),
 );
 
 export default function UserStatsPage() {
+   useDocumentTitle("Estadísticas");
    const navigate = useNavigate();
    const { username } = authStore();
    const { name } = useParams();
    const [, setIsOwnProf] = useState<boolean>(false);
    const [checkUser, setCheckUser] = useState<boolean>(true);
 
-   const [statActive, setStatActive] = useState<TypeStatsEnum>(TypeStatsEnum.a_m_favs);
+   const [statActive, setStatActive] = useState<TypeStatsEnum>(
+      TypeStatsEnum.a_m_favs,
+   );
 
    useEffect(() => {
       const fetchUserData = async () => {
@@ -33,7 +37,7 @@ export default function UserStatsPage() {
          setIsOwnProf(own);
          setCheckUser(true);
          await getUserDataProfile(
-            own ? username ?? "" : name?.toLowerCase() ?? ""
+            own ? (username ?? "") : (name?.toLowerCase() ?? ""),
          )
             .then((resp) => {
                if (!resp) {

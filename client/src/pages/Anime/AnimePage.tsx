@@ -8,8 +8,10 @@ import { useSearchParams } from "react-router";
 import { Breadcrumbs } from "../../components/Layout/BreadCrumbs";
 import type { AnimeSchema } from "../../schemas/animeSchemas";
 import { parseStringNumber } from "../../utils/parse";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function AnimePage() {
+   useDocumentTitle("Animes");
    const [searchParams, setSearchParams] = useSearchParams();
 
    const [page, setPage] = useState<number>(() =>

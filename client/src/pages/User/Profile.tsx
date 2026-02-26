@@ -10,6 +10,7 @@ import { CarouselAnime } from "../../components/Anime/CarouselAnime";
 import { CarouselManga } from "../../components/Manga/CarouselManga";
 import { StatsProfileSection } from "../../components/User/StatsProfileSection";
 import { Bolt } from "lucide-react";
+import { useDocumentTitle } from "../../hooks/useDocumentTitle";
 
 export default function Profile() {
    const navigate = useNavigate();
@@ -19,12 +20,18 @@ export default function Profile() {
    const [userData, setUserData] = useState<UserProfileSchema | null>(null);
    const [loadingUserData, setLoadingUserData] = useState<boolean>(true);
 
+   useDocumentTitle(
+      isOwnProfile ? "Mi Perfil" : `Perfil de ${name?.toLowerCase()}`,
+   );
+
    useEffect(() => {
       const fetchUserData = () => {
          const own = name?.trim().toLowerCase() === username;
          setIsOwnProf(own);
          setLoadingUserData(true);
-         getUserDataProfile(own ? username ?? "" : name?.toLowerCase() ?? "")
+         getUserDataProfile(
+            own ? (username ?? "") : (name?.toLowerCase() ?? ""),
+         )
             .then((resp) => {
                if (!resp) {
                   navigate("/404-not-found", { replace: true });
